@@ -1,7 +1,5 @@
 package com.sp.socialcommerce.controllers;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sp.socialcommerce.models.User;
+import com.sp.socialcommerce.neo4j.GraphDBManager;
 
 /**
  * Handles requests for the application home page.
@@ -48,6 +47,7 @@ public class HomeController {
 	
 	@RequestMapping(value = "/survey", method = RequestMethod.GET)
 	public String surveyPage() {
+		new GraphDBManager().initDB();
 		return "survey";
 	}
 	

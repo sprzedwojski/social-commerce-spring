@@ -24,15 +24,15 @@
 	
 	<!-- HEROKU -->
 	<!-- 
+	src="http://cdn.gigya.com/js/gigya.js?apiKey=3_sFgwvnq40GfyHqzMpOxL0E3fCpHbGODZRhsOycfgim6rg85ZBcsewcid3mIcu0ne"
 	 -->
 	
 	<!-- LOCALHOST -->
 	<!-- 
-		src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i"
 	 -->
 	<!-- gigya.js script should only be included once -->
 	<script type="text/javascript"
-	src="http://cdn.gigya.com/js/gigya.js?apiKey=3_sFgwvnq40GfyHqzMpOxL0E3fCpHbGODZRhsOycfgim6rg85ZBcsewcid3mIcu0ne"
+		src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i"
 		>
 		{
 			siteName: 'localhost'//'szymon-przedwojski.cba.pl'
