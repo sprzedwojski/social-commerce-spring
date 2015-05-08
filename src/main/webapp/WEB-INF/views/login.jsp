@@ -22,10 +22,18 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Web Recommender Store</title>
 	
-	<!-- 3_OnY0lnwCgprNVr6pfd_PZxKhMTPK9QuihzWPV0IOyvyYoJR8wEhYW5qmDEbtr3Vu -->
+	<!-- HEROKU -->
+	<!-- 
+	 -->
+	
+	<!-- LOCALHOST -->
+	<!-- 
+		src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i"
+	 -->
 	<!-- gigya.js script should only be included once -->
 	<script type="text/javascript"
-		src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i">
+	src="http://cdn.gigya.com/js/gigya.js?apiKey=3_sFgwvnq40GfyHqzMpOxL0E3fCpHbGODZRhsOycfgim6rg85ZBcsewcid3mIcu0ne"
+		>
 		{
 			siteName: 'localhost'//'szymon-przedwojski.cba.pl'
 			enabledProviders: 'facebook,twitter,googleplus,linkedin,yahoo,microsoft,aol,foursquare,instagram,vkontakte,renren,QQ,Sina,kaixin'
