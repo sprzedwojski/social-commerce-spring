@@ -18,7 +18,7 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:fragment="head">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Web Recommender Store</title>
 	
@@ -83,7 +83,7 @@
 			class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 			<div class="panel panel-info" >
 	            <div class="panel-heading">
-	                <div class="panel-title text-center">Sign In with your favourite social network</div>
+	                <div class="panel-title text-center">Sign in with your favourite social network</div>
 	            </div> 			
 
 
@@ -94,13 +94,13 @@
 		<button id="get-user-info" onclick="getUInfo()">getUserInfo</button>
 		 -->
 	
-				<form action="#" th:action="@{/}" th:object="${user}" method="post">
+				<form id="login_form" action="" th:action="@{/}" th:object="${user}" method="post">
 					<input type="hidden" name="UID" id="UID" th:field="*{UID}" /> <input
 						type="hidden" name="signatureTimestamp" id="signatureTimestamp"
 						th:field="*{signatureTimestamp}" /> <input type="hidden"
 						name="UIDSignature" id="UIDSignature" th:field="*{UIDSignature}" />
 					<!-- <input type="hidden" name="userObject" id="userObject"> -->
-					<input type="submit" class="btn btn-default" value="submit" style="display:none;">
+					<!-- <input type="submit" class="btn btn-default" value="submit" style="display:none;"> -->
 				</form>
 			</div>
 		</div>
@@ -116,7 +116,7 @@
       </div>
     </footer>
 
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<script type="text/javascript">
 		function GetUID(eventObj) {
 			//alert("congrats on your " + eventObj.eventName + " | UID: " + eventObj.UID);
@@ -125,13 +125,21 @@
 					eventObj.signatureTimestamp);
 			document.getElementById("UIDSignature").setAttribute("value",
 					eventObj.UIDSignature);
-			document.getElementById("userObject").setAttribute("value",
-					JSON.stringify(eventObj));
+			$("#login_form").submit();
+			//document.getElementById("login_submit_btn").click();
+			//document.getElementById("userObject").setAttribute("value",
+				//	JSON.stringify(eventObj));
+			//$("#login_form").submit();
+			//$("#login_submit_btn").click();
 		}
 		gigya.socialize.addEventHandlers({
 			onLogin : GetUID
 		});
 		gigya.socialize.showLoginUI(login_params);
+		
+		function onLogin(response) {
+			document.getElementById("login_submit_btn").click();
+		}
 
 		function printResponse(response) {
 			if (response.errorCode == 0) {
@@ -154,7 +162,6 @@
 		}
 	</script>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<!-- Latest compiled and minified JavaScript -->
 	<script
 		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>

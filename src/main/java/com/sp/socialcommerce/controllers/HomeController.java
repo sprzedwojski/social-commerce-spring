@@ -25,7 +25,7 @@ public class HomeController {
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 //		logger.info("Welcome home! The client locale is {}.", locale);
 		
@@ -36,23 +36,19 @@ public class HomeController {
 		
 		model.addAttribute("user", new User() );
 		
-		return "home";
+		return "login";
 	}
 	
-	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String homeSubmit(@ModelAttribute User user, Locale locale, Model model) {
-		
-//		Date date = new Date();
-//		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-//		
-//		String formattedDate = dateFormat.format(date);
-		
-		model.addAttribute("user", user);
-		
-		logger.info("The client UID is {}.", user.getUID());
-//		logger.info("The client UID is " + user.getUID());
-		
-		return "home";
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String homeSubmit(@ModelAttribute User user, Locale locale, Model model) {				
+		model.addAttribute("user", user);		
+		logger.info("The client UID is {}.", user.getUID());		
+		return "redirect:survey";
+	}
+	
+	@RequestMapping(value = "/survey", method = RequestMethod.GET)
+	public String surveyPage() {
+		return "survey";
 	}
 	
 	/*private void getUserData(String UID) {
