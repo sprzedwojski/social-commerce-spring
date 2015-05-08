@@ -50,7 +50,7 @@ public class HomeController {
 		model.addAttribute("user", user);
 		
 		logger.info("The client UID is {}.", user.getUID());
-		logger.info("The client UID is " + user.getUID());
+//		logger.info("The client UID is " + user.getUID());
 		
 		return "home";
 	}
