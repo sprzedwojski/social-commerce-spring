@@ -9,7 +9,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 public class GraphDBManager {
 
-	public static final String DB_PATH = "/home/szymon/programs/neo4j-test/";
+	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
 	
 	private static enum RelTypes implements RelationshipType
 	{
