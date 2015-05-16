@@ -1,6 +1,8 @@
 package com.sp.socialcommerce.models;
 
-public class User {
+import org.neo4j.graphdb.Label;
+
+public class User implements Label{
 	
 	private String UID;
 	private String signatureTimestamp;
@@ -23,5 +25,10 @@ public class User {
 	}
 	public void setUIDSignature(String UIDSignature) {
 		this.UIDSignature = UIDSignature;
+	}
+
+	@Override
+	public String name() {
+		return "User";
 	}
 }

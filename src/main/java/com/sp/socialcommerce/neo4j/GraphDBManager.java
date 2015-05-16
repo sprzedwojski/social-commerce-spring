@@ -1,10 +1,7 @@
 package com.sp.socialcommerce.neo4j;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
+import com.sp.socialcommerce.models.User;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 public class GraphDBManager {
@@ -66,7 +63,18 @@ public class GraphDBManager {
 	        }
 	    } );
 	}
-	
+
+	public void createNodeIfNotExists(String fName, String lName) {
+		try ( Transaction tx = graphDb.beginTx() ) {
+			Node node = graphDb.createNode();
+			node.addLabel(new User());
+			node.setProperty("first_name", fName);
+			node.setProperty("last_name", lName);
+
+			tx.success();
+		}
+	}
+
 //	public static GraphDatabaseService connectAndStartBootstrapper() {
 //	    WrappingNeoServerBootstrapper neoServerBootstrapper;
 //	    GraphDatabaseService db = new GraphDatabaseFactory()
