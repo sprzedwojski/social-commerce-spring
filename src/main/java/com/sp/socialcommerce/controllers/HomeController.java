@@ -78,7 +78,7 @@ public class HomeController {
 
 		// Step 2 - Adding parameters
 		request.setParam("uid", UID);  // set the "uid" parameter to user's ID
-		request.setParam("extraFields", "industry, specialties, work, favorites");
+		request.setParam("extraFields", "religion, politicalView, likes");
 
 		request.setAPIDomain("eu1.gigya.com");
 
@@ -91,12 +91,10 @@ public class HomeController {
 		    logger.info("Success in getUserInfo operation.");
 		    logger.info(response.toString());
 
-			String firstName = response.getString("firstName", "first name placeholder");
-			String lastName = response.getString("lastName", "last name placeholder");
-			logger.info("firstName: " + firstName);
-			logger.info("lastName: " + lastName);
 
-			GDBM.createNodeIfNotExists(firstName, lastName);
+
+//			GDBM.createUserNodeIfNotExists(response);
+			GDBM.processUserResponse(response);
 		} 
 		else 
 		{  // Error

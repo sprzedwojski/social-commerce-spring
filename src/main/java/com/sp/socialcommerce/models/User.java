@@ -1,5 +1,6 @@
 package com.sp.socialcommerce.models;
 
+import com.sp.socialcommerce.neo4j.GraphConstants;
 import org.neo4j.graphdb.Label;
 
 public class User implements Label{
@@ -29,6 +30,6 @@ public class User implements Label{
 
 	@Override
 	public String name() {
-		return "User";
+		return GraphConstants.User.USER_LABEL;
 	}
 }
