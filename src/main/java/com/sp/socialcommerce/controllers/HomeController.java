@@ -29,7 +29,7 @@ public class HomeController {
 	@Autowired
 	private ApplicationProperties applicationProperties;
 
-	private GraphDBManager GDBM;
+	private GraphDBManager GDBM = new GraphDBManager();;
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -53,7 +53,7 @@ public class HomeController {
 		model.addAttribute("user", user);		
 		logger.info("The client UID is {}.", user.getUID());
 
-		GDBM = new GraphDBManager();
+//		GDBM = new GraphDBManager();
 		getUserData(user.getUID());
 		getUserFriends(user.getUID());
 		return "redirect:survey";
@@ -98,7 +98,7 @@ public class HomeController {
 		} 
 		else 
 		{  // Error
-		    System.out.println("Got error on setStatus: " + response.getLog());
+		    System.out.println("Got error on getUserData: " + response.getLog());
 		}
 		
 //		saveUserData(null);
@@ -125,6 +125,8 @@ public class HomeController {
 		if(response.getErrorCode() == 0) {   // SUCCESS! response status = OK
 			logger.info("Success in getFriendsInfo operation.");
 			logger.info(response.toString());
+			
+			GDBM.processUserFriendsResponse(UID, response);
 		}
 		else
 		{  // Error
