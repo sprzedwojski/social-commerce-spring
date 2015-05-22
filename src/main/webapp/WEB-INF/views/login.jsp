@@ -32,8 +32,7 @@
 	 -->
 	<!-- gigya.js script should only be included once -->
 	<script type="text/javascript"
-		src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i"
-		>
+		src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i">
 		{
 			siteName: 'localhost'//'szymon-przedwojski.cba.pl'
 			enabledProviders: 'facebook,twitter,googleplus,linkedin,yahoo,microsoft,aol,foursquare,instagram,vkontakte,renren,QQ,Sina,kaixin'
@@ -99,10 +98,12 @@
 				<div id="componentDiv" style="margin:auto"></div>
 	
 				<!-- 
-		<button id="get-user-info" onclick="getUInfo()">getUserInfo</button>
+			<button id="get-user-info" onclick="getUInfo()">getUserInfo</button>
 		 -->
 	
-				<form id="login_form" action="" th:action="@{/}" th:object="${user}" method="post">
+
+	
+				<form id="login_form" action="#" th:action="@{/}" th:object="${user}" method="post">
 					<input type="hidden" name="UID" id="UID" th:field="*{UID}" /> <input
 						type="hidden" name="signatureTimestamp" id="signatureTimestamp"
 						th:field="*{signatureTimestamp}" /> <input type="hidden"
@@ -115,12 +116,19 @@
 		</div>
 		
 	</div>
+	
+	
+	<form id="get_user_data_form" action="/socialcommerce/getUserData" th:action="@{/}" th:object="${user}" method="post">
+		<input type="text" name="UID" id="UID" th:field="*{UID}" th:object="${user}" /> 
+		<input type="submit" value="getUserData" />
+	</form>
+			
 
 	<p th:text="'id: ' + ${user.UID}"></p>
 
     <footer class="footer">
       <div class="container">
-        <p class="text-muted">Created by <a href="mailto:szymon.przedwojski@amg.net.pl" target="_top">Szymon Przedwojski</a> at <a href="http://amg.net.pl">AMG.net</a></p>
+        <p class="text-muted">Created by <a href="mailto:szymon.przedwojski@gmail.com" target="_top">Szymon Przedwojski</a> at <a href="http://amg.net.pl" target="_blank">AMG.net</a></p>
       </div>
     </footer>
 

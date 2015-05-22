@@ -13,6 +13,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 
 import com.gigya.socialize.GSArray;
 import com.gigya.socialize.GSKeyNotFoundException;
@@ -39,39 +40,11 @@ public class GraphDBManager {
 	private Label pageCategoryLabel = new PageCategory();
 	
 	GraphDatabaseService graphDb;
-//	Node firstNode;
-//	Node secondNode;
-//	Relationship relationship;
 	
 	public GraphDBManager() {
 		graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( DB_PATH );
 		registerShutdownHook( graphDb );
 	}
-	
-//	public void initDB() {
-//
-//		try ( Transaction tx = graphDb.beginTx() )
-//		{
-//		    // Database operations go here
-//			firstNode = graphDb.createNode();
-//			firstNode.setProperty( "message", "Hello, " );
-//			secondNode = graphDb.createNode();
-//			secondNode.setProperty( "message", "World!" );
-//
-//			relationship = firstNode.createRelationshipTo( secondNode, RelTypes.KNOWS );
-//			relationship.setProperty( "message", "brave Neo4j " );
-//
-//			tx.success();
-//		}
-//
-//		try ( Transaction tx = graphDb.beginTx() )
-//		{
-//			System.out.print( firstNode.getProperty( "message" ) );
-//			System.out.print( relationship.getProperty( "message" ) );
-//			System.out.print( secondNode.getProperty( "message" ) );
-//			tx.success();
-//		}
-//	}
 	
 	private static void registerShutdownHook( final GraphDatabaseService graphDb )
 	{
@@ -117,7 +90,7 @@ public class GraphDBManager {
 		logger.info("religion: " + religionName);
 
 		if(religionName != null) {
-			Node religion = getNode(religionLabel, GraphConstants.Religion.RELIGION_LABEL, religionName);
+			Node religion = getNode(religionLabel, GraphConstants.Religion.RELIGION_NAME, religionName);
 			if (religion == null) {
 				String[][] religionProperties = { {GraphConstants.Religion.RELIGION_NAME, religionName} };
 				religion = createNode(religionLabel, religionProperties);
@@ -136,7 +109,7 @@ public class GraphDBManager {
 		logger.info("political view: " + politicalViewName);
 		
 		if(politicalViewName != null) {
-			Node politicalView = getNode(politicalViewLabel, GraphConstants.PoliticalView.POLITICAL_VIEW_LABEL, politicalViewName);
+			Node politicalView = getNode(politicalViewLabel, GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewName);
 			
 			if (politicalView == null) {
 				String[][] politicalViewProperties = { {GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewName} };
@@ -171,10 +144,10 @@ public class GraphDBManager {
 					name = (String)row.get(GraphConstants.Page.PAGE_NAME);
 					logger.info(" >> page: " + id + ", " + name + ", " + category);
 					
-					logger.info("existingUserPagesIds: " + existingUserPagesIds.toString());
+//					logger.info("existingUserPagesIds: " + existingUserPagesIds.toString());
 					
 					if(!existingUserPagesIds.contains(id)) {
-						logger.info("[Inside page]");
+//						logger.info("[Inside page]");
 						Node page = getNode(pageLabel, GraphConstants.Page.PAGE_ID, id);
 						if(page == null) {
 							String[][] pageProperties = {
@@ -231,9 +204,6 @@ public class GraphDBManager {
 					Node friend = getNode(userLabel, GraphConstants.User.UID, friendUID);
 					if(friend == null) {
 						String friendName = (String)row.get("nickname");
-//						String friendFName = (String)row.get(GraphConstants.User.FIRST_NAME);
-//						String friendLName = (String)row.get(GraphConstants.User.LAST_NAME);
-//						String friendName = friendFName + " " + friendLName;
 						String[][] friendUserParameters = {
 								{GraphConstants.User.UID, friendUID},
 								{GraphConstants.User.USER_NAME, friendName} };
@@ -290,12 +260,26 @@ public class GraphDBManager {
 			Iterator<Relationship> it = friends.iterator();
 			while(it.hasNext()) {
 				Relationship relationship = (Relationship)it.next();
-				Node page = relationship.getOtherNode(node);
-				String id = (String)page.getProperty(GraphConstants.Page.PAGE_ID);
+				Node friend = relationship.getOtherNode(node);
+				String id = (String)friend.getProperty(GraphConstants.User.UID);
 				ids.add(id);
 			}
 			return ids;
 		}		
+	}
+	
+	public Node getUserNode(String UID) {
+		try ( Transaction tx = graphDb.beginTx() ) {
+			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
+			tx.success();
+			if (user == null) {
+				logger.info("User not found. Creating new user.");
+				return createUserNode(UID);
+			} else {
+				logger.info("Existing user found.");
+				return user;
+			}
+		}
 	}
 	
 	public Node getUserNode(String UID, String fName, String lName) {
@@ -326,14 +310,17 @@ public class GraphDBManager {
 		}
 	}
 
+	public Node createUserNode(String UID) {
+		String[][] userProperties = { {GraphConstants.User.UID, UID} };
+		return createNode(userLabel, userProperties);
+	}
+	
 	public Node createUserNode(String UID, String fName, String lName) {
 		try ( Transaction tx = graphDb.beginTx() ) {
 			String userName = fName + " " + lName;
 			Node node = graphDb.createNode();
 			node.addLabel(userLabel);
 			node.setProperty(GraphConstants.User.UID, UID);
-//			node.setProperty(GraphConstants.User.FIRST_NAME, fName);
-//			node.setProperty(GraphConstants.User.LAST_NAME, lName);
 			node.setProperty(GraphConstants.User.USER_NAME, userName);
 			tx.success();
 			logger.info("User node created successfully (" + userName + ")");
@@ -373,27 +360,5 @@ public class GraphDBManager {
 			return relationship;
 		}
 	}
-
-//	public static GraphDatabaseService connectAndStartBootstrapper() {
-//	    WrappingNeoServerBootstrapper neoServerBootstrapper;
-//	    GraphDatabaseService db = new GraphDatabaseFactory()
-//	            .newEmbeddedDatabaseBuilder(DB_PATH).newGraphDatabase();
-//
-//	    try {
-//	        GraphDatabaseAPI api = (GraphDatabaseAPI) db;
-//
-//	        ServerConfigurator config = new ServerConfigurator(api);
-//	        config.configuration().addProperty(Configurator.WEBSERVER_ADDRESS_PROPERTY_KEY, "127.0.0.1");
-//	        config.configuration().addProperty(Configurator.WEBSERVER_PORT_PROPERTY_KEY, "7575");
-//
-//	        neoServerBootstrapper = new WrappingNeoServerBootstrapper(api, config);
-//	        neoServerBootstrapper.start();
-//	    }
-//	    catch(Exception e) {
-//	       //handle appropriately
-//	    }
-//	     
-//	    return db;
-//	}
 	
 }

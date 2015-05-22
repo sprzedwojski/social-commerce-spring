@@ -2,26 +2,29 @@ package com.sp.socialcommerce.controllers;
 
 import java.util.Locale;
 
-import com.gigya.socialize.GSRequest;
-import com.gigya.socialize.GSResponse;
-import com.sp.socialcommerce.prop.ApplicationProperties;
-import com.sp.socialcommerce.prop.PropertiesConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.gigya.socialize.GSRequest;
+import com.gigya.socialize.GSResponse;
 import com.sp.socialcommerce.models.User;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
+import com.sp.socialcommerce.prop.ApplicationProperties;
+import com.sp.socialcommerce.prop.PropertiesConstants;
 
 /**
  * Handles requests for the application home page.
  */
 @Controller
+@EnableAsync
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -53,7 +56,19 @@ public class HomeController {
 		model.addAttribute("user", user);		
 		logger.info("The client UID is {}.", user.getUID());
 
+		createUserIfNotExists(user.getUID());
+		getUserData(user.getUID());
+		getUserFriends(user.getUID());
+		return "redirect:survey";
+	}
+	
+	@RequestMapping(value = "/getUserData", method = RequestMethod.POST)
+	public String getUserData(@ModelAttribute User user, Locale locale, Model model) {				
+		model.addAttribute("user", user);		
+		logger.info(">> Inside getUserData");
+
 //		GDBM = new GraphDBManager();
+//		createUserIfNotExists(user.getUID());
 		getUserData(user.getUID());
 		getUserFriends(user.getUID());
 		return "redirect:survey";
@@ -64,6 +79,11 @@ public class HomeController {
 		return "survey";
 	}
 	
+	private void createUserIfNotExists(String UID) {
+		GDBM.getUserNode(UID);
+	}
+	
+	@Async
 	private void getUserData(String UID) {
 		// Step 1 - Defining the request
 		String method = "socialize.getUserInfo";
@@ -98,12 +118,14 @@ public class HomeController {
 		} 
 		else 
 		{  // Error
-		    System.out.println("Got error on getUserData: " + response.getLog());
+			logger.error("Error code: " + response.getErrorCode());
+		    logger.error("Got error on getUserData: " + response.getLog());
 		}
 		
 //		saveUserData(null);
 	}
 
+	@Async
 	private void getUserFriends(String UID) {
 		String method = "socialize.getFriendsInfo";
 
