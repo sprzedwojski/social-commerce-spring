@@ -22,6 +22,14 @@
 			</properties>
 		</profile>
 	</profiles>
+	       <!--  
+	 <repositories>  
+	     <repository>  
+	       <id>mvn-neo4j</id>  
+	       <url>http://m2.neo4j.org/</url>
+	     </repository>  
+	 </repositories>  	
+	        -->
 	<dependencies>
 		<!-- Spring -->
 		<dependency>
@@ -54,6 +62,26 @@
 			<artifactId>cglib</artifactId>
 			<version>2.2.2</version>
 		</dependency>
+		
+		<!-- Neo4j java rest binding [local repo] -->
+		<!-- 
+		<dependency>
+		    <groupId>org.neo4j</groupId>
+		    <artifactId>neo4j-rest-graphdb</artifactId>
+		    <version>1.9.3</version>
+		</dependency>		
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>transaction-api</artifactId>
+			<version>1.1-rev-1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-bundle</artifactId>
+			<version>1.10-b01</version>
+		</dependency>
+		 -->				
 
 		<!-- AspectJ -->
 		<dependency>

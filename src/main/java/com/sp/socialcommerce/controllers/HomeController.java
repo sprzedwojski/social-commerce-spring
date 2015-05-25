@@ -32,7 +32,7 @@ public class HomeController {
 	@Autowired
 	private ApplicationProperties applicationProperties;
 
-	private GraphDBManager GDBM = new GraphDBManager();;
+	private GraphDBManager GDBM = new GraphDBManager();
 
 	/**
 	 * Simply selects the home view to render by returning its name.

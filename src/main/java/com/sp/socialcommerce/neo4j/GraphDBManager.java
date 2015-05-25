@@ -13,7 +13,6 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 
 import com.gigya.socialize.GSArray;
 import com.gigya.socialize.GSKeyNotFoundException;
@@ -43,6 +42,7 @@ public class GraphDBManager {
 	
 	public GraphDBManager() {
 		graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( DB_PATH );
+//		graphDb = new RestGraphDatabase("http://localhost:7474/db/data", "neo4j", "xxxx");
 		registerShutdownHook( graphDb );
 	}
 	
@@ -222,7 +222,7 @@ public class GraphDBManager {
 	
 	public Node getNode(Label label, String key, Object value) {
 		try (Transaction tx = graphDb.beginTx()) {
-			Node node = graphDb.findNode(label, key, value);
+			Node node = graphDb.findNode(label, key, value);			
 			tx.success();
 
 			return node;
