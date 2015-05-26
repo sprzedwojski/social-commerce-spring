@@ -22,6 +22,12 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Web Recommender Store</title>
 	
+	<style>
+	.gigya-login-footer{
+		display: none !important;
+	}
+	</style>	
+	
 	<!-- HEROKU -->
 	<!-- 
 	src="http://cdn.gigya.com/js/gigya.js?apiKey=3_sFgwvnq40GfyHqzMpOxL0E3fCpHbGODZRhsOycfgim6rg85ZBcsewcid3mIcu0ne"
@@ -30,26 +36,26 @@
 	<!-- LOCALHOST -->
 	<!-- 
 	 -->
-	<!-- gigya.js script should only be included once -->
-	<script type="text/javascript"
-		src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i">
-		{
-			siteName: 'localhost'//'szymon-przedwojski.cba.pl'
-			enabledProviders: 'facebook,twitter,googleplus,linkedin,yahoo,microsoft,aol,foursquare,instagram,vkontakte,renren,QQ,Sina,kaixin'
-		}
-	</script>
-	<script type="text/javascript">
-		var login_params = {
-			version : 2,
-			showTermsLink : 'false',
-			height : 100,
-			width : 330,
-			containerID : 'componentDiv',
-			buttonsStyle : 'fullLogoColored',
-			autoDetectUserProviders : '',
-			facepilePosition : 'none',
-		}
-	</script>
+<!-- gigya.js script should only be included once -->
+<script type="text/javascript" src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i">
+{
+	siteName: 'localhost.com'
+	,enabledProviders: 'facebook'
+}
+</script>
+<script type="text/javascript">
+var login_params=
+{
+	version: 2
+	,showTermsLink: 'false'
+	,height: 92
+	,width: 150
+	,containerID: 'componentDiv'
+	,UIConfig: '<config><body><controls><snbuttons buttonsize="65" /></controls></body></config>'
+	,autoDetectUserProviders: ''
+	,facepilePosition: 'none'
+}
+</script>
 
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet"
@@ -176,6 +182,15 @@
 				extraFields : 'likes'
 			});
 		}
+		
+		$(document).ready(function() {
+			$('.gigya-login-footer').css('display', 'none');
+			console.log("document ready");
+		});
+		$(window).load(function() {
+			$('.gigya-login-footer').css('display', 'none');
+			console.log("window load");
+		});		
 	</script>
 
 	<!-- Latest compiled and minified JavaScript -->
