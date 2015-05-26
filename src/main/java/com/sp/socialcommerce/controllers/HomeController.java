@@ -5,7 +5,6 @@ import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,12 +12,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.gigya.socialize.GSRequest;
-import com.gigya.socialize.GSResponse;
+import com.sp.socialcommerce.gigya.GigyaService;
 import com.sp.socialcommerce.models.User;
-import com.sp.socialcommerce.neo4j.GraphDBManager;
 import com.sp.socialcommerce.prop.ApplicationProperties;
-import com.sp.socialcommerce.prop.PropertiesConstants;
 
 /**
  * Handles requests for the application home page.
@@ -31,8 +27,11 @@ public class HomeController {
 
 	@Autowired
 	private ApplicationProperties applicationProperties;
-
-	private GraphDBManager GDBM = new GraphDBManager();
+	
+	@Autowired
+	private GigyaService gigyaService;
+	
+//	private GraphDBManager GDBM = new GraphDBManager();
 
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -56,9 +55,15 @@ public class HomeController {
 		model.addAttribute("user", user);		
 		logger.info("The client UID is {}.", user.getUID());
 
-		createUserIfNotExists(user.getUID());
-		getUserData(user.getUID());
-		getUserFriends(user.getUID());
+		gigyaService.processUser(user.getUID());
+		
+//		gigyaService.createUserIfNotExists(user.getUID());
+//		gigyaService.getUserData(user.getUID());
+//		gigyaService.getUserFriends(user.getUID());
+		
+//		createUserIfNotExists(user.getUID());
+//		getUserData(user.getUID());
+//		getUserFriends(user.getUID());
 		return "redirect:survey";
 	}
 	
@@ -69,8 +74,8 @@ public class HomeController {
 
 //		GDBM = new GraphDBManager();
 //		createUserIfNotExists(user.getUID());
-		getUserData(user.getUID());
-		getUserFriends(user.getUID());
+		gigyaService.getUserData(user.getUID());
+		gigyaService.getUserFriends(user.getUID());
 		return "redirect:survey";
 	}
 	
@@ -79,11 +84,10 @@ public class HomeController {
 		return "survey";
 	}
 	
-	private void createUserIfNotExists(String UID) {
+	/*private void createUserIfNotExists(String UID) {
 		GDBM.getUserNode(UID);
 	}
 	
-	@Async
 	private void getUserData(String UID) {
 		// Step 1 - Defining the request
 		String method = "socialize.getUserInfo";
@@ -125,7 +129,6 @@ public class HomeController {
 //		saveUserData(null);
 	}
 
-	@Async
 	private void getUserFriends(String UID) {
 		String method = "socialize.getFriendsInfo";
 
@@ -154,6 +157,6 @@ public class HomeController {
 		{  // Error
 			System.out.println("Got error on getFriendsInfo: " + response.getLog());
 		}
-	}
+	}*/
 	
 }

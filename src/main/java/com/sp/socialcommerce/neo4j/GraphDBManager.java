@@ -13,6 +13,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.gigya.socialize.GSArray;
 import com.gigya.socialize.GSKeyNotFoundException;
@@ -25,6 +26,7 @@ import com.sp.socialcommerce.labels.PoliticalView;
 import com.sp.socialcommerce.labels.Religion;
 import com.sp.socialcommerce.models.User;
 
+@Service
 public class GraphDBManager {
 
 	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
@@ -268,19 +270,19 @@ public class GraphDBManager {
 		}		
 	}
 	
-	public Node getUserNode(String UID) {
-		try ( Transaction tx = graphDb.beginTx() ) {
-			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
-			tx.success();
-			if (user == null) {
-				logger.info("User not found. Creating new user.");
-				return createUserNode(UID);
-			} else {
-				logger.info("Existing user found.");
-				return user;
-			}
-		}
-	}
+//	public Node getUserNode(String UID) {
+//		try ( Transaction tx = graphDb.beginTx() ) {
+//			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
+//			tx.success();
+//			if (user == null) {
+//				logger.info("User not found. Creating new user.");
+//				return createUserNode(UID);
+//			} else {
+//				logger.info("Existing user found.");
+//				return user;
+//			}
+//		}
+//	}
 	
 	public Node getUserNode(String UID, String fName, String lName) {
 		try ( Transaction tx = graphDb.beginTx() ) {
@@ -310,10 +312,10 @@ public class GraphDBManager {
 		}
 	}
 
-	public Node createUserNode(String UID) {
-		String[][] userProperties = { {GraphConstants.User.UID, UID} };
-		return createNode(userLabel, userProperties);
-	}
+//	public Node createUserNode(String UID) {
+//		String[][] userProperties = { {GraphConstants.User.UID, UID} };
+//		return createNode(userLabel, userProperties);
+//	}
 	
 	public Node createUserNode(String UID, String fName, String lName) {
 		try ( Transaction tx = graphDb.beginTx() ) {
