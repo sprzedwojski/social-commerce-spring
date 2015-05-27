@@ -27,7 +27,9 @@ import com.sp.socialcommerce.models.User;
 
 public class GraphDBManager {
 
-	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
+	public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
+//	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
+
 
 	private static final Logger logger = LoggerFactory.getLogger(GraphDBManager.class);
 
