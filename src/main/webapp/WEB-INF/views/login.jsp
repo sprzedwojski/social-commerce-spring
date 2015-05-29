@@ -19,7 +19,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<title>Web Recommender Store</title>
 	
 	<style>
@@ -39,7 +40,8 @@
 <!-- gigya.js script should only be included once -->
 <script type="text/javascript" src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i">
 {
-	siteName: 'localhost.com'
+	//siteName: 'localhost.com'
+	siteName: 'store.przedwojski.com'
 	,enabledProviders: 'facebook'
 }
 </script>
