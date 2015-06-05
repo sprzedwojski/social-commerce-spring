@@ -9,8 +9,8 @@ import org.springframework.core.env.Environment;
  * Created by szymon on 16.05.15.
  */
 @Configuration
-//@PropertySource(value = "properties/application.properties")
-@PropertySource("classpath:properties/application.properties")
+@PropertySource("classpath:properties/${envTarget:localhost}.properties")
+//@PropertySource("classpath:properties/application.properties")
 public class ApplicationProperties {
 
     @Autowired

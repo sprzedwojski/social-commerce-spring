@@ -54,4 +54,9 @@ public abstract class GraphConstants {
     	public static final String PAGE_CATEGORY_NAME = "name";
     }
 
+    public abstract class Product {
+        public static final String PRODUCT_LABEL = "Product";
+        public static final String PRODUCT_NAME = "name";
+    }
+
 }

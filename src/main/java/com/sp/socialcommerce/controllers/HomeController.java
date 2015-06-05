@@ -1,13 +1,17 @@
 package com.sp.socialcommerce.controllers;
 
 import java.util.Locale;
+import java.util.Set;
 
+import com.sp.socialcommerce.gigya.ProductRatingsService;
+import com.sp.socialcommerce.labels.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +34,9 @@ public class HomeController {
 	
 	@Autowired
 	private GigyaService gigyaService;
+
+	@Autowired
+	private ProductRatingsService productRatingsService;
 	
 //	private GraphDBManager GDBM = new GraphDBManager();
 
@@ -80,7 +87,12 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/survey", method = RequestMethod.GET)
-	public String surveyPage() {
+	public String surveyPage(ModelMap modelMap) {
+
+		Set<Product> productSet = productRatingsService.getProducts();
+
+		modelMap.addAttribute("productSet", productSet);
+
 		return "survey";
 	}
 	

@@ -1,36 +1,30 @@
 package com.sp.socialcommerce.neo4j;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.gigya.socialize.GSArray;
 import com.gigya.socialize.GSKeyNotFoundException;
 import com.gigya.socialize.GSObject;
 import com.gigya.socialize.GSResponse;
-import com.sp.socialcommerce.labels.City;
-import com.sp.socialcommerce.labels.Page;
-import com.sp.socialcommerce.labels.PageCategory;
-import com.sp.socialcommerce.labels.PoliticalView;
-import com.sp.socialcommerce.labels.Religion;
+import com.sp.socialcommerce.labels.*;
 import com.sp.socialcommerce.models.User;
+import com.sp.socialcommerce.prop.ApplicationProperties;
+import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class GraphDBManager {
 
-	public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
-//	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
+	@Autowired
+	private ApplicationProperties applicationProperties;
+
+//	public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
+	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
+//	private final String DB_PATH = applicationProperties.getProperty(PropertiesConstants.NEO4J_PATH);
 
 
 	private static final Logger logger = LoggerFactory.getLogger(GraphDBManager.class);
@@ -41,6 +35,7 @@ public class GraphDBManager {
 	private Label cityLabel = new City();
 	private Label pageLabel = new Page();
 	private Label pageCategoryLabel = new PageCategory();
+	private Label productLabel = new Product();
 	
 	GraphDatabaseService graphDb;
 	
@@ -362,6 +357,21 @@ public class GraphDBManager {
 			tx.success();
 			logger.info("Relationship of type " + type + " created");
 			return relationship;
+		}
+	}
+
+	public Set<Product> getAllProducts() {
+		try(Transaction tx = graphDb.beginTx()) {
+			ResourceIterator iterator = graphDb.findNodes(productLabel);
+			Node pNode;
+			Set<Product> products = new HashSet<Product>();
+			while(iterator.hasNext()) {
+				pNode = (Node)iterator.next();
+				Product product = new Product();
+				product.setName(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME).toString());
+				products.add(product);
+			}
+			return products;
 		}
 	}
 	
