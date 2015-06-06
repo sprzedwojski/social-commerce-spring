@@ -8,17 +8,132 @@
     <title>Survey</title>
 
     <link href="<c:url value="/resources/raty/jquery.raty.css" />" rel="stylesheet" />
+    <style type="text/css">
+        /*img.resize{*/
+            /*width:320px; *//* you can use % */
+            /*height: auto;*/
+        /*}*/
+        img.center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+        }
+        /*body {*/
+            /*padding-top:20px;*/
+        /*}*/
+    </style>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <style>
+        /*
+A custom Bootstrap 3.2 theme from http://bootply.com
+This CSS code should follow the 'bootstrap.css'
+in your HTML file.
+
+license: MIT
+author: bootply.com
+*/
+
+        /*body {*/
+            /*padding-top:70px;*/
+        /*}*/
+
+        .productsrow {
+            -moz-column-width: 18em;
+            -webkit-column-width: 18em;
+            -moz-column-gap: 1em;
+            -webkit-column-gap: 1em;
+        }
+
+        .menu-category {
+            display: inline-block;
+            margin-bottom:  0.25rem;
+            padding:  1rem;
+            width:  100%;
+        }
+
+        .product-image {
+            width: 100%;
+        }
+
+        .product {
+            padding-top:22px;
+        }
+
+        .btn-product {
+            background-color:#222;
+            color:#eee;
+            border-radius:0;
+        }
+
+        .yellow {
+            color:yellow;
+            text-shadow:#ccc 1px 1px 0;
+        }
+
+        /* end custom CSS */
+    </style>
 </head>
 <body>
 
-<c:forEach items="${productSet}" var="product">
-    ${product.name} <div></div><br>
-</c:forEach>
+
+<img src="<c:url value="/resources/logo_reco4social.jpg" />" class="center"/>
+
+<div class="container">
+    <div class="jumbotron">
+        <h1>${jumboTitle}</h1>
+        <p>${jumboText}</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+    </div>
+<%--</div>--%>
+
+<div class="col-md-12">
+    <div class="productsrow">
+        <c:forEach items="${productSet}" var="product">
+        <div class="product menu-category">
+            <%--<div class="menu-item list-group-item" rel="tooltip" title="Key active">${product.nameEn}--%>
+                <%--<span class="badge">${product.price} &euro;</span>--%>
+            <%--</div>--%>
+            <a href="${product.productUrl}" target="_blank" class="menu-item list-group-item" rel="tooltip" title="${product.descriptionEn}">
+                ${product.nameEn}
+                <span class="badge">${product.price} &euro;</span>
+            </a>
+            <%--<div class="menu-category-name list-group-item">Accessories</div>--%>
+            <div class="product-image">
+                <img class="product-image menu-item list-group-item" src="${product.imageUrl}">
+            </div>
+            <div class="menu-item list-group-item rating">
+                <%--<p rel="tooltip" title="Key active" id="blah">info</p>--%>
+            </div>
+        </div>
+        </c:forEach>
+    </div>
+</div>
+
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<c:url value="/resources/raty/jquery.raty.js" />"></script>
 <script>
-    $('div').raty();
+    $('.rating').raty({
+        cancel  : true,
+        path: "resources/raty/images/",
+        starOff : 'star-off-big.png',
+        starOn  : 'star-on-big.png',
+        cancelOff: 'cancel-off-big.png',
+        cancelOn: 'cancel-on-big.png',
+        hints: ['hate it', 'not bad', 'ok', 'like it', 'love it']
+    });
+
+    $(document).ready(function(){
+        $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+    });
 </script>
 </body>
 </html>

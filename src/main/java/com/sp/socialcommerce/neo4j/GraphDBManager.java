@@ -368,7 +368,18 @@ public class GraphDBManager {
 			while(iterator.hasNext()) {
 				pNode = (Node)iterator.next();
 				Product product = new Product();
-				product.setName(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME).toString());
+				product.setNamePl(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_PL).toString());
+				product.setNameEn(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_EN).toString());
+				if(pNode.hasProperty(GraphConstants.Product.PRODUCT_DESC_PL)) {
+					product.setDescriptionPl(pNode.getProperty(GraphConstants.Product.PRODUCT_DESC_PL).toString());
+				}
+				if(pNode.hasProperty(GraphConstants.Product.PRODUCT_DESC_EN)) {
+					product.setDescriptionEn(pNode.getProperty(GraphConstants.Product.PRODUCT_DESC_EN).toString());
+				}
+				product.setId(Integer.parseInt(pNode.getProperty(GraphConstants.Product.PRODUCT_ID).toString()));
+				product.setPrice(Double.parseDouble(pNode.getProperty(GraphConstants.Product.PRODUCT_PRICE_EUR).toString()));
+				product.setImageUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_IMG_URL).toString());
+				product.setProductUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_PROD_URL).toString());
 				products.add(product);
 			}
 			return products;

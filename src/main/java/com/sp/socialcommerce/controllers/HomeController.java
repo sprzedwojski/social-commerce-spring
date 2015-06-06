@@ -93,6 +93,10 @@ public class HomeController {
 
 		modelMap.addAttribute("productSet", productSet);
 
+		// TODO pobrac i przekazac opis ankiety dla uzytkownikow
+		modelMap.addAttribute("jumboTitle", "Title");
+		modelMap.addAttribute("jumboText", "Jumbo Text");
+
 		return "survey";
 	}
 	

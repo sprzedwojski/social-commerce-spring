@@ -56,7 +56,14 @@ public abstract class GraphConstants {
 
     public abstract class Product {
         public static final String PRODUCT_LABEL = "Product";
-        public static final String PRODUCT_NAME = "name";
+        public static final String PRODUCT_NAME_PL = "name_pl";
+        public static final String PRODUCT_NAME_EN = "name_en";
+        public static final String PRODUCT_DESC_PL = "description_pl";
+        public static final String PRODUCT_DESC_EN = "description_en";
+        public static final String PRODUCT_IMG_URL = "img_url";
+        public static final String PRODUCT_PROD_URL = "product_url";
+        public static final String PRODUCT_PRICE_EUR = "price_eur";
+        public static final String PRODUCT_ID = "id";
     }
 
 }
