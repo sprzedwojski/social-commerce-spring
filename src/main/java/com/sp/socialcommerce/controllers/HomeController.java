@@ -31,10 +31,8 @@ public class HomeController {
 
 	@Autowired
 	private ApplicationProperties applicationProperties;
-	
 	@Autowired
 	private GigyaService gigyaService;
-
 	@Autowired
 	private ProductRatingsService productRatingsService;
 	

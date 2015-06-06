@@ -3,27 +3,19 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head th:replace="login :: head">
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Survey</title>
 
     <link href="<c:url value="/resources/raty/jquery.raty.css" />" rel="stylesheet" />
     <style type="text/css">
-        /*img.resize{*/
-            /*width:320px; *//* you can use % */
-            /*height: auto;*/
-        /*}*/
         img.center {
             display: block;
             margin-left: auto;
             margin-right: auto;
             padding: 20px;
         }
-        /*body {*/
-            /*padding-top:20px;*/
-        /*}*/
     </style>
-
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -88,37 +80,29 @@ author: bootply.com
         <p>${jumboText}</p>
         <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
     </div>
-<%--</div>--%>
 
-<div class="col-md-12">
-    <div class="productsrow">
-        <c:forEach items="${productSet}" var="product">
-        <div class="product menu-category">
-            <%--<div class="menu-item list-group-item" rel="tooltip" title="Key active">${product.nameEn}--%>
-                <%--<span class="badge">${product.price} &euro;</span>--%>
-            <%--</div>--%>
-            <a href="${product.productUrl}" target="_blank" class="menu-item list-group-item" rel="tooltip" title="${product.descriptionEn}">
-                ${product.nameEn}
-                <span class="badge">${product.price} &euro;</span>
-            </a>
-            <%--<div class="menu-category-name list-group-item">Accessories</div>--%>
-            <div class="product-image">
-                <img class="product-image menu-item list-group-item" src="${product.imageUrl}">
+    <div class="col-md-12">
+        <div class="productsrow">
+            <c:forEach items="${productSet}" var="product">
+            <div class="product menu-category">
+                <a href="${product.productUrl}" target="_blank" class="menu-item list-group-item" rel="tooltip" title="${product.descriptionEn}">
+                    ${product.nameEn}
+                    <span class="badge">${product.price} &euro;</span>
+                </a>
+                <div class="product-image">
+                    <img class="product-image menu-item list-group-item" src="${product.imageUrl}">
+                </div>
+                <div id="${product.id}" class="menu-item list-group-item rating"></div>
             </div>
-            <div class="menu-item list-group-item rating">
-                <%--<p rel="tooltip" title="Key active" id="blah">info</p>--%>
-            </div>
+            </c:forEach>
         </div>
-        </c:forEach>
     </div>
-</div>
 
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <!-- Latest compiled and minified JavaScript -->
-<script
-        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<c:url value="/resources/raty/jquery.raty.js" />"></script>
 <script>
     $('.rating').raty({
@@ -128,8 +112,21 @@ author: bootply.com
         starOn  : 'star-on-big.png',
         cancelOff: 'cancel-off-big.png',
         cancelOn: 'cancel-on-big.png',
-        hints: ['hate it', 'not bad', 'ok', 'like it', 'love it']
+        hints: ['hate it', 'not bad', 'ok', 'like it', 'love it'],
+        click: function(score, evt) {
+            rateProductAjax(this.id, score);
+            alert(this.id);
+        }
     });
+
+    // TODO uid z sesji (po stronie Springa)?
+    function rateProductAjax(/*uid, */prod_id, score) {
+        $.ajax({
+            type: 'POST',
+            url : '<c:url value="/survey" />',
+            data:/*'uid=' + uid + */"prod_id=" + prod_id + "&score=" + score
+        });
+    }
 
     $(document).ready(function(){
         $("[rel=tooltip]").tooltip({ placement: 'bottom'});
