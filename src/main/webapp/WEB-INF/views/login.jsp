@@ -116,13 +116,13 @@ var login_params=
 	</div>
 	
 	
-	<form id="get_user_data_form" action="/socialcommerce/getUserData" th:action="@{/}" th:object="${user}" method="post">
-		<input type="text" name="UID" id="UID" th:field="*{UID}" th:object="${user}" /> 
-		<input type="submit" value="getUserData" />
-	</form>
-			
+	<%--<form id="get_user_data_form" action="/socialcommerce/getUserData" th:action="@{/}" th:object="${user}" method="post">--%>
+		<%--<input type="text" name="UID" id="UID" th:field="*{UID}" th:object="${user}" /> --%>
+		<%--<input type="submit" value="getUserData" />--%>
+	<%--</form>--%>
+			<%----%>
 
-	<p th:text="'id: ' + ${user.UID}"></p>
+	<%--<p th:text="'id: ' + ${user.UID}"></p>--%>
 
     <footer class="footer">
       <div class="container">
@@ -155,30 +155,30 @@ var login_params=
 			document.getElementById("login_submit_btn").click();
 		}
 
-		function printResponse(response) {
-			if (response.errorCode == 0) {
-				console.log(response);
-				var user = response['user'];
-				var msg = 'User ' + user['nickname'] + ' is ' + user['age']
-						+ ' years old';
-				//alert(msg);
-			} else {
-				alert('Error :' + response.errorMessage);
-			}
-		}
+//		function printResponse(response) {
+//			if (response.errorCode == 0) {
+//				console.log(response);
+//				var user = response['user'];
+//				var msg = 'User ' + user['nickname'] + ' is ' + user['age']
+//						+ ' years old';
+//				//alert(msg);
+//			} else {
+//				alert('Error :' + response.errorMessage);
+//			}
+//		}
 
-		function getUInfo() {
-			gigya.socialize.getUserInfo({
-				callback : printResponse
-			}, {
-				extraFields : 'likes'
-			});
-		}
+//		function getUInfo() {
+//			gigya.socialize.getUserInfo({
+//				callback : printResponse
+//			}, {
+//				extraFields : 'likes'
+//			});
+//		}
 		
-		$(document).ready(function() {
-			$('.gigya-login-footer').css('display', 'none');
-			console.log("document ready");
-		});
+//		$(document).ready(function() {
+//			$('.gigya-login-footer').css('display', 'none');
+//			console.log("document ready");
+//		});
 		$(window).load(function() {
 			$('.gigya-login-footer').css('display', 'none');
 			console.log("window load");

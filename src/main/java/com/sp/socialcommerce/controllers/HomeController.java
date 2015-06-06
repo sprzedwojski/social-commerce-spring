@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.sp.socialcommerce.gigya.GigyaService;
 import com.sp.socialcommerce.models.User;
 import com.sp.socialcommerce.prop.ApplicationProperties;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Handles requests for the application home page.
@@ -42,23 +46,24 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-//		logger.info("Welcome home! The client locale is {}.", locale);
-		
-//		Date date = new Date();
-//		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-//		
-//		String formattedDate = dateFormat.format(date);
-		
+	public String home(Locale locale, Model model, @CookieValue(value = "uid", defaultValue = "") String cookieUid) {
+
+		// If user cookie is present we will not log him in again, but redirect directly to the survey
+		if(!cookieUid.isEmpty()) {
+			return "redirect:survey";
+		}
+
 		model.addAttribute("user", new User() );
 		
 		return "login";
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String homeSubmit(@ModelAttribute User user, Locale locale, Model model) {				
+	public String homeSubmit(@ModelAttribute User user, Locale locale, Model model, HttpServletResponse response) {
 		model.addAttribute("user", user);		
 		logger.info("The client UID is {}.", user.getUID());
+
+		response.addCookie(new Cookie("uid", user.getUID()));
 
 		gigyaService.processUser(user.getUID());
 		
@@ -73,7 +78,7 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/getUserData", method = RequestMethod.POST)
-	public String getUserData(@ModelAttribute User user, Locale locale, Model model) {				
+	public String getUserData(@ModelAttribute User user, Locale locale, Model model) {
 		model.addAttribute("user", user);		
 		logger.info(">> Inside getUserData");
 
@@ -85,7 +90,12 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/survey", method = RequestMethod.GET)
-	public String surveyPage(ModelMap modelMap) {
+	public String surveyPage(ModelMap modelMap, @CookieValue(value = "uid", defaultValue = "") String cookieUid) {
+
+		// If the user is not logged in, we do not allow him to see the survey
+		if(cookieUid.isEmpty()) {
+			return "redirect:login";
+		}
 
 		Set<Product> productSet = productRatingsService.getProducts();
 

@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
  * Created by szymon on 6/6/15.
  */
 @Controller
-//@RequestMapping(value="/survey", method= RequestMethod.POST)
 public class SurveyController {
 
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
