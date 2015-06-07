@@ -13,7 +13,7 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
-            padding: 20px;
+            padding-bottom: 20px;
         }
     </style>
     <!-- Latest compiled and minified CSS -->
@@ -95,8 +95,12 @@ author: bootply.com
 </head>
 <body>
 
+<div class="container">
+    <a href="<c:url value="/logout" />" class="btn" style="float: right">Logout</a>
+</div>
 
 <img src="<c:url value="/resources/logo_reco4social.jpg" />" class="center"/>
+
 
 <div class="container">
     <div class="jumbotron">
