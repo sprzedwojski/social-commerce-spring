@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,9 +45,9 @@ public class SurveyController {
             return "redirect:login";
         }
 
-        Set<Product> productSet = productRatingsService.getProducts();
+        List<Product> productList = productRatingsService.getProducts();
 
-        modelMap.addAttribute("productSet", productSet);
+        modelMap.addAttribute("productList", productList);
 
         // TODO pobrac i przekazac opis ankiety dla uzytkownikow
         modelMap.addAttribute("jumboTitle", "Title");

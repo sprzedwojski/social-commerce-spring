@@ -111,7 +111,7 @@ author: bootply.com
 
     <div class="col-md-12">
         <div class="productsrow">
-            <c:forEach items="${productSet}" var="product">
+            <c:forEach items="${productList}" var="product">
             <div class="product menu-category">
                 <a href="${product.productUrl}" target="_blank" class="menu-item list-group-item" rel="tooltip" title="${product.descriptionEn}">
                     ${product.nameEn}
@@ -149,7 +149,6 @@ author: bootply.com
         hints: ['hate it', 'not bad', 'ok', 'like it', 'love it'],
         click: function(score, evt) {
             rateProductAjax(this.id, score);
-            alert(this.id);
         }
     });
 

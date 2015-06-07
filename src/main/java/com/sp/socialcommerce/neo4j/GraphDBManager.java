@@ -360,11 +360,11 @@ public class GraphDBManager {
 		}
 	}
 
-	public Set<Product> getAllProducts() {
+	public List<Product> getAllProducts() {
 		try(Transaction tx = graphDb.beginTx()) {
 			ResourceIterator iterator = graphDb.findNodes(productLabel);
 			Node pNode;
-			Set<Product> products = new HashSet<Product>();
+			List<Product> products = new ArrayList<Product>();
 			while(iterator.hasNext()) {
 				pNode = (Node)iterator.next();
 				Product product = new Product();

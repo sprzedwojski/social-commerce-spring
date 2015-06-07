@@ -5,6 +5,7 @@ import com.sp.socialcommerce.neo4j.GraphDBManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,7 +19,7 @@ public class ProductRatingsService {
     @Autowired
     private GraphDBManager GDBM;
 
-    public Set<Product> getProducts() {
+    public List<Product> getProducts() {
         return GDBM.getAllProducts();
     }
 
