@@ -2,10 +2,14 @@ package com.sp.socialcommerce.labels;
 
 import com.sp.socialcommerce.neo4j.GraphConstants;
 import org.neo4j.graphdb.Label;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by szymon on 6/5/15.
  */
+@Component
+@Scope("session")
 public class Product implements Label {
 
     private String namePl;
@@ -17,6 +21,15 @@ public class Product implements Label {
     private int id;
     private double price;
 
+    private String rating;
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
 
     @Override
     public String name() {

@@ -9,7 +9,7 @@ public abstract class GraphConstants {
 
     public static enum RelTypes implements RelationshipType
     {
-        LIVES_IN, FOLLOWS_RELIGION, HAS_POLITICAL_VIEW, LIKES, KNOWS, HAS_CATEGORY
+        LIVES_IN, FOLLOWS_RELIGION, HAS_POLITICAL_VIEW, LIKES, KNOWS, HAS_CATEGORY, RATES
     }
 
 //    public static final String NAME = "name";
@@ -64,6 +64,16 @@ public abstract class GraphConstants {
         public static final String PRODUCT_PROD_URL = "product_url";
         public static final String PRODUCT_PRICE_EUR = "price_eur";
         public static final String PRODUCT_ID = "id";
+    }
+
+    public abstract class ProductCategory {
+        public static final String PRODUCT_CATEGORY_LABEL = "ProductCategory";
+        public static final String PRODUCT_CATEGORY_NAME = "name";
+    }
+
+    /** Relationship of rating a product by the user */
+    public abstract class Rates {
+        public static final String RATING_VALUE = "value";
     }
 
 }

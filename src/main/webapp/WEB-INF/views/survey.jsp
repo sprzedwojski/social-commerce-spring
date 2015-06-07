@@ -19,7 +19,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <style>
+    <style type="text/css">
         /*
 A custom Bootstrap 3.2 theme from http://bootply.com
 This CSS code should follow the 'bootstrap.css'
@@ -121,6 +121,9 @@ author: bootply.com
                     <img class="product-image menu-item list-group-item" src="${product.imageUrl}">
                 </div>
                 <div id="${product.id}" class="menu-item list-group-item rating"></div>
+
+                <%--temp--%>
+                <div class="menu-item list-group-item">Current rating: ${product.rating}</div>
             </div>
             </c:forEach>
         </div>
@@ -139,6 +142,7 @@ author: bootply.com
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<c:url value="/resources/raty/jquery.raty.js" />"></script>
 <script>
+
     $('.rating').raty({
         cancel  : true,
         path: "resources/raty/images/",
@@ -152,16 +156,17 @@ author: bootply.com
         }
     });
 
-    // TODO uid z sesji (po stronie Springa)?
-    function rateProductAjax(/*uid, */prod_id, score) {
+    // TODO co jeśli sesja wygaśnie??
+    function rateProductAjax(prod_id, score) {
         $.ajax({
             type: 'POST',
             url : '<c:url value="/survey" />',
-            data:/*'uid=' + uid + */"prod_id=" + prod_id + "&score=" + score
+            data: "prod_id=" + prod_id + "&score=" + score
         });
     }
 
     $(document).ready(function(){
+
         $("[rel=tooltip]").tooltip({ placement: 'bottom'});
     });
 </script>

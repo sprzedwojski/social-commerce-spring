@@ -23,7 +23,7 @@ public class GraphDBManager {
 	private ApplicationProperties applicationProperties;
 
 //	public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
-	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
+	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test2/";
 //	private final String DB_PATH = applicationProperties.getProperty(PropertiesConstants.NEO4J_PATH);
 
 
@@ -36,7 +36,7 @@ public class GraphDBManager {
 	private Label pageLabel = new Page();
 	private Label pageCategoryLabel = new PageCategory();
 	private Label productLabel = new Product();
-	
+
 	GraphDatabaseService graphDb;
 	
 	public GraphDBManager() {
@@ -361,9 +361,27 @@ public class GraphDBManager {
 	}
 
 	public List<Product> getAllProducts() {
+		return getAllProducts(null);
+	}
+
+	public List<Product> getAllProducts(String uid) {
 		try(Transaction tx = graphDb.beginTx()) {
 			ResourceIterator iterator = graphDb.findNodes(productLabel);
-			Node pNode;
+
+			Node user = null;
+			Map<Integer, String> userProductRatings = new HashMap<Integer, String>();
+			if(uid != null) {
+				user = graphDb.findNode(userLabel, GraphConstants.User.UID, uid);
+				Iterable ratings = user.getRelationships(GraphConstants.RelTypes.RATES);
+				while(ratings.iterator().hasNext()) {
+					Relationship rating = (Relationship)ratings.iterator().next();
+					Node product = rating.getOtherNode(user);
+					userProductRatings.put(Integer.parseInt(product.getProperty(GraphConstants.Product.PRODUCT_ID).toString()),
+							rating.getProperty(GraphConstants.Rates.RATING_VALUE).toString());
+				}
+			}
+
+ 			Node pNode;
 			List<Product> products = new ArrayList<Product>();
 			while(iterator.hasNext()) {
 				pNode = (Node)iterator.next();
@@ -380,9 +398,54 @@ public class GraphDBManager {
 				product.setPrice(Double.parseDouble(pNode.getProperty(GraphConstants.Product.PRODUCT_PRICE_EUR).toString()));
 				product.setImageUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_IMG_URL).toString());
 				product.setProductUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_PROD_URL).toString());
+
+				// TODO get rating
+				if(user != null) {
+					if(userProductRatings.containsKey(product.getId())) {
+						product.setRating(userProductRatings.get(product.getId()));
+					}
+				}
+
+				// TODO get category
+
 				products.add(product);
 			}
+
+			logger.info("Fetched all products.");
+			tx.success();
+
 			return products;
+		}
+	}
+
+//	public List<Product> getAllProductsWithRatingsForUser(String uid) {
+//
+//	}
+
+	/**
+	 * Not efficient. Iterating over all RATES relationships during each rating.
+	 * It would be better to insert ratings once at the end. But the user might not save it and we would have nothing.
+	 *
+	 * @param uid
+	 * @param productId
+	 * @param score
+	 */
+	public void setProductRating(String uid, String productId, String score) {
+		try(Transaction tx = graphDb.beginTx()) {
+			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, uid);
+			Node product = graphDb.findNode(productLabel, GraphConstants.Product.PRODUCT_ID, productId);
+
+			Iterable ratings = user.getRelationships(GraphConstants.RelTypes.RATES);
+			while(ratings.iterator().hasNext()) {
+				Relationship rating = (Relationship)ratings.iterator().next();
+				rating.getOtherNode(user);
+			}
+
+			Relationship rating = user.createRelationshipTo(product, GraphConstants.RelTypes.RATES);
+			rating.setProperty(GraphConstants.Rates.RATING_VALUE, score);
+
+			logger.info("User rating stored in DB. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
+			tx.success();
 		}
 	}
 	

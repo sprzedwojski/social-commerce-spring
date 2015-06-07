@@ -23,4 +23,12 @@ public class ProductRatingsService {
         return GDBM.getAllProducts();
     }
 
+    public List<Product> getProducts(String uid) {
+        return GDBM.getAllProducts(uid);
+    }
+
+    public void setProductRating(String uid, String productId, String score) {
+        GDBM.setProductRating(uid, productId, score);
+    }
+
 }

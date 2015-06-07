@@ -2,10 +2,13 @@ package com.sp.socialcommerce.controllers;
 
 import com.sp.socialcommerce.gigya.ProductRatingsService;
 import com.sp.socialcommerce.labels.Product;
+import com.sp.socialcommerce.neo4j.GraphDBManager;
 import com.sp.socialcommerce.prop.ApplicationProperties;
+import com.sp.socialcommerce.util.UserHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,13 +31,19 @@ public class SurveyController {
     private ProductRatingsService productRatingsService;
 //    @Autowired
 //    private ApplicationProperties applicationProperties;
+//    @Autowired
+//    private GraphDBManager GDBM;
+    @Autowired
+    private UserHolder user;
 
     @RequestMapping(value="/survey", method= RequestMethod.POST)
     public void rateProduct(HttpServletRequest request) {
-        String uid = request.getParameter("uid");
+        String uid = (String) request.getSession().getAttribute("uid");
         String productId = request.getParameter("prod_id");
         String score = request.getParameter("score");
         logger.info("uid: " + uid + " | productId: " + productId + " | score: " + score);
+
+        productRatingsService.setProductRating(uid, productId, score);
     }
 
     @RequestMapping(value = "/survey", method = RequestMethod.GET)
@@ -45,7 +54,12 @@ public class SurveyController {
             return "redirect:login";
         }
 
-        List<Product> productList = productRatingsService.getProducts();
+        user.setUid(request.getSession().getAttribute("uid").toString());
+
+        // TODO
+//        user.setRatedProductsIds();
+
+        List<Product> productList = productRatingsService.getProducts(user.getUid());
 
         modelMap.addAttribute("productList", productList);
 
