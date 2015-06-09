@@ -30,11 +30,7 @@ public class SurveyController {
     @Autowired
     private ProductRatingsService productRatingsService;
 //    @Autowired
-//    private ApplicationProperties applicationProperties;
-//    @Autowired
-//    private GraphDBManager GDBM;
-    @Autowired
-    private UserHolder user;
+//    private UserHolder user;
 
     @RequestMapping(value="/survey", method= RequestMethod.POST)
     public void rateProduct(HttpServletRequest request) {
@@ -54,12 +50,12 @@ public class SurveyController {
             return "redirect:login";
         }
 
-        user.setUid(request.getSession().getAttribute("uid").toString());
+//        user.setUid(request.getSession().getAttribute("uid").toString());
 
         // TODO
 //        user.setRatedProductsIds();
 
-        List<Product> productList = productRatingsService.getProducts(user.getUid());
+        List<Product> productList = productRatingsService.getProducts(request.getSession().getAttribute("uid").toString());
 
         modelMap.addAttribute("productList", productList);
 

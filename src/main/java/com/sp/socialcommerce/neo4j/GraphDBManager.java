@@ -23,7 +23,7 @@ public class GraphDBManager {
 	private ApplicationProperties applicationProperties;
 
 //	public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
-	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test2/";
+	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
 //	private final String DB_PATH = applicationProperties.getProperty(PropertiesConstants.NEO4J_PATH);
 
 
@@ -369,15 +369,17 @@ public class GraphDBManager {
 			ResourceIterator iterator = graphDb.findNodes(productLabel);
 
 			Node user = null;
-			Map<Integer, String> userProductRatings = new HashMap<Integer, String>();
+			Map<Integer, String> userProductRatings = new HashMap<>();
 			if(uid != null) {
 				user = graphDb.findNode(userLabel, GraphConstants.User.UID, uid);
-				Iterable ratings = user.getRelationships(GraphConstants.RelTypes.RATES);
-				while(ratings.iterator().hasNext()) {
-					Relationship rating = (Relationship)ratings.iterator().next();
+				Iterable<Relationship> ratings = user.getRelationships(GraphConstants.RelTypes.RATES);
+				Iterator<Relationship> it = ratings.iterator();
+				while(it.hasNext()) {
+					Relationship rating = it.next();
 					Node product = rating.getOtherNode(user);
 					userProductRatings.put(Integer.parseInt(product.getProperty(GraphConstants.Product.PRODUCT_ID).toString()),
 							rating.getProperty(GraphConstants.Rates.RATING_VALUE).toString());
+					logger.info("Setting userProductRating...");
 				}
 			}
 
@@ -409,6 +411,8 @@ public class GraphDBManager {
 				// TODO get category
 
 				products.add(product);
+
+				logger.info("Product added.");
 			}
 
 			logger.info("Fetched all products.");

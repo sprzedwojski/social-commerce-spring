@@ -9,7 +9,7 @@ import java.util.List;
  * Created by szymon on 6/7/15.
  */
 @Component
-@Scope("session")
+//@Scope("session")
 public class UserHolder {
 
     private String uid;
