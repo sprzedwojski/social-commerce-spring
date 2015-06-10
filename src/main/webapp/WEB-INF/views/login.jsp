@@ -1,22 +1,5 @@
-<%--
- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page session="false" %>
- --%>
-<!-- <html>
-<head>
-	<title>Home</title>
-</head>
-<body>
-<h1>
-	Hello world!  
-</h1>
-
-<P>  The time on the server is ${serverTime}. </P>
-</body>
-</html>-->
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
 	<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
@@ -26,6 +9,12 @@
 	<style>
 	.gigya-login-footer{
 		display: none !important;
+	}
+
+	img.center {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
 	}
 	</style>	
 	
@@ -93,7 +82,10 @@ var login_params=
 	<div class="container">
 		<div class="page-header text-center">
 		  <h1>Demo Web Recommender Store <br><small>Login, have fun and help make science!</small></h1>
-		</div>		
+		</div>
+
+		<img src="<c:url value="/resources/logo_reco4social.jpg" />" class="center"/>
+
 		<div id="loginbox" style="margin-top: 50px;"
 			class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 			<div class="panel panel-info" >
@@ -126,13 +118,13 @@ var login_params=
 	</div>
 	
 	
-	<form id="get_user_data_form" action="/socialcommerce/getUserData" th:action="@{/}" th:object="${user}" method="post">
-		<input type="text" name="UID" id="UID" th:field="*{UID}" th:object="${user}" /> 
-		<input type="submit" value="getUserData" />
-	</form>
-			
+	<%--<form id="get_user_data_form" action="/socialcommerce/getUserData" th:action="@{/}" th:object="${user}" method="post">--%>
+		<%--<input type="text" name="UID" id="UID" th:field="*{UID}" th:object="${user}" /> --%>
+		<%--<input type="submit" value="getUserData" />--%>
+	<%--</form>--%>
+			<%----%>
 
-	<p th:text="'id: ' + ${user.UID}"></p>
+	<%--<p th:text="'id: ' + ${user.UID}"></p>--%>
 
     <footer class="footer">
       <div class="container">
@@ -165,30 +157,30 @@ var login_params=
 			document.getElementById("login_submit_btn").click();
 		}
 
-		function printResponse(response) {
-			if (response.errorCode == 0) {
-				console.log(response);
-				var user = response['user'];
-				var msg = 'User ' + user['nickname'] + ' is ' + user['age']
-						+ ' years old';
-				//alert(msg);
-			} else {
-				alert('Error :' + response.errorMessage);
-			}
-		}
+//		function printResponse(response) {
+//			if (response.errorCode == 0) {
+//				console.log(response);
+//				var user = response['user'];
+//				var msg = 'User ' + user['nickname'] + ' is ' + user['age']
+//						+ ' years old';
+//				//alert(msg);
+//			} else {
+//				alert('Error :' + response.errorMessage);
+//			}
+//		}
 
-		function getUInfo() {
-			gigya.socialize.getUserInfo({
-				callback : printResponse
-			}, {
-				extraFields : 'likes'
-			});
-		}
+//		function getUInfo() {
+//			gigya.socialize.getUserInfo({
+//				callback : printResponse
+//			}, {
+//				extraFields : 'likes'
+//			});
+//		}
 		
-		$(document).ready(function() {
-			$('.gigya-login-footer').css('display', 'none');
-			console.log("document ready");
-		});
+//		$(document).ready(function() {
+//			$('.gigya-login-footer').css('display', 'none');
+//			console.log("document ready");
+//		});
 		$(window).load(function() {
 			$('.gigya-login-footer').css('display', 'none');
 			console.log("window load");

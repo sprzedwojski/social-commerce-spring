@@ -1,36 +1,30 @@
 package com.sp.socialcommerce.neo4j;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.gigya.socialize.GSArray;
 import com.gigya.socialize.GSKeyNotFoundException;
 import com.gigya.socialize.GSObject;
 import com.gigya.socialize.GSResponse;
-import com.sp.socialcommerce.labels.City;
-import com.sp.socialcommerce.labels.Page;
-import com.sp.socialcommerce.labels.PageCategory;
-import com.sp.socialcommerce.labels.PoliticalView;
-import com.sp.socialcommerce.labels.Religion;
+import com.sp.socialcommerce.labels.*;
 import com.sp.socialcommerce.models.User;
+import com.sp.socialcommerce.prop.ApplicationProperties;
+import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class GraphDBManager {
 
-	public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
-//	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
+	@Autowired
+	private ApplicationProperties applicationProperties;
+
+//	public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
+	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
+//	private final String DB_PATH = applicationProperties.getProperty(PropertiesConstants.NEO4J_PATH);
 
 
 	private static final Logger logger = LoggerFactory.getLogger(GraphDBManager.class);
@@ -41,7 +35,8 @@ public class GraphDBManager {
 	private Label cityLabel = new City();
 	private Label pageLabel = new Page();
 	private Label pageCategoryLabel = new PageCategory();
-	
+	private Label productLabel = new Product();
+
 	GraphDatabaseService graphDb;
 	
 	public GraphDBManager() {
@@ -67,12 +62,14 @@ public class GraphDBManager {
 
 	public void processUserResponse(GSResponse response) {
 		String UID = response.getString(GraphConstants.User.UID, "uid");
-		String firstName = response.getString(GraphConstants.User.FIRST_NAME, "first_name");
-		String lastName = response.getString(GraphConstants.User.LAST_NAME, "last_name");
-		logger.info("firstName: " + firstName);
-		logger.info("lastName: " + lastName);
+//		String firstName = response.getString(GraphConstants.User.FIRST_NAME, "first_name");
+//		String lastName = response.getString(GraphConstants.User.LAST_NAME, "last_name");
+//		logger.info("firstName: " + firstName);
+//		logger.info("lastName: " + lastName);
+		
+		String userName = response.getString(GraphConstants.User.USER_NICKNAME, null);
 
-		Node user = getUserNode(UID, firstName, lastName);
+		Node user = getUserNode(UID, userName);
 
 		// CITY
 		String cityName = response.getString(GraphConstants.City.CITY_KEY, null);
@@ -207,7 +204,7 @@ public class GraphDBManager {
 				if(!existingUserFriendsIds.contains(friendUID)) {
 					Node friend = getNode(userLabel, GraphConstants.User.UID, friendUID);
 					if(friend == null) {
-						String friendName = (String)row.get("nickname");
+						String friendName = (String)row.get(GraphConstants.User.USER_NICKNAME);
 						String[][] friendUserParameters = {
 								{GraphConstants.User.UID, friendUID},
 								{GraphConstants.User.USER_NAME, friendName} };
@@ -286,19 +283,33 @@ public class GraphDBManager {
 //		}
 //	}
 	
-	public Node getUserNode(String UID, String fName, String lName) {
+//	public Node getUserNode(String UID, String fName, String lName) {
+//		try ( Transaction tx = graphDb.beginTx() ) {
+//			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
+//			tx.success();
+//			if (user == null) {
+//				logger.info("User not found. Creating new user.");
+//				return createUserNode(UID, fName, lName);
+//			} else {
+//				logger.info("Existing user found.");
+//				return user;
+//			}
+//		}
+//	}
+	
+	public Node getUserNode(String UID, String name) {
 		try ( Transaction tx = graphDb.beginTx() ) {
 			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
 			tx.success();
 			if (user == null) {
 				logger.info("User not found. Creating new user.");
-				return createUserNode(UID, fName, lName);
+				return createUserNode(UID, name);
 			} else {
 				logger.info("Existing user found.");
 				return user;
 			}
 		}
-	}
+	}	
 
 	public Node getCityNode(String cityName) {
 		try ( Transaction tx = graphDb.beginTx() ) {
@@ -319,19 +330,33 @@ public class GraphDBManager {
 //		return createNode(userLabel, userProperties);
 //	}
 	
-	public Node createUserNode(String UID, String fName, String lName) {
+//	public Node createUserNode(String UID, String fName, String lName) {
+//		try ( Transaction tx = graphDb.beginTx() ) {
+//			String userName = fName + " " + lName;
+//			Node node = graphDb.createNode();
+//			node.addLabel(userLabel);
+//			node.setProperty(GraphConstants.User.UID, UID);
+//			node.setProperty(GraphConstants.User.USER_NAME, userName);
+//			tx.success();
+//			logger.info("User node created successfully (" + userName + ")");
+//
+//			return node;
+//		}
+//	}
+	
+	public Node createUserNode(String UID, String name) {
 		try ( Transaction tx = graphDb.beginTx() ) {
-			String userName = fName + " " + lName;
+//			String userName = fName + " " + lName;
 			Node node = graphDb.createNode();
 			node.addLabel(userLabel);
 			node.setProperty(GraphConstants.User.UID, UID);
-			node.setProperty(GraphConstants.User.USER_NAME, userName);
+			node.setProperty(GraphConstants.User.USER_NAME, name);
 			tx.success();
-			logger.info("User node created successfully (" + userName + ")");
+			logger.info("User node created successfully (" + name + ")");
 
 			return node;
 		}
-	}
+	}	
 
 	public Node createCityNode(String cityName) { // e.g. "Lodz, Poland"
 		try(Transaction tx = graphDb.beginTx()) {
@@ -362,6 +387,124 @@ public class GraphDBManager {
 			tx.success();
 			logger.info("Relationship of type " + type + " created");
 			return relationship;
+		}
+	}
+
+	public List<Product> getAllProducts() {
+		return getAllProducts(null);
+	}
+
+	public List<Product> getAllProducts(String uid) {
+		try(Transaction tx = graphDb.beginTx()) {
+			ResourceIterator iterator = graphDb.findNodes(productLabel);
+
+			Node user = null;
+			Map<Integer, String> userProductRatings = new HashMap<>();
+			
+			if(uid != null) {
+				user = graphDb.findNode(userLabel, GraphConstants.User.UID, uid);				
+			}
+			
+			if(user != null) {
+				Iterable<Relationship> ratings = user.getRelationships(GraphConstants.RelTypes.RATES);
+				Iterator<Relationship> it = ratings.iterator();
+				while(it.hasNext()) {
+					Relationship rating = it.next();
+					Node product = rating.getOtherNode(user);
+					userProductRatings.put(Integer.parseInt(product.getProperty(GraphConstants.Product.PRODUCT_ID).toString()),
+							rating.getProperty(GraphConstants.Rates.RATING_VALUE).toString());
+					logger.info("Setting userProductRating...");
+				}
+			}
+
+ 			Node pNode;
+			List<Product> products = new ArrayList<Product>();
+			while(iterator.hasNext()) {
+				pNode = (Node)iterator.next();
+				Product product = new Product();
+				product.setNamePl(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_PL).toString());
+				product.setNameEn(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_EN).toString());
+				if(pNode.hasProperty(GraphConstants.Product.PRODUCT_DESC_PL)) {
+					product.setDescriptionPl(pNode.getProperty(GraphConstants.Product.PRODUCT_DESC_PL).toString());
+				}
+				if(pNode.hasProperty(GraphConstants.Product.PRODUCT_DESC_EN)) {
+					product.setDescriptionEn(pNode.getProperty(GraphConstants.Product.PRODUCT_DESC_EN).toString());
+				}
+				product.setId(Integer.parseInt(pNode.getProperty(GraphConstants.Product.PRODUCT_ID).toString()));
+				product.setPrice(Double.parseDouble(pNode.getProperty(GraphConstants.Product.PRODUCT_PRICE_EUR).toString()));
+				product.setImageUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_IMG_URL).toString());
+				product.setProductUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_PROD_URL).toString());
+
+				// TODO get rating
+				if(user != null) {
+					if(userProductRatings.containsKey(product.getId())) {
+						product.setRating(userProductRatings.get(product.getId()));
+					}
+				}
+
+				// TODO get category
+
+				products.add(product);
+
+				logger.info("Product added.");
+			}
+
+			logger.info("Fetched all products.");
+			tx.success();
+
+			return products;
+		}
+	}
+
+//	public List<Product> getAllProductsWithRatingsForUser(String uid) {
+//
+//	}
+
+	/**
+	 * Not efficient. Iterating over all RATES relationships during each rating.
+	 * It would be better to insert ratings once at the end. But the user might not save it and we would have nothing.
+	 *
+	 * @param uid
+	 * @param productId
+	 * @param score
+	 */
+	public void setProductRating(String uid, String productId, String score) {
+		try(Transaction tx = graphDb.beginTx()) {
+			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, uid);
+			Node product = graphDb.findNode(productLabel, GraphConstants.Product.PRODUCT_ID, productId);
+			
+			Relationship rating = null;
+			Iterable ratings = user.getRelationships(GraphConstants.RelTypes.RATES);
+			Iterator iterator = ratings.iterator();
+			while(iterator.hasNext()) {
+				Relationship r = (Relationship)iterator.next();
+				Node productRated = r.getOtherNode(user);
+				
+				if(productRated.getProperty(GraphConstants.Product.PRODUCT_ID).equals(product.getProperty(GraphConstants.Product.PRODUCT_ID))) {
+					rating = r;
+					break;
+				}
+			}
+
+			if(rating != null) {
+				if(score.equals("null")) {
+					rating.delete();
+					logger.info("Product had already been rated. User rating deleted. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
+				} else {
+					rating.setProperty(GraphConstants.Rates.RATING_VALUE, score);
+					logger.info("Product had already been rated. User rating updated in DB. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
+				}
+			} else {			
+				if(score.equals("null")) {
+					logger.info("User rating is NULL. No action taken. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
+				} else {
+					rating = user.createRelationshipTo(product, GraphConstants.RelTypes.RATES);
+					rating.setProperty(GraphConstants.Rates.RATING_VALUE, score);
+					logger.info("User rating stored in DB. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
+				}
+			}
+
+			tx.success();
 		}
 	}
 	
