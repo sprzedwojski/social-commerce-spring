@@ -62,12 +62,14 @@ public class GraphDBManager {
 
 	public void processUserResponse(GSResponse response) {
 		String UID = response.getString(GraphConstants.User.UID, "uid");
-		String firstName = response.getString(GraphConstants.User.FIRST_NAME, "first_name");
-		String lastName = response.getString(GraphConstants.User.LAST_NAME, "last_name");
-		logger.info("firstName: " + firstName);
-		logger.info("lastName: " + lastName);
+//		String firstName = response.getString(GraphConstants.User.FIRST_NAME, "first_name");
+//		String lastName = response.getString(GraphConstants.User.LAST_NAME, "last_name");
+//		logger.info("firstName: " + firstName);
+//		logger.info("lastName: " + lastName);
+		
+		String userName = response.getString(GraphConstants.User.USER_NICKNAME, null);
 
-		Node user = getUserNode(UID, firstName, lastName);
+		Node user = getUserNode(UID, userName);
 
 		// CITY
 		String cityName = response.getString(GraphConstants.City.CITY_KEY, null);
@@ -202,7 +204,7 @@ public class GraphDBManager {
 				if(!existingUserFriendsIds.contains(friendUID)) {
 					Node friend = getNode(userLabel, GraphConstants.User.UID, friendUID);
 					if(friend == null) {
-						String friendName = (String)row.get("nickname");
+						String friendName = (String)row.get(GraphConstants.User.USER_NICKNAME);
 						String[][] friendUserParameters = {
 								{GraphConstants.User.UID, friendUID},
 								{GraphConstants.User.USER_NAME, friendName} };
@@ -281,19 +283,33 @@ public class GraphDBManager {
 //		}
 //	}
 	
-	public Node getUserNode(String UID, String fName, String lName) {
+//	public Node getUserNode(String UID, String fName, String lName) {
+//		try ( Transaction tx = graphDb.beginTx() ) {
+//			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
+//			tx.success();
+//			if (user == null) {
+//				logger.info("User not found. Creating new user.");
+//				return createUserNode(UID, fName, lName);
+//			} else {
+//				logger.info("Existing user found.");
+//				return user;
+//			}
+//		}
+//	}
+	
+	public Node getUserNode(String UID, String name) {
 		try ( Transaction tx = graphDb.beginTx() ) {
 			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
 			tx.success();
 			if (user == null) {
 				logger.info("User not found. Creating new user.");
-				return createUserNode(UID, fName, lName);
+				return createUserNode(UID, name);
 			} else {
 				logger.info("Existing user found.");
 				return user;
 			}
 		}
-	}
+	}	
 
 	public Node getCityNode(String cityName) {
 		try ( Transaction tx = graphDb.beginTx() ) {
@@ -314,19 +330,33 @@ public class GraphDBManager {
 //		return createNode(userLabel, userProperties);
 //	}
 	
-	public Node createUserNode(String UID, String fName, String lName) {
+//	public Node createUserNode(String UID, String fName, String lName) {
+//		try ( Transaction tx = graphDb.beginTx() ) {
+//			String userName = fName + " " + lName;
+//			Node node = graphDb.createNode();
+//			node.addLabel(userLabel);
+//			node.setProperty(GraphConstants.User.UID, UID);
+//			node.setProperty(GraphConstants.User.USER_NAME, userName);
+//			tx.success();
+//			logger.info("User node created successfully (" + userName + ")");
+//
+//			return node;
+//		}
+//	}
+	
+	public Node createUserNode(String UID, String name) {
 		try ( Transaction tx = graphDb.beginTx() ) {
-			String userName = fName + " " + lName;
+//			String userName = fName + " " + lName;
 			Node node = graphDb.createNode();
 			node.addLabel(userLabel);
 			node.setProperty(GraphConstants.User.UID, UID);
-			node.setProperty(GraphConstants.User.USER_NAME, userName);
+			node.setProperty(GraphConstants.User.USER_NAME, name);
 			tx.success();
-			logger.info("User node created successfully (" + userName + ")");
+			logger.info("User node created successfully (" + name + ")");
 
 			return node;
 		}
-	}
+	}	
 
 	public Node createCityNode(String cityName) { // e.g. "Lodz, Poland"
 		try(Transaction tx = graphDb.beginTx()) {
@@ -370,8 +400,12 @@ public class GraphDBManager {
 
 			Node user = null;
 			Map<Integer, String> userProductRatings = new HashMap<>();
+			
 			if(uid != null) {
-				user = graphDb.findNode(userLabel, GraphConstants.User.UID, uid);
+				user = graphDb.findNode(userLabel, GraphConstants.User.UID, uid);				
+			}
+			
+			if(user != null) {
 				Iterable<Relationship> ratings = user.getRelationships(GraphConstants.RelTypes.RATES);
 				Iterator<Relationship> it = ratings.iterator();
 				while(it.hasNext()) {
@@ -438,17 +472,38 @@ public class GraphDBManager {
 		try(Transaction tx = graphDb.beginTx()) {
 			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, uid);
 			Node product = graphDb.findNode(productLabel, GraphConstants.Product.PRODUCT_ID, productId);
-
+			
+			Relationship rating = null;
 			Iterable ratings = user.getRelationships(GraphConstants.RelTypes.RATES);
-			while(ratings.iterator().hasNext()) {
-				Relationship rating = (Relationship)ratings.iterator().next();
-				rating.getOtherNode(user);
+			Iterator iterator = ratings.iterator();
+			while(iterator.hasNext()) {
+				Relationship r = (Relationship)iterator.next();
+				Node productRated = r.getOtherNode(user);
+				
+				if(productRated.getProperty(GraphConstants.Product.PRODUCT_ID).equals(product.getProperty(GraphConstants.Product.PRODUCT_ID))) {
+					rating = r;
+					break;
+				}
 			}
 
-			Relationship rating = user.createRelationshipTo(product, GraphConstants.RelTypes.RATES);
-			rating.setProperty(GraphConstants.Rates.RATING_VALUE, score);
+			if(rating != null) {
+				if(score.equals("null")) {
+					rating.delete();
+					logger.info("Product had already been rated. User rating deleted. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
+				} else {
+					rating.setProperty(GraphConstants.Rates.RATING_VALUE, score);
+					logger.info("Product had already been rated. User rating updated in DB. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
+				}
+			} else {			
+				if(score.equals("null")) {
+					logger.info("User rating is NULL. No action taken. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
+				} else {
+					rating = user.createRelationshipTo(product, GraphConstants.RelTypes.RATES);
+					rating.setProperty(GraphConstants.Rates.RATING_VALUE, score);
+					logger.info("User rating stored in DB. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
+				}
+			}
 
-			logger.info("User rating stored in DB. UID: " + uid + " | Product ID: " + productId + " | Score: " + score);
 			tx.success();
 		}
 	}

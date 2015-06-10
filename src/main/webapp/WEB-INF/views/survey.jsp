@@ -120,10 +120,7 @@ author: bootply.com
                 <div class="product-image">
                     <img class="product-image menu-item list-group-item" src="${product.imageUrl}">
                 </div>
-                <div id="${product.id}" class="menu-item list-group-item rating"></div>
-
-                <%--temp--%>
-                <div class="menu-item list-group-item">Current rating: ${product.rating}</div>
+                <div id="${product.id}" class="menu-item list-group-item rating" data-score="${product.rating}"></div>
             </div>
             </c:forEach>
         </div>
@@ -150,7 +147,10 @@ author: bootply.com
         starOn  : 'star-on-big.png',
         cancelOff: 'cancel-off-big.png',
         cancelOn: 'cancel-on-big.png',
-        hints: ['hate it', 'not bad', 'ok', 'like it', 'love it'],
+        hints: ['hate it', 'not bad', 'ok', 'like it', 'love it'],        
+        score: function() {
+            return $(this).attr('data-score');
+        },
         click: function(score, evt) {
             rateProductAjax(this.id, score);
         }

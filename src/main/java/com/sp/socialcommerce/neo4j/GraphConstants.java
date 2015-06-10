@@ -18,9 +18,10 @@ public abstract class GraphConstants {
     public abstract class User {
         public static final String USER_LABEL = "User";
         public static final String UID = "UID";
-        public static final String FIRST_NAME = "firstName";
-        public static final String LAST_NAME = "lastName";
+//        public static final String FIRST_NAME = "firstName";
+//        public static final String LAST_NAME = "lastName";
         public static final String USER_NAME = "name";
+        public static final String USER_NICKNAME = "nickname";
     }
 
     public abstract class City {

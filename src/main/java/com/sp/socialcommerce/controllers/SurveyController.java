@@ -25,7 +25,7 @@ import java.util.Set;
 @Controller
 public class SurveyController {
 
-    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SurveyController.class);
 
     @Autowired
     private ProductRatingsService productRatingsService;
@@ -40,6 +40,8 @@ public class SurveyController {
         logger.info("uid: " + uid + " | productId: " + productId + " | score: " + score);
 
         productRatingsService.setProductRating(uid, productId, score);
+        
+//        return true;
     }
 
     @RequestMapping(value = "/survey", method = RequestMethod.GET)
