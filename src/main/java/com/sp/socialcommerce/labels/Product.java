@@ -20,6 +20,7 @@ public class Product implements Label {
     private String descriptionEn;
     private int id;
     private double price;
+    private String category;
 
     private String rating;
 
@@ -99,4 +100,12 @@ public class Product implements Label {
     public void setDescriptionEn(String descriptionEn) {
         this.descriptionEn = descriptionEn;
     }
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
 }

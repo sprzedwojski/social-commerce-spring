@@ -394,6 +394,23 @@ public class GraphDBManager {
 		return getAllProducts(null);
 	}
 
+	public Map<String, List<Product>> getAllProductsByCategories(String uid) {
+		List<Product> products = getAllProducts(uid);
+		Map<String, List<Product>> map = new HashMap<String, List<Product>>();
+		
+		for(Product p : products) {
+			if(map.containsKey(p.getCategory())) {
+				map.get(p.getCategory().toLowerCase()).add(p);
+			} else {
+				List<Product> list = new ArrayList<Product>();
+				list.add(p);
+				map.put(p.getCategory(), list);
+			}
+		}
+		
+		return map;
+	}
+	
 	public List<Product> getAllProducts(String uid) {
 		try(Transaction tx = graphDb.beginTx()) {
 			ResourceIterator iterator = graphDb.findNodes(productLabel);
@@ -435,14 +452,17 @@ public class GraphDBManager {
 				product.setImageUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_IMG_URL).toString());
 				product.setProductUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_PROD_URL).toString());
 
-				// TODO get rating
 				if(user != null) {
 					if(userProductRatings.containsKey(product.getId())) {
 						product.setRating(userProductRatings.get(product.getId()));
 					}
 				}
 
-				// TODO get category
+				Iterable<Relationship> relationships = pNode.getRelationships(GraphConstants.RelTypes.HAS_CATEGORY);								
+				Relationship rel = relationships.iterator().next();
+				if(rel != null) {
+					product.setCategory(rel.getOtherNode(pNode).getProperty(GraphConstants.ProductCategory.PRODUCT_CATEGORY_NAME).toString().toLowerCase());
+				}
 
 				products.add(product);
 

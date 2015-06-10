@@ -108,11 +108,18 @@ author: bootply.com
         <p>${jumboText}</p>
         <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
     </div>
+	
+	<!-- 
+	<br>
+	<button id="hide_clothes">Hide clothes</button><button id="show_clothes">Show clothes</button>
+	<br>
+	 -->
 
     <div class="col-md-12">
-        <div class="productsrow">
-            <c:forEach items="${productList}" var="product">
-            <div class="product menu-category">
+    	<c:forEach items="${productMap}" var="category">
+        <div class="productsrow ${category.key}">
+            <c:forEach items="${category.value}" var="product">
+            <div class="product menu-category ${product.category}">
                 <a href="${product.productUrl}" target="_blank" class="menu-item list-group-item" rel="tooltip" title="${product.descriptionEn}">
                     ${product.nameEn}
                     <span class="badge">${product.price} &euro;</span>
@@ -124,6 +131,8 @@ author: bootply.com
             </div>
             </c:forEach>
         </div>
+        <hr>
+        </c:forEach>
     </div>
 
 </div>
@@ -168,6 +177,14 @@ author: bootply.com
     $(document).ready(function(){
 
         $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+        
+        /*$('#show_clothes').click(function {
+        	$('.clothes').css("display", "block");
+        });
+        
+        $('#hide_clothes').click(function {
+        	$('.clothes').css("display", "none");
+        });*/
     });
 </script>
 </body>

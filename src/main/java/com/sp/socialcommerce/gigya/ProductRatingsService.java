@@ -1,12 +1,13 @@
 package com.sp.socialcommerce.gigya;
 
-import com.sp.socialcommerce.labels.Product;
-import com.sp.socialcommerce.neo4j.GraphDBManager;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
+import com.sp.socialcommerce.labels.Product;
+import com.sp.socialcommerce.neo4j.GraphDBManager;
 
 /**
  * Class responsible for handling products rating process.
@@ -25,6 +26,10 @@ public class ProductRatingsService {
 
     public List<Product> getProducts(String uid) {
         return GDBM.getAllProducts(uid);
+    }
+    
+    public Map<String, List<Product>> getProductsByCategories(String uid) {
+    	return GDBM.getAllProductsByCategories(uid);
     }
 
     public void setProductRating(String uid, String productId, String score) {

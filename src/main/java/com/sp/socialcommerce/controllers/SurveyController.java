@@ -1,23 +1,20 @@
 package com.sp.socialcommerce.controllers;
 
-import com.sp.socialcommerce.gigya.ProductRatingsService;
-import com.sp.socialcommerce.labels.Product;
-import com.sp.socialcommerce.neo4j.GraphDBManager;
-import com.sp.socialcommerce.prop.ApplicationProperties;
-import com.sp.socialcommerce.util.UserHolder;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Set;
+import com.sp.socialcommerce.gigya.ProductRatingsService;
+import com.sp.socialcommerce.labels.Product;
 
 /**
  * Created by szymon on 6/6/15.
@@ -40,8 +37,6 @@ public class SurveyController {
         logger.info("uid: " + uid + " | productId: " + productId + " | score: " + score);
 
         productRatingsService.setProductRating(uid, productId, score);
-        
-//        return true;
     }
 
     @RequestMapping(value = "/survey", method = RequestMethod.GET)
@@ -52,14 +47,11 @@ public class SurveyController {
             return "redirect:login";
         }
 
-//        user.setUid(request.getSession().getAttribute("uid").toString());
+//        List<Product> productList = productRatingsService.getProducts(request.getSession().getAttribute("uid").toString());
+        Map<String, List<Product>> productMap = productRatingsService.getProductsByCategories(request.getSession().getAttribute("uid").toString());
 
-        // TODO
-//        user.setRatedProductsIds();
-
-        List<Product> productList = productRatingsService.getProducts(request.getSession().getAttribute("uid").toString());
-
-        modelMap.addAttribute("productList", productList);
+//        modelMap.addAttribute("productList", productList);
+        modelMap.addAttribute("productMap", productMap);
 
         // TODO pobrac i przekazac opis ankiety dla uzytkownikow
         modelMap.addAttribute("jumboTitle", "Title");
