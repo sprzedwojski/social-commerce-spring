@@ -27,7 +27,8 @@
 	<!-- 
 	 -->
 <!-- gigya.js script should only be included once -->
-<script type="text/javascript" src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i">
+<%--<script type="text/javascript" src="http://cdn.gigya.com/js/gigya.js?apiKey=3_MLqMUEBrPfB1wNvboMY4ygUcAaszwPMGhockNgbfKXZQMT3mklNOuhmoHnA4-X6i">--%>
+	<script type="text/javascript" src="http://cdn.gigya.com/js/gigya.js?apiKey=3_Voo2zFJ8wiFw7Mjd2UWjdsGjX5xNOF-Sf9wj_ilQWk4MKEcav_2fsr28Ag2gTwvM">
 {
 	//siteName: 'localhost.com'
 	siteName: 'store.przedwojski.com'
