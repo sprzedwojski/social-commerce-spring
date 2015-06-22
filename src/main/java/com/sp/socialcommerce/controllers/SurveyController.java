@@ -1,10 +1,7 @@
 package com.sp.socialcommerce.controllers;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.sp.socialcommerce.gigya.ProductRatingsService;
+import com.sp.socialcommerce.labels.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +10,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.sp.socialcommerce.gigya.ProductRatingsService;
-import com.sp.socialcommerce.labels.Product;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
-/**
- * Created by szymon on 6/6/15.
- */
+
 @Controller
 public class SurveyController {
 
@@ -57,6 +53,11 @@ public class SurveyController {
         modelMap.addAttribute("jumboTitle", "Title");
         modelMap.addAttribute("jumboText", "Jumbo Text");
 
-        return "survey";
+        return "survey_intro";
+    }
+
+    @RequestMapping(value = "/survey/register-choices", method = RequestMethod.POST)
+    public void registerChoices(HttpServletRequest request) {
+        logger.info("registerChoices");
     }
 }
