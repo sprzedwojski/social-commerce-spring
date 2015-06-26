@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -16,23 +17,13 @@ import java.util.Map;
 
 
 @Controller
-@RequestMapping(value = "/survey")
-public class SurveyController {
+@RequestMapping(value = "/survey_intro")
+public class SurveyIntroController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SurveyController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SurveyIntroController.class);
 
     @Autowired
     private ProductRatingsService productRatingsService;
-
-    @RequestMapping(method= RequestMethod.POST)
-    public void rateProduct(HttpServletRequest request) {
-        String uid = (String) request.getSession().getAttribute("uid");
-        String productId = request.getParameter("prod_id");
-        String score = request.getParameter("score");
-        logger.info("uid: " + uid + " | productId: " + productId + " | score: " + score);
-
-        productRatingsService.setProductRating(uid, productId, score);
-    }
 
     @RequestMapping(method = RequestMethod.GET)
     public String surveyPage(ModelMap modelMap, HttpServletRequest request) {
@@ -52,6 +43,20 @@ public class SurveyController {
         modelMap.addAttribute("jumboTitle", "Title");
         modelMap.addAttribute("jumboText", "Jumbo Text");
 
-        return "survey";
+        return "survey_intro";
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public String registerChoices(@RequestParam(value="categories") String... categories) {
+
+        logger.info("registerChoices");
+
+        for(String cat : categories) {
+            logger.info("category selected: " + cat);
+        }
+
+        // TODO zapisanie wyborów uzytkownika (w sesji? w bazie?)
+
+        return "redirect:survey";
     }
 }

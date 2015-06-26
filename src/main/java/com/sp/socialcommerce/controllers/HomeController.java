@@ -61,17 +61,17 @@ public class HomeController {
 		request.getSession().setAttribute("uid", user.getUID());
 
 		gigyaService.processUser(user.getUID());
-		return "redirect:survey";
+		return "redirect:survey_intro";
 	}
 	
-	@RequestMapping(value = "/getUserData", method = RequestMethod.POST)
-	public String getUserData(@ModelAttribute User user, Locale locale, Model model) {
-		model.addAttribute("user", user);		
-		logger.info(">> Inside getUserData");
-
-		gigyaService.getUserData(user.getUID());
-		gigyaService.getUserFriends(user.getUID());
-		return "redirect:survey";
-	}
+//	@RequestMapping(value = "/getUserData", method = RequestMethod.POST)
+//	public String getUserData(@ModelAttribute User user, Locale locale, Model model) {
+//		model.addAttribute("user", user);
+//		logger.info(">> Inside getUserData");
+//
+//		gigyaService.getUserData(user.getUID());
+//		gigyaService.getUserFriends(user.getUID());
+//		return "redirect:survey";
+//	}
 	
 }

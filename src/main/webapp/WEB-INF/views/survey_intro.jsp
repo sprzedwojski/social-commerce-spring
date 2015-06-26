@@ -3,9 +3,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <%--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">--%>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Survey</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -48,11 +49,12 @@
         <%--<hr>--%>
         <%--</c:forEach>--%>
     <%--</div>--%>
+    <%--
     <div class="row">
         <div class="col-xs-6">
             <h3 class="text-center">Choose categories that interest you (min. 3):</h3>
             <div class="well" style="max-height: 300px;overflow: auto;">
-                <form action="<c:url value="/survey/register-choices" />" method="POST">
+                <form action="<c:url value="/survey_intro" />" method="POST" id="list_form">
                     <ul class="list-group checked-list-box">
                         <c:forEach items="${productMap}" var="category">
                             <li class="list-group-item" id="${category.key}">${category.key}</li>
@@ -63,6 +65,47 @@
             </div>
         </div>
     </div>
+    --%>
+
+    <%--<div class="row">--%>
+        <%--<div class="col-xs-6">--%>
+        <div class="jumbotron">
+            <form action="<c:url value="/survey_intro" />" method="POST">
+
+                <%--<h3 class="text-center">Choose categories that interest you (min. 3):</h3>--%>
+
+                <h2>Choose categories that interest you (min. 3):</h2>
+                <br>
+
+                <div class="btn-group" data-toggle="buttons">
+
+                    <%--<ul>--%>
+                        <c:forEach items="${productMap}" var="category">
+                            <label class="btn btn-default">
+                                <input id="${category.key}" name="categories" type="checkbox" value="${category.key}"> ${category.key.toUpperCase()}
+                            </label>
+                        </c:forEach>
+                    <%--</ul>--%>
+                    <%--
+                    <label class="btn btn-primary">
+                        <input type="checkbox"> Option 1
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="checkbox"> Option 2
+                    </label>
+                    <label class="btn btn-primary">
+                        <input type="checkbox"> Option 3
+                    </label>
+                    --%>
+                </div>
+                <br>
+                <br>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+        <%--</div>--%>
+    <%--</div>--%>
+
     <%--<form action="/survey/register-choices">--%>
         <%--<c:forEach items="${productMap}" var="category">--%>
             <%--<input type="checkbox" id="${category.key}">${category.key}<br>--%>
@@ -79,118 +122,22 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<c:url value="/resources/raty/jquery.raty.js" />"></script>
-<script>
+<script type="text/javascript" src="<c:url value="/resources/js/my_raty.js" />"></script>
 
-    $('.rating').raty({
-        cancel  : true,
-        path: "resources/raty/images/",
-        starOff : 'star-off-big.png',
-        starOn  : 'star-on-big.png',
-        cancelOff: 'cancel-off-big.png',
-        cancelOn: 'cancel-on-big.png',
-        hints: ['hate it', 'not bad', 'ok', 'like it', 'love it'],        
-        score: function() {
-            return $(this).attr('data-score');
-        },
-        click: function(score, evt) {
-            rateProductAjax(this.id, score);
-        }
-    });
-
-    // TODO co jeśli sesja wygaśnie??
-    function rateProductAjax(prod_id, score) {
-        $.ajax({
-            type: 'POST',
-            url : '<c:url value="/survey" />',
-            data: "prod_id=" + prod_id + "&score=" + score
-        });
-    }
-
-    $(document).ready(function(){
-        $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(':input:checked').parent('.btn').addClass('active');
+        $("[name='categories']").change(function() {
+            if(this.checked) {
+                this.setAttribute("checked", "checked");
+                this.checked = true;
+            } else {
+                this.setAttribute("checked", ""); // For IE
+                this.removeAttribute("checked"); // For other browsers
+                this.checked = false;
+            }
+        })
     });
 </script>
-
-<script>
-    $(function () {
-        $('.list-group.checked-list-box .list-group-item').each(function () {
-
-            // Settings
-            var $widget = $(this),
-                    $checkbox = $('<input type="checkbox" class="hidden" />'),
-                    color = ($widget.data('color') ? $widget.data('color') : "primary"),
-                    style = ($widget.data('style') == "button" ? "btn-" : "list-group-item-"),
-                    settings = {
-                        on: {
-                            icon: 'glyphicon glyphicon-check'
-                        },
-                        off: {
-                            icon: 'glyphicon glyphicon-unchecked'
-                        }
-                    };
-
-            $widget.css('cursor', 'pointer')
-            $widget.append($checkbox);
-
-            // Event Handlers
-            $widget.on('click', function () {
-                $checkbox.prop('checked', !$checkbox.is(':checked'));
-                $checkbox.triggerHandler('change');
-                updateDisplay();
-            });
-            $checkbox.on('change', function () {
-                updateDisplay();
-            });
-
-
-            // Actions
-            function updateDisplay() {
-                var isChecked = $checkbox.is(':checked');
-
-                // Set the button's state
-                $widget.data('state', (isChecked) ? "on" : "off");
-
-                // Set the button's icon
-                $widget.find('.state-icon')
-                        .removeClass()
-                        .addClass('state-icon ' + settings[$widget.data('state')].icon);
-
-                // Update the button's color
-                if (isChecked) {
-                    $widget.addClass(style + color + ' active');
-                } else {
-                    $widget.removeClass(style + color + ' active');
-                }
-            }
-
-            // Initialization
-            function init() {
-
-                if ($widget.data('checked') == true) {
-                    $checkbox.prop('checked', !$checkbox.is(':checked'));
-                }
-
-                updateDisplay();
-
-                // Inject the icon if applicable
-                if ($widget.find('.state-icon').length == 0) {
-                    $widget.prepend('<span class="state-icon ' + settings[$widget.data('state')].icon + '"></span>');
-                }
-            }
-            init();
-        });
-
-        $('#get-checked-data').on('click', function(event) {
-            event.preventDefault();
-            var checkedItems = {}, counter = 0;
-            $("#check-list-box li.active").each(function(idx, li) {
-                checkedItems[counter] = $(li).text();
-                counter++;
-            });
-            $('#display-json').html(JSON.stringify(checkedItems, null, '\t'));
-        });
-    });
-</script>
-
 </body>
 </html>

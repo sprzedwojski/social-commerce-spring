@@ -49,33 +49,8 @@ var login_params=
 }
 </script>
 
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet"
-		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">	
-	<style type="text/css">
-		/* Sticky footer styles
-		-------------------------------------------------- */
-		html {
-		  position: relative;
-		  min-height: 100%;
-		}
-		body {
-		  /* Margin bottom by footer height */
-		  margin-bottom: 60px;
-		}
-		.footer {
-		  position: absolute;
-		  bottom: 0;
-		  width: 100%;
-		  /* Set the fixed height of the footer here */
-		  height: 60px;
-		  background-color: #f5f5f5;
-		}
-
-		.container .text-muted {
-		  margin: 20px 0;
-		}		
-	</style>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="<c:url value="/resources/css/sticky-footer.css" />" />
 
 </head>
 <body>
@@ -105,10 +80,9 @@ var login_params=
 
 	
 				<form id="login_form" action="#" th:action="@{/}" th:object="${user}" method="post">
-					<input type="hidden" name="UID" id="UID" th:field="*{UID}" /> <input
-						type="hidden" name="signatureTimestamp" id="signatureTimestamp"
-						th:field="*{signatureTimestamp}" /> <input type="hidden"
-						name="UIDSignature" id="UIDSignature" th:field="*{UIDSignature}" />
+					<input type="hidden" name="UID" id="UID" th:field="*{UID}" />
+					<input type="hidden" name="signatureTimestamp" id="signatureTimestamp" th:field="*{signatureTimestamp}" />
+					<input type="hidden" name="UIDSignature" id="UIDSignature" th:field="*{UIDSignature}" />
 					<!-- <input type="hidden" name="userObject" id="userObject"> -->
 					<!-- <input type="submit" class="btn btn-default" value="submit" style="display:none;"> -->
 				</form>
@@ -154,9 +128,9 @@ var login_params=
 		});
 		gigya.socialize.showLoginUI(login_params);
 		
-		function onLogin(response) {
-			document.getElementById("login_submit_btn").click();
-		}
+//		function onLogin(response) {
+//			document.getElementById("login_submit_btn").click();
+//		}
 
 //		function printResponse(response) {
 //			if (response.errorCode == 0) {
@@ -188,8 +162,6 @@ var login_params=
 		});		
 	</script>
 
-	<!-- Latest compiled and minified JavaScript -->
-	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </body>
 </html>
