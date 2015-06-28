@@ -47,7 +47,7 @@ public class SurveyIntroController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String registerChoices(@RequestParam(value="categories") String... categories) {
+    public String registerChoices(HttpServletRequest request, @RequestParam(value="categories[]") String... categories) {
 
         logger.info("registerChoices");
 
@@ -56,6 +56,7 @@ public class SurveyIntroController {
         }
 
         // TODO zapisanie wyborów uzytkownika (w sesji? w bazie?)
+        request.getSession().setAttribute("categories", categories);
 
         return "redirect:survey";
     }

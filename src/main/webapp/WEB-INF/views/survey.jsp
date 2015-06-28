@@ -23,13 +23,21 @@
 
 
 <div class="container">
-    <div class="jumbotron">
-        <h1>${jumboTitle}</h1>
-        <p>${jumboText}</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+    <%--<div class="jumbotron">--%>
+        <%--<h1>${jumboTitle}</h1>--%>
+        <%--<p>${jumboText}</p>--%>
+        <%--<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>--%>
+    <%--</div>--%>
+
+        <div class="col-md-12">
+    <div class="progress">
+        <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+            <span class="sr-only">20% Complete</span>
+            20%
+        </div>
     </div>
 
-    <div class="col-md-12">
+
     	<c:forEach items="${productMap}" var="category">
         <div class="productsrow ${category.key}">
             <c:forEach items="${category.value}" var="product">
@@ -46,6 +54,11 @@
             </c:forEach>
         </div>
         <hr>
+
+        <form action="<c:url value="/survey" />" method="POST" id="next-category">
+            <input type="hidden" name="current_category" value="${category.key}"/>
+            <button type="submit" class="btn btn-default">Next</button>
+        </form>
         </c:forEach>
     </div>
 
@@ -82,7 +95,7 @@
     function rateProductAjax(prod_id, score) {
         $.ajax({
             type: 'POST',
-            url : '<c:url value="/survey" />',
+            url : '<c:url value="/survey/rate" />',
             data: "prod_id=" + prod_id + "&score=" + score
         });
     }

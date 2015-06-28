@@ -52,3 +52,9 @@ img.center {
     margin-right: auto;
     padding-bottom: 20px;
 }
+
+.error {
+    font-size: small;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: red;
+}

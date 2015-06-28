@@ -70,11 +70,11 @@
     <%--<div class="row">--%>
         <%--<div class="col-xs-6">--%>
         <div class="jumbotron">
-            <form action="<c:url value="/survey_intro" />" method="POST">
+            <form action="<c:url value="/survey_intro" />" method="POST" id="categories-form">
 
                 <%--<h3 class="text-center">Choose categories that interest you (min. 3):</h3>--%>
 
-                <h2>Choose categories that interest you (min. 3):</h2>
+                <h3>Choose categories that interest you</h3>
                 <br>
 
                 <div class="btn-group" data-toggle="buttons">
@@ -82,9 +82,24 @@
                     <%--<ul>--%>
                         <c:forEach items="${productMap}" var="category">
                             <label class="btn btn-default">
-                                <input id="${category.key}" name="categories" type="checkbox" value="${category.key}"> ${category.key.toUpperCase()}
+                                <input id="${category.key}" name="categories[]" type="checkbox" value="${category.key}"> ${category.key.toUpperCase()}
                             </label>
                         </c:forEach>
+
+                        <%--FIXME temp hardcode--%>
+                        <%--
+                        <label class="btn btn-default">
+                            <input id="shoes" name="categories[]" type="checkbox" value="shoes"> SHOES
+                        </label>
+
+                        <label class="btn btn-default">
+                            <input id="jewellery" name="categories[]" type="checkbox" value="jewellery"> JEWELLERY
+                        </label>
+
+                        <label class="btn btn-default">
+                            <input id="sports" name="categories[]" type="checkbox" value="sports"> SPORTS
+                        </label>
+                        --%>
                     <%--</ul>--%>
                     <%--
                     <label class="btn btn-primary">
@@ -99,6 +114,7 @@
                     --%>
                 </div>
                 <br>
+                <label for="categories[]" class="error"></label>
                 <br>
                 <button type="submit" class="btn btn-default">Submit</button>
             </form>
@@ -121,6 +137,8 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/additional-methods.js"></script>
 <script type="text/javascript" src="<c:url value="/resources/raty/jquery.raty.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/my_raty.js" />"></script>
 
@@ -137,6 +155,18 @@
                 this.checked = false;
             }
         })
+
+        $("#categories-form").validate({
+            rules: {
+                'categories[]': {
+                    required: true,
+                    minlength: 2
+                }
+            },
+            messages: {
+                'categories[]': "Please select at least 2 categories."
+            }
+        });
     });
 </script>
 </body>

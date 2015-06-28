@@ -45,7 +45,7 @@ public class HomeController {
 
 		// If user id is present in the session we will not log him in again, but redirect directly to the survey
 		if(request.getSession().getAttribute("uid") != null) {
-			return "redirect:survey";
+			return "redirect:survey_intro";
 		}
 
 		model.addAttribute("user", new User() );
