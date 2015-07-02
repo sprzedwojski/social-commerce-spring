@@ -23,20 +23,13 @@
 
 
 <div class="container">
-    <%--<div class="jumbotron">--%>
-        <%--<h1>${jumboTitle}</h1>--%>
-        <%--<p>${jumboText}</p>--%>
-        <%--<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>--%>
-    <%--</div>--%>
 
         <div class="col-md-12">
-    <div class="progress">
-        <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-            <span class="sr-only">20% Complete</span>
-            20%
+        <div class="progress">
+            <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                 aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100" style="width: ${progress}%">
+            </div>
         </div>
-    </div>
-
 
     	<c:forEach items="${productMap}" var="category">
         <div class="productsrow ${category.key}">
@@ -51,6 +44,7 @@
                 </div>
                 <div id="${product.id}" class="menu-item list-group-item rating" data-score="${product.rating}"></div>
             </div>
+            <div class="product-category" style="display: none;" data-category="${category.key}"></div>
             </c:forEach>
         </div>
         <hr>
@@ -86,17 +80,25 @@
         score: function() {
             return $(this).attr('data-score');
         },
+//        category: function() {
+//            return $(this).attr('data-cat');
+//            return this.getAttribute('data-cat');
+//            return this.dataset.cat;
+//        },
         click: function(score, evt) {
-            rateProductAjax(this.id, score);
+            rateProductAjax(this.id, score, $(".product-category").attr('data-category'));
         }
     });
 
     // TODO co jeśli sesja wygaśnie??
-    function rateProductAjax(prod_id, score) {
+    function rateProductAjax(prod_id, score, category) {
+        console.log("category: " + category);
+        console.log("category.toString: " + category.toString());
+
         $.ajax({
             type: 'POST',
             url : '<c:url value="/survey/rate" />',
-            data: "prod_id=" + prod_id + "&score=" + score
+            data: "prod_id=" + prod_id + "&score=" + score + "&category=" + category.toString()
         });
     }
 

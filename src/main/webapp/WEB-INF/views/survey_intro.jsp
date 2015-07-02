@@ -154,7 +154,7 @@
                 this.removeAttribute("checked"); // For other browsers
                 this.checked = false;
             }
-        })
+        });
 
         $("#categories-form").validate({
             rules: {

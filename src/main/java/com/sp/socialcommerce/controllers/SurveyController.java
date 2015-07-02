@@ -2,6 +2,7 @@ package com.sp.socialcommerce.controllers;
 
 import com.sp.socialcommerce.gigya.ProductRatingsService;
 import com.sp.socialcommerce.labels.Product;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +29,39 @@ public class SurveyController {
     private ProductRatingsService productRatingsService;
 
     @RequestMapping(value="/rate", method = RequestMethod.POST)
-    public void rateProduct(HttpServletRequest request) {
+    public String rate(HttpServletRequest request) {
         String uid = (String) request.getSession().getAttribute("uid");
         String productId = request.getParameter("prod_id");
         String score = request.getParameter("score");
-        logger.info("uid: " + uid + " | productId: " + productId + " | score: " + score);
+        String category = request.getParameter("category");
+        logger.info("uid: " + uid + " | productId: " + productId + " | score: " + score + " | category: " + category);
 
+        setSessionRating(request, category, productId, score);
         productRatingsService.setProductRating(uid, productId, score);
+
+        return "survey/rate";
+    }
+
+    /**
+     * Method setting the rating of a product in the session object productMap.
+     */
+    private void setSessionRating(HttpServletRequest request, String category, String productId, String score) {
+        Map<String, List<Product>> productMap = (Map<String, List<Product>>) request.getSession().getAttribute("productMap");
+        if(productMap != null) {
+            List<Product> list = (List)productMap.get(category);
+            if(list != null) {
+                for(Product product : list) {
+                    if(Integer.toString(product.getId()).equals(productId)) {
+                        product.setRating(score);
+                        logger.info("Session rating stored for productId " + productId + " | score: " + score);
+                    }
+                }
+            } else {
+                logger.error("Can't set session rating. List of products in category " + category + " is null.");
+            }
+        } else {
+            logger.error("Can't set session rating. ProductMap is null.");
+        }
     }
 
 //    @RequestMapping(method = RequestMethod.POST)
@@ -80,15 +107,20 @@ public class SurveyController {
         logger.info("categories: " + categories.toString());
 
         String nextCategory = categories[0];
+        double progress = 0.0;
         if(currentCategory != null) {
             for(int i=0; i<categories.length; i++) {
                 if(categories[i].equals(currentCategory)) {
                     if(categories.length <= i+1) {
                         // FIXME redirect na strone zakonczenia
                         logger.info("redirect to survey_intro");
-                        return "redirect:survey_intro";
+                        return "redirect:survey_end";
                     } else {
                         nextCategory = categories[i+1];
+                        logger.info("i: " + i);
+                        logger.info("categories.length: " + categories.length);
+                        logger.info("(double)i/categories.length: " + (double)i/categories.length);
+                        progress = (double)(i+1)/categories.length * 100;
                     }
                     break;
                 }
@@ -96,11 +128,12 @@ public class SurveyController {
         }
 
         logger.info("nextCategory: " + nextCategory);
+        logger.info("progress: " + progress);
 
         Map<String, List<Product>> filteredProductMap = filterCategory(productMap, nextCategory);
 
         modelMap.addAttribute("productMap", filteredProductMap);
-
+        modelMap.addAttribute("progress", progress);
 
         return "survey";
     }
