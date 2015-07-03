@@ -13,12 +13,17 @@
     <link href="<c:url value="/resources/raty/jquery.raty.css" />" rel="stylesheet" />
     <link rel="stylesheet" href="<c:url value="/resources/css/sticky-footer.css" />" />
     <link rel="stylesheet" href="<c:url value="/resources/css/bootply.css" />" />
+    <link rel="stylesheet" href="<c:url value="/resources/css/custom.css" />" />
 </head>
 <body>
 
-<div class="container">
-    <a href="<c:url value="/logout" />" class="btn" style="float: right">Logout</a>
-</div>
+<jsp:include page="../templates/navbar.jsp">
+    <jsp:param name="showLogout" value="true" />
+</jsp:include>
+
+<%--<div class="container">--%>
+    <%--<a href="<c:url value="/logout" />" class="btn" style="float: right">Logout</a>--%>
+<%--</div>--%>
 
 <img src="<c:url value="/resources/logo_reco4social.jpg" />" class="center"/>
 

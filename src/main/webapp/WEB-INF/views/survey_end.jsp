@@ -13,12 +13,15 @@
     <link href="<c:url value="/resources/raty/jquery.raty.css" />" rel="stylesheet" />
     <link rel="stylesheet" href="<c:url value="/resources/css/sticky-footer.css" />" />
     <link rel="stylesheet" href="<c:url value="/resources/css/bootply.css" />" />
+    <link rel="stylesheet" href="<c:url value="/resources/css/custom.css" />" />
 </head>
 <body>
 
-<div class="container">
-    <a href="<c:url value="/logout" />" class="btn" style="float: right">Logout</a>
-</div>
+<jsp:include page="../templates/navbar.jsp"/>
+
+<%--<div class="container">--%>
+    <%--<a href="<c:url value="/logout" />" class="btn" style="float: right">Logout</a>--%>
+<%--</div>--%>
 
 <img src="<c:url value="/resources/logo_reco4social.jpg" />" class="center"/>
 
@@ -34,7 +37,7 @@
         <div class="jumbotron">
             <h1>The end</h1>
             <p>${jumboText}</p>
-            <p><a class="btn btn-primary btn-lg" href="#" role="button">Once again!</a></p>
+            <p><a class="btn btn-primary btn-lg" href="<c:url value="/survey_intro" />" role="button">Once again!</a></p>
         </div>
 
     </div>

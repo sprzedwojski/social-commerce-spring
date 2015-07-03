@@ -51,13 +51,19 @@ var login_params=
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 	<link rel="stylesheet" href="<c:url value="/resources/css/sticky-footer.css" />" />
+	<link rel="stylesheet" href="<c:url value="/resources/css/custom.css" />" />
 
 </head>
 <body>
 
+		<%--<div th:include="navbar :: [//nav]"></div>--%>
+		<jsp:include page="../templates/navbar.jsp">
+			<jsp:param name="showLogout" value="false" />
+		</jsp:include>
+
 	<div class="container">
 		<div class="page-header text-center">
-		  <h1>Demo Web Recommender Store <br><small>Login, have fun and help make science!</small></h1>
+		  <h1>Web Recommender Store <br><small>Login, rate and help make science!</small></h1>
 		</div>
 
 		<img src="<c:url value="/resources/logo_reco4social.jpg" />" class="center"/>
@@ -66,7 +72,7 @@ var login_params=
 			class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 			<div class="panel panel-info" >
 	            <div class="panel-heading">
-	                <div class="panel-title text-center">Sign in with your favourite social network</div>
+	                <div class="panel-title text-center">Sign in with your social network account</div>
 	            </div> 			
 
 
