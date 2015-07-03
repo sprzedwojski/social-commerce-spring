@@ -98,13 +98,13 @@
                         <%--FIXME temp hardcode--%>
 
                         <label class="btn btn-default">
-                            <img class="category-icon" src="<c:url value="/resources/img/icon-shoes2.png" />" /><br>
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-shoes.png" />" /><br>
                             <input id="shoes" name="categories[]" type="checkbox" value="shoes"> SHOES
                         </label>
                     </div>
                     <div class="btn-group btn-group-justified" data-toggle="buttons">
                         <label class="btn btn-default">
-                            <img class="category-icon" src="<c:url value="/resources/img/icon-jewellery2.png" />" /><br>
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-jewellery.png" />" /><br>
                             <input id="jewellery" name="categories[]" type="checkbox" value="jewellery"> JEWELLERY
                         </label>
 
@@ -113,11 +113,42 @@
                             <input id="sports" name="categories[]" type="checkbox" value="sports"> SPORTS
                         </label>
 
-                    <%--</ul>--%>
+                        <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-bags.png" />" /><br>
+                            <input id="bags" name="categories[]" type="checkbox" value="bags"> BAGS
+                        </label>
+                    </div>
+                    <div class="btn-group btn-group-justified" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-books.png" />" /><br>
+                            <input id="books" name="categories[]" type="checkbox" value="books"> BOOKS
+                        </label>
 
-                    <%--<label class="btn btn-primary">--%>
-                        <%--<input type="checkbox" name="categories[]"> Option 1--%>
-                    <%--</label>--%>
+                        <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-cars.png" />" /><br>
+                            <input id="cars" name="categories[]" type="checkbox" value="cars"> CARS
+                        </label>
+
+                        <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-movies.png" />" /><br>
+                            <input id="movies" name="categories[]" type="checkbox" value="movies"> MOVIES
+                        </label>
+                    </div>
+                    <div class="btn-group btn-group-justified" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-music.png" />" /><br>
+                            <input id="music" name="categories[]" type="checkbox" value="music"> MUSIC
+                        </label>
+
+                        <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-outdoors.png" />" /><br>
+                            <input id="outdoors" name="categories[]" type="checkbox" value="outdoors"> OUTDOORS
+                        </label>
+
+                        <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-toys.png" />" /><br>
+                            <input id="toys" name="categories[]" type="checkbox" value="toys"> TOYS
+                        </label>
                     </div>
                 <br>
                 <label for="categories[]" class="error"></label>
