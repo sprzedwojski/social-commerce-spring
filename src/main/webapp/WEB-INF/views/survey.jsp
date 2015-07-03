@@ -8,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Survey</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">--%>
+    <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />" />
     <link href="<c:url value="/resources/raty/jquery.raty.css" />" rel="stylesheet" />
     <link rel="stylesheet" href="<c:url value="/resources/css/sticky-footer.css" />" />
     <link rel="stylesheet" href="<c:url value="/resources/css/bootply.css" />" />
@@ -56,7 +57,7 @@
 
         <form action="<c:url value="/survey" />" method="POST" id="next-category">
             <input type="hidden" name="current_category" value="${category.key}"/>
-            <button type="submit" class="btn btn-default">Next</button>
+            <button type="submit" class="btn btn-primary btn-lg pull-right btn-submit-bottom">Next category</button>
         </form>
         </c:forEach>
     </div>

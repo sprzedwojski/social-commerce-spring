@@ -10,7 +10,8 @@ body {
 }
 .footer {
     position: absolute;
-    bottom: 0;
+    /* 3px zamiast 0px bo wtedy znika scrollbar */
+    bottom: 3px;
     width: 100%;
     /* Set the fixed height of the footer here */
     height: 60px;

@@ -49,9 +49,14 @@ var login_params=
 }
 </script>
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">--%>
+
+	<%--<link rel="stylesheet" href="<c:url value="/resources/css/font-awesome.min.css" />" />--%>
+	<link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />" />
 	<link rel="stylesheet" href="<c:url value="/resources/css/sticky-footer.css" />" />
 	<link rel="stylesheet" href="<c:url value="/resources/css/custom.css" />" />
+
+	<%--<link rel="stylesheet" href="<c:url value="/resources/css/reset.css" />" />--%>
 
 </head>
 <body>
@@ -61,12 +66,21 @@ var login_params=
 			<jsp:param name="showLogout" value="false" />
 		</jsp:include>
 
-	<div class="container">
-		<div class="page-header text-center">
-		  <h1>Web Recommender Store <br><small>Login, rate and help make science!</small></h1>
+		<div class="jumbotron text-center">
+			<h1 class="big">Recommender Store</h1>
+			<p>Login, rate and help make science!</p>
+			<%--<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>--%>
 		</div>
 
-		<img src="<c:url value="/resources/logo_reco4social.jpg" />" class="center"/>
+	<div class="container">
+
+
+
+		<%--<div class="page-header text-center">--%>
+		  <%--<h1>Web Recommender Store <br><small>Login, rate and help make science!</small></h1>--%>
+		<%--</div>--%>
+
+		<%--<img src="<c:url value="/resources/logo_reco4social.jpg" />" class="center"/>--%>
 
 		<div id="loginbox" style="margin-top: 50px;"
 			class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">

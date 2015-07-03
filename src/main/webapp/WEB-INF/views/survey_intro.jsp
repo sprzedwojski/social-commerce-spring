@@ -9,7 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Survey</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">--%>
+    <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />" />
     <link href="<c:url value="/resources/raty/jquery.raty.css" />" rel="stylesheet" />
     <link rel="stylesheet" href="<c:url value="/resources/css/sticky-footer.css" />" />
     <link rel="stylesheet" href="<c:url value="/resources/css/bootply.css" />" />
@@ -82,46 +83,46 @@
                 <h3>Choose categories that interest you</h3>
                 <br>
 
-                <div class="btn-group" data-toggle="buttons">
+                <%--<div class="btn-toolbar" role="toolbar">--%>
+                <div class="btn-group btn-group-justified" data-toggle="buttons"> <!--btn-group-justified-->
 
                     <%--<ul>--%>
                         <c:forEach items="${productMap}" var="category">
                             <label class="btn btn-default">
+                                <img class="category-icon" src="<c:url value="/resources/img/icon-${category.key}.png" />" /><br>
                                 <input id="${category.key}" name="categories[]" type="checkbox" value="${category.key}"> ${category.key.toUpperCase()}
                             </label>
+                            <%--<br>--%>
                         </c:forEach>
 
                         <%--FIXME temp hardcode--%>
-                        <%--
-                        <label class="btn btn-default">
-                            <input id="shoes" name="categories[]" type="checkbox" value="shoes"> SHOES
-                        </label>
 
                         <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-shoes2.png" />" /><br>
+                            <input id="shoes" name="categories[]" type="checkbox" value="shoes"> SHOES
+                        </label>
+                    </div>
+                    <div class="btn-group btn-group-justified" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-jewellery2.png" />" /><br>
                             <input id="jewellery" name="categories[]" type="checkbox" value="jewellery"> JEWELLERY
                         </label>
 
                         <label class="btn btn-default">
+                            <img class="category-icon" src="<c:url value="/resources/img/icon-sports.png" />" /><br>
                             <input id="sports" name="categories[]" type="checkbox" value="sports"> SPORTS
                         </label>
-                        --%>
+
                     <%--</ul>--%>
-                    <%--
-                    <label class="btn btn-primary">
-                        <input type="checkbox"> Option 1
-                    </label>
-                    <label class="btn btn-primary">
-                        <input type="checkbox"> Option 2
-                    </label>
-                    <label class="btn btn-primary">
-                        <input type="checkbox"> Option 3
-                    </label>
-                    --%>
-                </div>
+
+                    <%--<label class="btn btn-primary">--%>
+                        <%--<input type="checkbox" name="categories[]"> Option 1--%>
+                    <%--</label>--%>
+                    </div>
                 <br>
                 <label for="categories[]" class="error"></label>
                 <br>
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
             </form>
         </div>
         <%--</div>--%>

@@ -1,4 +1,12 @@
 /* navbar */
 body {
-    padding-top:70px;
+    padding-top:50px;
+}
+
+.btn-submit-bottom {
+    margin-bottom: 30px;
+}
+
+.category-icon {
+    margin: 10px;
 }
