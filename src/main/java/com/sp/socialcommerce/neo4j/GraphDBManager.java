@@ -7,24 +7,34 @@ import com.gigya.socialize.GSResponse;
 import com.sp.socialcommerce.labels.*;
 import com.sp.socialcommerce.models.User;
 import com.sp.socialcommerce.prop.ApplicationProperties;
+import com.sp.socialcommerce.prop.PropertiesConstants;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Configuration
+@PropertySource("classpath:properties/${envTarget:localhost}.properties")
 public class GraphDBManager {
 
-	@Autowired
-	private ApplicationProperties applicationProperties;
+//	@Autowired
+//	private ApplicationProperties applicationProperties;
 
 //	public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
 	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
-//	private final String DB_PATH = applicationProperties.getProperty(PropertiesConstants.NEO4J_PATH);
+
+//	@Value("${neo4j.path}")
+//	private String DB_PATH;
 
 
 	private static final Logger logger = LoggerFactory.getLogger(GraphDBManager.class);
@@ -38,12 +48,18 @@ public class GraphDBManager {
 	private Label productLabel = new Product();
 
 	GraphDatabaseService graphDb;
-	
+
 	public GraphDBManager() {
+//		DB_PATH = applicationProperties.getProperty(PropertiesConstants.NEO4J_PATH);
+//		logger.info("\n\n\n>>>>>>>>>>>>>>>>> DB_PATH:\n" + DB_PATH + "\n\n\n");
 		graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( DB_PATH );
-//		graphDb = new RestGraphDatabase("http://localhost:7474/db/data", "neo4j", "xxxx");
 		registerShutdownHook( graphDb );
 	}
+
+//	@Bean
+//    public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
+//        return new PropertySourcesPlaceholderConfigurer();
+//    }
 	
 	private static void registerShutdownHook( final GraphDatabaseService graphDb )
 	{

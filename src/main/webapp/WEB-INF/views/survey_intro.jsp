@@ -153,7 +153,7 @@
                 <br>
                 <label for="categories[]" class="error"></label>
                 <br>
-                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Start</button>
             </form>
         </div>
         <%--</div>--%>

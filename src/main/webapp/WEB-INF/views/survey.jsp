@@ -57,7 +57,7 @@
 
         <form action="<c:url value="/survey" />" method="POST" id="next-category">
             <input type="hidden" name="current_category" value="${category.key}"/>
-            <button type="submit" class="btn btn-primary btn-lg pull-right btn-submit-bottom">Next category</button>
+            <button type="submit" class="btn btn-primary btn-lg btn-block btn-submit-bottom">${isLast ? 'Finish' : 'Next category'}</button>
         </form>
         </c:forEach>
     </div>

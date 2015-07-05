@@ -29,14 +29,9 @@ public class GigyaService {
 	
 	@Async
 	public void processUser(String UID) {
-//		createUserIfNotExists(UID);
 		getUserData(UID);
 		getUserFriends(UID);
 	}
-	
-//	public void createUserIfNotExists(String UID) {
-//		GDBM.getUserNode(UID);
-//	}	
 	
 	public void getUserData(String UID) {
 		// Step 1 - Defining the request

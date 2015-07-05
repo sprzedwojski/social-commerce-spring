@@ -108,6 +108,7 @@ public class SurveyController {
 
         String nextCategory = categories[0];
         double progress = 0.0;
+        boolean isLast = false;
         if(currentCategory != null) {
             for(int i=0; i<categories.length; i++) {
                 if(categories[i].equals(currentCategory)) {
@@ -121,6 +122,10 @@ public class SurveyController {
                         logger.info("categories.length: " + categories.length);
                         logger.info("(double)i/categories.length: " + (double)i/categories.length);
                         progress = (double)(i+1)/categories.length * 100;
+
+                        if(i+2 == categories.length) {
+                            isLast = true;
+                        }
                     }
                     break;
                 }
@@ -129,11 +134,13 @@ public class SurveyController {
 
         logger.info("nextCategory: " + nextCategory);
         logger.info("progress: " + progress);
+        logger.info("isLast: " + isLast);
 
         Map<String, List<Product>> filteredProductMap = filterCategory(productMap, nextCategory);
 
         modelMap.addAttribute("productMap", filteredProductMap);
         modelMap.addAttribute("progress", progress);
+        modelMap.addAttribute("isLast", isLast);
 
         return "survey";
     }

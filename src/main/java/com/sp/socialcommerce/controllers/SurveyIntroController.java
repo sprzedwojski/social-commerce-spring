@@ -2,6 +2,8 @@ package com.sp.socialcommerce.controllers;
 
 import com.sp.socialcommerce.gigya.ProductRatingsService;
 import com.sp.socialcommerce.labels.Product;
+import com.sp.socialcommerce.prop.ApplicationProperties;
+import com.sp.socialcommerce.prop.PropertiesConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class SurveyIntroController {
     @Autowired
     private ProductRatingsService productRatingsService;
 
+    @Autowired
+    private ApplicationProperties applicationProperties;
+
     @RequestMapping(method = RequestMethod.GET)
     public String surveyPage(ModelMap modelMap, HttpServletRequest request) {
 
@@ -40,8 +45,8 @@ public class SurveyIntroController {
         modelMap.addAttribute("productMap", productMap);
 
         // TODO pobrac i przekazac opis ankiety dla uzytkownikow
-        modelMap.addAttribute("jumboTitle", "Title");
-        modelMap.addAttribute("jumboText", "Jumbo Text");
+        modelMap.addAttribute("jumboTitle", applicationProperties.getProperty(PropertiesConstants.INTRO_TITLE));
+        modelMap.addAttribute("jumboText", applicationProperties.getProperty(PropertiesConstants.INTRO_TEXT));
 
         return "survey_intro";
     }
