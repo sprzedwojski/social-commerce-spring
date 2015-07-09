@@ -35,7 +35,8 @@
                 <h4 class="modal-title">About</h4>
             </div>
             <div class="modal-body">
-                <p>About text.</p>
+                <p>Reco4Social is a recommender systems that works on user's social media information.<br>
+                    To start generating recommendations, it first needs a group of initial ratings of products.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -55,7 +56,18 @@
                 <h4 class="modal-title">Help</h4>
             </div>
             <div class="modal-body">
-                <p>Help text.</p>
+                <p><strong>Select categories of products that interest you
+                    and rate items in those categories.</strong><br>
+                    Imagine no financial limitations - this is about personal preferences only.</p>
+                <p>The scale:<p>
+                <p>
+                <div class="rating-example-modal" data-score="1"></div><br>
+                <div class="rating-example-modal" data-score="2"></div><br>
+                <div class="rating-example-modal" data-score="3"></div><br>
+                <div class="rating-example-modal" data-score="4"></div><br>
+                <div class="rating-example-modal" data-score="5"></div><br>
+                <div class="rating-example-modal" data-score="0"></div><br>
+                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

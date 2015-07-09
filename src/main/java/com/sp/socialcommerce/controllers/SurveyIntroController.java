@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -60,9 +61,21 @@ public class SurveyIntroController {
             logger.info("category selected: " + cat);
         }
 
-        // TODO zapisanie wyborów uzytkownika (w sesji? w bazie?)
-        request.getSession().setAttribute("categories", categories);
+        HttpSession session = request.getSession();
+
+        // To prevent problems with the user going back
+        for(String attr : new String[]{"categories", "productMap" , "progress", "isLast"}) {
+            removeAttributeIfExists(attr, session);
+        }
+
+        session.setAttribute("categories", categories);
 
         return "redirect:survey";
+    }
+
+    public void removeAttributeIfExists(String attr, HttpSession session) {
+        if(session.getAttribute(attr) != null) {
+            session.removeAttribute(attr);
+        }
     }
 }

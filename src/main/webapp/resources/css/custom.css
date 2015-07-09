@@ -11,6 +11,6 @@ body {
     margin: 10px;
 }
 
-/*.margin-from-top {*/
-    /*margin-top: 20px;*/
-/*}*/
+.rating-scale {
+    margin-left: 20px;
+}

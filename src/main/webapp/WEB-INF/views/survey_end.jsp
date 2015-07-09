@@ -47,11 +47,13 @@
     </div>
 </div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="text-muted">Created by <a href="mailto:szymon.przedwojski@gmail.com" target="_top">Szymon Przedwojski</a> at <a href="http://amg.net.pl" target="_blank">AMG.net</a></p>
-    </div>
-</footer>
+<jsp:include page="../templates/footer.jsp"/>
+
+<%--<footer class="footer">--%>
+    <%--<div class="container">--%>
+        <%--<p class="text-muted">Created by <a href="mailto:szymon.przedwojski@gmail.com" target="_top">Szymon Przedwojski</a> at <a href="http://amg.net.pl" target="_blank">AMG.net</a></p>--%>
+    <%--</div>--%>
+<%--</footer>--%>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
