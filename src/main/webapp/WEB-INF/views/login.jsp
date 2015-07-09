@@ -109,10 +109,10 @@ var login_params=
 			</div>
 		</div>
 		</div>
-		
-	</div>
-	
-	
+
+
+    </div>
+
 	<%--<form id="get_user_data_form" action="/socialcommerce/getUserData" th:action="@{/}" th:object="${user}" method="post">--%>
 		<%--<input type="text" name="UID" id="UID" th:field="*{UID}" th:object="${user}" /> --%>
 		<%--<input type="submit" value="getUserData" />--%>

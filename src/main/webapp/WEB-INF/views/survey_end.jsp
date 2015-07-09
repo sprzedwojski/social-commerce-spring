@@ -38,7 +38,10 @@
         <div class="jumbotron">
             <h1>The end</h1>
             <p>${jumboText}</p>
-            <p><a class="btn btn-primary btn-lg" href="<c:url value="/survey_intro" />" role="button">Once again!</a></p>
+            <p>
+                <a class="btn btn-primary btn-lg" href="<c:url value="/survey_intro" />" role="button">Once again!</a>
+                <a class="btn btn-primary btn-lg" href="<c:url value="/logout" />" role="button">Logout</a>
+            </p>
         </div>
 
     </div>

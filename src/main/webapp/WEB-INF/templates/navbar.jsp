@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!-- Fixed navbar -->
-<nav class="navbar navbar-default navbar-fixed-top"> <!--navbar-static-top-->
+
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -10,37 +10,57 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="#">Reco4Social</a>
-            <%--<img src="<c:url value="/resources/logo_reco4social.jpg" />"/>--%>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <%--<li class="active"><a href="#">Home</a></li>--%>
-                <%--<li><a href="#about">About</a></li>--%>
-                <%--<li><a href="#help">Help</a></li>--%>
-                <%--<li><a href="#problem">Report problem</a></li>--%>
-                <%--<li class="dropdown">--%>
-                    <%--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>--%>
-                    <%--<ul class="dropdown-menu">--%>
-                        <%--<li><a href="#">Action</a></li>--%>
-                        <%--<li><a href="#">Another action</a></li>--%>
-                        <%--<li><a href="#">Something else here</a></li>--%>
-                        <%--<li role="separator" class="divider"></li>--%>
-                        <%--<li class="dropdown-header">Nav header</li>--%>
-                        <%--<li><a href="#">Separated link</a></li>--%>
-                        <%--<li><a href="#">One more separated link</a></li>--%>
-                    <%--</ul>--%>
-                <%--</li>--%>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#about">About</a></li>
-                <li><a href="#help">Help</a></li>
-                <li><a href="#problem">Report problem</a></li>
+                <li><a href="" data-toggle="modal" data-target="#aboutModal">About</a></li>
+                <li><a href="" data-toggle="modal" data-target="#helpModal">Help</a></li>
+                <li><a href="mailto:szymon.przedwojski@gmail.com" target="_top">Report problem</a></li>
                 <c:if test="${param.showLogout}">
-                    <li><a href="<c:url value="/logout" />" >Logout</a></li> <!--class="btn" style="float: right"-->
+                    <li><a href="<c:url value="/logout" />" >Logout</a></li>
                 </c:if>
-                <%--<li><a href="../navbar-static-top/">Static top</a></li>--%>
-                <%--<li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>--%>
             </ul>
-        </div><!--/.nav-collapse -->
+        </div>
     </div>
 </nav>
+
+<div id="aboutModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">About</h4>
+            </div>
+            <div class="modal-body">
+                <p>About text.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div id="helpModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Help</h4>
+            </div>
+            <div class="modal-body">
+                <p>Help text.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
