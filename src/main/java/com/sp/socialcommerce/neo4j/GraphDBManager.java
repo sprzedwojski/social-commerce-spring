@@ -6,18 +6,12 @@ import com.gigya.socialize.GSObject;
 import com.gigya.socialize.GSResponse;
 import com.sp.socialcommerce.labels.*;
 import com.sp.socialcommerce.models.User;
-import com.sp.socialcommerce.prop.ApplicationProperties;
-import com.sp.socialcommerce.prop.PropertiesConstants;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -455,7 +449,9 @@ public class GraphDBManager {
 			while(iterator.hasNext()) {
 				pNode = (Node)iterator.next();
 				Product product = new Product();
-				product.setNamePl(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_PL).toString());
+                if(pNode.hasProperty(GraphConstants.Product.PRODUCT_NAME_PL)) {
+                    product.setNamePl(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_PL).toString());
+                }
 				product.setNameEn(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_EN).toString());
 				if(pNode.hasProperty(GraphConstants.Product.PRODUCT_DESC_PL)) {
 					product.setDescriptionPl(pNode.getProperty(GraphConstants.Product.PRODUCT_DESC_PL).toString());
