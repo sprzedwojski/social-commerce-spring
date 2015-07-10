@@ -6,7 +6,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Survey</title>
+    <title>Reco4Social</title>
+    <link rel="shortcut icon" type="image/x-icon" href="<c:url value="/resources/img/favicon.ico" />" />
 
     <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
     <link href="<c:url value="/resources/raty/jquery.raty.css" />" rel="stylesheet"/>
@@ -28,13 +29,16 @@
 
         <p>${jumboText}</p>
 
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+        <p>
+            <a class="btn btn-primary btn-lg" href="" data-toggle="modal" data-target="#aboutModal">Learn more</a>
+            <button id="btn-scroll2start" class="btn btn-primary btn-lg" role="button">Go for it!</button>
+        </p>
     </div>
 
-    <div class="jumbotron">
+    <div class="jumbotron" id="category-chooser">
         <form action="<c:url value="/survey_intro" />" method="POST" id="categories-form">
 
-            <h3>Choose categories that interest you</h3>
+            <h3>Choose categories that interest you</h3><h5>(At least 3, the more the better)</h5>
             <br>
 
             <c:forEach items="${productMap}" var="category" varStatus="status">
@@ -91,12 +95,18 @@
             rules: {
                 'categories[]': {
                     required: true,
-                    minlength: 2
+                    minlength: 3
                 }
             },
             messages: {
-                'categories[]': "Please select at least 2 categories."
+                'categories[]': "Please select at least 3 categories."
             }
+        });
+
+        $("#btn-scroll2start").click(function() {
+            $('html, body').animate({
+                scrollTop: $("#category-chooser").offset().top
+            }, 600);
         });
     });
 </script>

@@ -5,11 +5,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <%--<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">--%>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Survey</title>
+    <title>Reco4Social</title>
+    <link rel="shortcut icon" type="image/x-icon" href="<c:url value="/resources/img/favicon.ico" />" />
 
-    <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">--%>
     <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />" />
     <link href="<c:url value="/resources/raty/jquery.raty.css" />" rel="stylesheet" />
     <link rel="stylesheet" href="<c:url value="/resources/css/sticky-footer.css" />" />
@@ -19,10 +18,6 @@
 <body>
 
 <jsp:include page="../templates/navbar.jsp"/>
-
-<%--<div class="container">--%>
-    <%--<a href="<c:url value="/logout" />" class="btn" style="float: right">Logout</a>--%>
-<%--</div>--%>
 
 <img src="<c:url value="/resources/logo_reco4social.jpg" />" class="center"/>
 
@@ -36,10 +31,13 @@
         </div>
 
         <div class="jumbotron">
-            <h1>The end</h1>
-            <p>${jumboText}</p>
+            <h1>Thank you!</h1>
             <p>
-                <a class="btn btn-primary btn-lg" href="<c:url value="/survey_intro" />" role="button">Once again!</a>
+                I really appreciate your help in getting Reco4Social started.<br>
+                Make sure to come back here around September and check out for yourself how the recommendation engine works.
+            </p>
+            <p>
+                <a class="btn btn-primary btn-lg" href="<c:url value="/survey_intro" />" role="button">Rate more!</a>
                 <a class="btn btn-primary btn-lg" href="<c:url value="/logout" />" role="button">Logout</a>
             </p>
         </div>
@@ -49,21 +47,16 @@
 
 <jsp:include page="../templates/footer.jsp"/>
 
-<%--<footer class="footer">--%>
-    <%--<div class="container">--%>
-        <%--<p class="text-muted">Created by <a href="mailto:szymon.przedwojski@gmail.com" target="_top">Szymon Przedwojski</a> at <a href="http://amg.net.pl" target="_blank">AMG.net</a></p>--%>
-    <%--</div>--%>
-<%--</footer>--%>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/additional-methods.js"></script>
 <script type="text/javascript" src="<c:url value="/resources/raty/jquery.raty.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/my_raty.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/my_raty_example.js" />"></script>
+<script type="text/javascript" src="<c:url value="/resources/js/my_raty_common.js" />"></script>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+/*    $(document).ready(function() {
         $(':input:checked').parent('.btn').addClass('active');
         $("[name='categories']").change(function() {
             if(this.checked) {
@@ -87,7 +80,7 @@
                 'categories[]': "Please select at least 2 categories."
             }
         });
-    });
+    });*/
 </script>
 </body>
 </html>

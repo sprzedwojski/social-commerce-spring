@@ -2,6 +2,7 @@ package com.sp.socialcommerce.controllers;
 
 import java.util.Locale;
 
+import com.sp.socialcommerce.prop.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,9 @@ public class LoginController {
 		}
 
 		model.addAttribute("user", new User() );
-		
+		model.addAttribute("sitename", Properties.GIGYA_SITENAME);
+		model.addAttribute("apikey", Properties.GIGYA_API_KEY);
+
 		return "login";
 	}
 	
@@ -55,15 +58,5 @@ public class LoginController {
 		gigyaService.processUser(user.getUID());
 		return "redirect:survey_intro";
 	}
-	
-//	@RequestMapping(value = "/getUserData", method = RequestMethod.POST)
-//	public String getUserData(@ModelAttribute User user, Locale locale, Model model) {
-//		model.addAttribute("user", user);
-//		logger.info(">> Inside getUserData");
-//
-//		gigyaService.getUserData(user.getUID());
-//		gigyaService.getUserFriends(user.getUID());
-//		return "redirect:survey";
-//	}
 	
 }

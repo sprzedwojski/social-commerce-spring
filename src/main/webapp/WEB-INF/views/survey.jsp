@@ -6,7 +6,8 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Survey</title>
+    <title>Reco4Social::Survey</title>
+    <link rel="shortcut icon" type="image/x-icon" href="<c:url value="/resources/img/favicon.ico" />" />
 
     <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
     <link href="<c:url value="/resources/raty/jquery.raty.css" />" rel="stylesheet"/>

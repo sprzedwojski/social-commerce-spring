@@ -6,6 +6,7 @@ import com.gigya.socialize.GSObject;
 import com.gigya.socialize.GSResponse;
 import com.sp.socialcommerce.labels.*;
 import com.sp.socialcommerce.models.User;
+import com.sp.socialcommerce.prop.Properties;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.slf4j.Logger;
@@ -21,16 +22,6 @@ import java.util.*;
 @PropertySource("classpath:properties/${envTarget:localhost}.properties")
 public class GraphDBManager {
 
-//	@Autowired
-//	private ApplicationProperties applicationProperties;
-
-//	public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
-	public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
-
-//	@Value("${neo4j.path}")
-//	private String DB_PATH;
-
-
 	private static final Logger logger = LoggerFactory.getLogger(GraphDBManager.class);
 
 	private Label politicalViewLabel = new PoliticalView();
@@ -44,16 +35,9 @@ public class GraphDBManager {
 	GraphDatabaseService graphDb;
 
 	public GraphDBManager() {
-//		DB_PATH = applicationProperties.getProperty(PropertiesConstants.NEO4J_PATH);
-//		logger.info("\n\n\n>>>>>>>>>>>>>>>>> DB_PATH:\n" + DB_PATH + "\n\n\n");
-		graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( DB_PATH );
+		graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( Properties.DB_PATH );
 		registerShutdownHook( graphDb );
 	}
-
-//	@Bean
-//    public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
-//        return new PropertySourcesPlaceholderConfigurer();
-//    }
 	
 	private static void registerShutdownHook( final GraphDatabaseService graphDb )
 	{
@@ -72,10 +56,6 @@ public class GraphDBManager {
 
 	public void processUserResponse(GSResponse response) {
 		String UID = response.getString(GraphConstants.User.UID, "uid");
-//		String firstName = response.getString(GraphConstants.User.FIRST_NAME, "first_name");
-//		String lastName = response.getString(GraphConstants.User.LAST_NAME, "last_name");
-//		logger.info("firstName: " + firstName);
-//		logger.info("lastName: " + lastName);
 		
 		String userName = response.getString(GraphConstants.User.USER_NICKNAME, null);
 
