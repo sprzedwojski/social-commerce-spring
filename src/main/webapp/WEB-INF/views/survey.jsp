@@ -43,11 +43,22 @@
             <div class="productsrow ${category.key}">
                 <c:forEach items="${category.value}" var="product">
                     <div class="product menu-category ${product.category}">
-                        <a href="${product.productUrl}" target="_blank" class="menu-item list-group-item" rel="tooltip"
-                           title="${product.descriptionEn}">
-                            <span class="badge">${product.price} &euro;</span>
-                            ${product.nameEn}
-                        </a>
+                        <c:choose>
+                            <c:when test="${not empty product.productUrl}">
+                                <a href="${product.productUrl}" target="_blank" class="menu-item list-group-item" rel="tooltip"
+                                   title="${product.descriptionEn}">
+                                    <span class="badge">${product.price} &euro;</span>
+                                        ${product.nameEn}
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="menu-item list-group-item" rel="tooltip"
+                                   title="${product.descriptionEn}">
+                                    <span class="badge">${product.price} &euro;</span>
+                                        ${product.nameEn}
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
 
                         <div class="product-image">
                             <img class="product-image menu-item list-group-item" src="${product.imageUrl}">

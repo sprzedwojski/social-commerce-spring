@@ -9,6 +9,7 @@ import com.sp.socialcommerce.models.User;
 import com.sp.socialcommerce.prop.Properties;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.unsafe.impl.batchimport.cache.MemoryStatsVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -24,13 +25,70 @@ public class GraphDBManager {
 
 	private static final Logger logger = LoggerFactory.getLogger(GraphDBManager.class);
 
-	private Label politicalViewLabel = new PoliticalView();
-	private Label religionLabel = new Religion();
-	private Label userLabel = new User();
-	private Label cityLabel = new City();
-	private Label pageLabel = new Page();
-	private Label pageCategoryLabel = new PageCategory();
-	private Label productLabel = new Product();
+	Label politicalViewLabel = new PoliticalView();
+	Label religionLabel = new Religion();
+	Label userLabel = new User();
+	Label cityLabel = new City();
+	Label pageLabel = new Page();
+	Label pageCategoryLabel = new PageCategory();
+	Label productLabel = new Product();
+	Label favoriteLabel = new Favorite();
+	Label favoriteCategoryLabel = new FavoriteCategory();
+	Label educationLevelLabel = new EducationLevel();
+
+	IObjectProcessor educationProcessor, workProcessor;
+
+	{
+		educationProcessor = new ObjectProcessorImpl("school",
+				new String[]{"startYear"},
+				new HashMap<String, RelationshipType>() {{
+					put("schoolType", GraphConstants.RelTypes.IS_OF_TYPE);
+				}},
+				new Label() {
+					@Override
+					public String name() {
+						return "School";
+					}
+				},
+				GraphConstants.RelTypes.ATTENDED
+		);
+		workProcessor = new ObjectProcessorImpl("companyID",
+				new String[]{"company", "title", "startDate"},
+				new HashMap<String, RelationshipType>() {{
+				}},
+				new Label() {
+					@Override
+					public String name() {
+						return "Work";
+					}
+				},
+				GraphConstants.RelTypes.WORKED_IN
+		);
+	}
+
+	IUserResponseProcessor[] processors = {
+		new SimpleProcessor(GraphConstants.City.CITY_KEY, GraphConstants.City.CITY_NAME, cityLabel, GraphConstants.RelTypes.LIVES_IN),
+		new SimpleProcessor(GraphConstants.Hometown.HOMETOWN_KEY, GraphConstants.City.CITY_NAME, cityLabel, GraphConstants.RelTypes.WAS_BORN_IN),
+		new SimpleProcessor("gender", "name", new Label() {
+			@Override
+			public String name() {
+				return "Gender";
+			}
+		}, GraphConstants.RelTypes.IS_OF_GENDER),
+		new SimpleProcessor("relationshipStatus", "name", new Label() {
+				@Override
+				public String name() {
+					return "RelationshipStatus";
+				}
+			}, GraphConstants.RelTypes.HAS_RELATIONSHIP_STATUS),
+		new SimpleProcessor(GraphConstants.Religion.RELIGION_KEY, GraphConstants.Religion.RELIGION_NAME, religionLabel, GraphConstants.RelTypes.FOLLOWS_RELIGION),
+		new SimpleProcessor(GraphConstants.PoliticalView.POLITICAL_VIEW_KEY, GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewLabel, GraphConstants.RelTypes.HAS_POLITICAL_VIEW),
+		new SimpleProcessor(GraphConstants.EducationLevel.EDUCATION_LEVEL_KEY, GraphConstants.EducationLevel.EDUCATION_LEVEL_NAME, educationLevelLabel, GraphConstants.RelTypes.HAS_EDUCATION_LEVEL),
+		new ArrayProcessor(GraphConstants.Education.EDUCATION_KEY, educationProcessor),
+		new ArrayProcessor(GraphConstants.Work.WORK_KEY, workProcessor),
+		new FavoritesProcessor(),
+		new PagesProcessor()
+	};
 
 	GraphDatabaseService graphDb;
 
@@ -62,115 +120,100 @@ public class GraphDBManager {
 		Node user = getUserNode(UID, userName);
 
 		// CITY
-		String cityName = response.getString(GraphConstants.City.CITY_KEY, null);
-		logger.info("city: " + cityName);
-
-		if(cityName != null) {
-			Node city = getCityNode(cityName);
-
-			if (!hasNodeRelationshipType(user, GraphConstants.RelTypes.LIVES_IN)) {
-				createRelationship(user, city, GraphConstants.RelTypes.LIVES_IN);
-			} else {
-				logger.info(GraphConstants.RelTypes.LIVES_IN + " relationship already exists.");
-			}
-		}
-
+//		String cityName = response.getString(GraphConstants.City.CITY_KEY, null);
+//		logger.info("city: " + cityName);
+//
+//		if(cityName != null) {
+//			Node city = getCityNode(cityName);
+//
+//			if (!hasNodeRelationshipType(user, GraphConstants.RelTypes.LIVES_IN)) {
+//				createRelationship(user, city, GraphConstants.RelTypes.LIVES_IN);
+//			} else {
+//				logger.info(GraphConstants.RelTypes.LIVES_IN + " relationship already exists.");
+//			}
+//		}
+//		cityProcessor.run(response, this, user);
 
 		// RELIGION
-		String religionName = response.getString(GraphConstants.Religion.RELIGION_KEY, null);
-		logger.info("religion: " + religionName);
+//		String religionName = response.getString(GraphConstants.Religion.RELIGION_KEY, null);
+//		logger.info("religion: " + religionName);
+//
+//		if(religionName != null) {
+//			Node religion = getNode(religionLabel, GraphConstants.Religion.RELIGION_NAME, religionName);
+//			if (religion == null) {
+//				String[][] religionProperties = { {GraphConstants.Religion.RELIGION_NAME, religionName} };
+//				religion = createNode(religionLabel, religionProperties);
+//			}
+//
+//			if (!hasNodeRelationshipType(user, GraphConstants.RelTypes.FOLLOWS_RELIGION)) {
+//				createRelationship(user, religion, GraphConstants.RelTypes.FOLLOWS_RELIGION);
+//			} else {
+//				logger.info(GraphConstants.RelTypes.FOLLOWS_RELIGION + " relationship already exists.");
+//			}
+//		}
+//		religionProcessor.run(response, this, user);
 
-		if(religionName != null) {
-			Node religion = getNode(religionLabel, GraphConstants.Religion.RELIGION_NAME, religionName);
-			if (religion == null) {
-				String[][] religionProperties = { {GraphConstants.Religion.RELIGION_NAME, religionName} };
-				religion = createNode(religionLabel, religionProperties);
-			}
-
-			if (!hasNodeRelationshipType(user, GraphConstants.RelTypes.FOLLOWS_RELIGION)) {
-				createRelationship(user, religion, GraphConstants.RelTypes.FOLLOWS_RELIGION);
-			} else {
-				logger.info(GraphConstants.RelTypes.FOLLOWS_RELIGION + " relationship already exists.");
-			}
-		}
-		
 		
 		// POLITICAL VIEW
-		String politicalViewName = response.getString(GraphConstants.PoliticalView.POLITICAL_VIEW_KEY, null);
-		logger.info("political view: " + politicalViewName);
-		
-		if(politicalViewName != null) {
-			Node politicalView = getNode(politicalViewLabel, GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewName);
-			
-			if (politicalView == null) {
-				String[][] politicalViewProperties = { {GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewName} };
-				politicalView = createNode(politicalViewLabel, politicalViewProperties);
-			}
-			
-			if (!hasNodeRelationshipType(user, GraphConstants.RelTypes.HAS_POLITICAL_VIEW)) {
-				createRelationship(user, politicalView, GraphConstants.RelTypes.HAS_POLITICAL_VIEW);
-			} else {
-				logger.info(GraphConstants.RelTypes.HAS_POLITICAL_VIEW + " relationship already exists.");
-			}
+//		String politicalViewName = response.getString(GraphConstants.PoliticalView.POLITICAL_VIEW_KEY, null);
+//		logger.info("political view: " + politicalViewName);
+//
+//		if(politicalViewName != null) {
+//			Node politicalView = getNode(politicalViewLabel, GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewName);
+//
+//			if (politicalView == null) {
+//				String[][] politicalViewProperties = { {GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewName} };
+//				politicalView = createNode(politicalViewLabel, politicalViewProperties);
+//			}
+//
+//			if (!hasNodeRelationshipType(user, GraphConstants.RelTypes.HAS_POLITICAL_VIEW)) {
+//				createRelationship(user, politicalView, GraphConstants.RelTypes.HAS_POLITICAL_VIEW);
+//			} else {
+//				logger.info(GraphConstants.RelTypes.HAS_POLITICAL_VIEW + " relationship already exists.");
+//			}
+//		}
+
+		/* HOMETOWN --> simple */
+//		String hometown = response.getString(GraphConstants.Hometown.HOMETOWN_KEY, null);
+//		logger.info("hometown: " + hometown);
+
+		/*education, work,  favorites*/
+
+		logger.info("Start processors.");
+
+		for(IUserResponseProcessor processor : processors) {
+			processor.run(response, this, user);
 		}
-		
+
+		logger.info("End processors.");
+
+
+		/* EDUCATION --> advanced */
+//		String education = response.getString(GraphConstants.Education.EDUCATION_KEY, null);
+//		logger.info("education: " + education);
+
+		/* EDUCATION LEVEL --> simple */
+//		String educationLevel = response.getString(GraphConstants.EducationLevel.EDUCATION_LEVEL_KEY, null);
+//		logger.info("education level: " + educationLevel);
+
+		/* WORK --> advanced */
+//		String work = response.getString(GraphConstants.Work.WORK_KEY, null);
+//		logger.info("work: " + work);
+
+		// DONE gender
+
+		// DONE relationshipStatus
+
+		// TODO languages (?) moze to juz olac...
+
+		/* FAVORITES */
+//		new FavoritesProcessor().run(response, this, user);
+
+
 		logger.info("starting processing pages...");
-		
-		
+
 		// PAGES
-		GSArray pages = response.getArray(GraphConstants.LIKES_KEY, null);
-		
-		try {
-			if (pages != null) {
-				logger.info("likes: " + pages.toString());
-				
-				List<String> existingUserPagesIds = getUserPagesIds(user);
-				
-				GSObject row = null;
-				String id, name, category;
-				for(int i=0; i<pages.length(); i++) {
-					row = pages.getObject(i);
-					id = (String)row.get(GraphConstants.Page.PAGE_ID);
-					category = (String)row.get(GraphConstants.PageCategory.PAGE_CATEGORY_KEY);
-					name = (String)row.get(GraphConstants.Page.PAGE_NAME);
-					logger.info(" >> page: " + id + ", " + name + ", " + category);
-					
-//					logger.info("existingUserPagesIds: " + existingUserPagesIds.toString());
-					
-					if(!existingUserPagesIds.contains(id)) {
-//						logger.info("[Inside page]");
-						Node page = getNode(pageLabel, GraphConstants.Page.PAGE_ID, id);
-						if(page == null) {
-							String[][] pageProperties = {
-									{GraphConstants.Page.PAGE_ID, id},
-									{GraphConstants.Page.PAGE_NAME, name}
-							};
-							page = createNode(pageLabel, pageProperties);
-							
-							Node pageCategory = getNode(pageCategoryLabel, GraphConstants.PageCategory.PAGE_CATEGORY_NAME, category);
-							if(pageCategory == null) {
-								String[][] pageCategoryProperties = { {GraphConstants.PageCategory.PAGE_CATEGORY_NAME, category} };
-								pageCategory = createNode(pageCategoryLabel, pageCategoryProperties);
-							}
-							
-							createRelationship(page, pageCategory, GraphConstants.RelTypes.HAS_CATEGORY);							
-							logger.info("Page " + name + " and its category (" + category + ") created.");
-						} else {
-							logger.info("Page " + name + " already exists.");
-						}
-						
-						createRelationship(user, page, GraphConstants.RelTypes.LIKES);
-					} else {
-						logger.info("User is already connected to page: " + name);
-					}
-				}
-			} else {
-				logger.info("pages is NULL");
-			}
-		} catch (GSKeyNotFoundException e) {
-			e.printStackTrace();
-		}
-		logger.info("pages processing ended.");
+//		new PagesProcessor().run(response, this, user);
 
 	}
 
@@ -229,7 +272,22 @@ public class GraphDBManager {
 		}
 	}
 
-	public List<String> getUserPagesIds(Node node) {
+	public List<String> getRelatedNodesIds(Node node, RelationshipType relType, String relatedNodeIdPropertyName) {
+		try (Transaction tx = graphDb.beginTx()) {
+			List<String> ids = new ArrayList<String>();
+			Iterable<Relationship> nodeRelationships = node.getRelationships(relType);
+			Iterator<Relationship> it = nodeRelationships.iterator();
+			while(it.hasNext()) {
+				Relationship relationship = (Relationship)it.next();
+				Node otherNode = relationship.getOtherNode(node);
+				String id = (String)otherNode.getProperty(relatedNodeIdPropertyName);
+				ids.add(id);
+			}
+			return ids;
+		}
+	}
+
+	/*public List<String> getRelatedNodesIds(Node node) {
 		try (Transaction tx = graphDb.beginTx()) {
 			List<String> ids = new ArrayList<String>();
 			Iterable<Relationship> pages = node.getRelationships(GraphConstants.RelTypes.LIKES);
@@ -242,8 +300,23 @@ public class GraphDBManager {
 			}
 			return ids;
 		}
-	}
-	
+	}*/
+/*
+	public List<String> getUserFavoritesIds(Node node) {
+		try (Transaction tx = graphDb.beginTx()) {
+			List<String> ids = new ArrayList<String>();
+			Iterable<Relationship> favorites = node.getRelationships(GraphConstants.RelTypes.FAVORITES);
+			Iterator<Relationship> it = favorites.iterator();
+			while(it.hasNext()) {
+				Relationship relationship = (Relationship)it.next();
+				Node page = relationship.getOtherNode(node);
+				String id = (String)page.getProperty(GraphConstants.Page.PAGE_ID);
+				ids.add(id);
+			}
+			return ids;
+		}
+	}*/
+
 	public List<String> getUserFriendsIds(Node node) {
 		try (Transaction tx = graphDb.beginTx()) {
 			List<String> ids = new ArrayList<String>();
@@ -366,12 +439,15 @@ public class GraphDBManager {
 				node.setProperty(paramRow[0], paramRow[1]);
 			}
 			tx.success();
+			logger.info("node created: " + label.name());
+//			logger.info(String.format("Created node: %s [%s: %s]" + label.name(),
+//					parameters.length > 0 ? parameters[0][0] : "", parameters.length > 0 ? parameters[0][1] : ""));
 
 			return node;
 		}
 	}
 
-	public Relationship createRelationship(Node from, Node to, RelationshipType type) {
+	Relationship createRelationship(Node from, Node to, RelationshipType type) {
 		try ( Transaction tx = graphDb.beginTx() ) {
 			Relationship relationship = from.createRelationshipTo(to, type);
 			tx.success();
@@ -420,7 +496,7 @@ public class GraphDBManager {
 					Node product = rating.getOtherNode(user);
 					userProductRatings.put(Integer.parseInt(product.getProperty(GraphConstants.Product.PRODUCT_ID).toString()),
 							rating.getProperty(GraphConstants.Rates.RATING_VALUE).toString());
-					logger.info("Setting userProductRating...");
+//					logger.info("Setting userProductRating...");
 				}
 			}
 
@@ -462,7 +538,7 @@ public class GraphDBManager {
 
 				products.add(product);
 
-				logger.info("Product added.");
+//				logger.info("Product added.");
 			}
 
 			logger.info("Fetched all products.");

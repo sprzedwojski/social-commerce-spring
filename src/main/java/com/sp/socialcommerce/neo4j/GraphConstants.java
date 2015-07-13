@@ -9,12 +9,27 @@ public abstract class GraphConstants {
 
     public static enum RelTypes implements RelationshipType
     {
-        LIVES_IN, FOLLOWS_RELIGION, HAS_POLITICAL_VIEW, LIKES, KNOWS, HAS_CATEGORY, RATES
+        LIVES_IN,               /* User -> City */
+        FOLLOWS_RELIGION,       /* User -> Religion */
+        HAS_POLITICAL_VIEW,     /* User -> PoliticalView */
+        LIKES,                  /* User -> Page */
+        KNOWS,                  /* User -> User */
+        HAS_CATEGORY,           /* Product -> ProductCategory */
+        RATES,                  /* User -> Product */
+        FAVORITES,              /* User -> Favorite */
+        WAS_BORN_IN,            /* User -> City */
+        HAS_EDUCATION_LEVEL,    /* User -> EducationLevel */
+        IS_OF_TYPE,             /* School -> SchoolType */
+        ATTENDED,               /* User -> School */
+        WORKED_IN,              /* User -> Work */
+        IS_OF_GENDER,           /* User -> Gender */
+        HAS_RELATIONSHIP_STATUS /* User -> RelationshipStatus */
     }
 
 //    public static final String NAME = "name";
     public static final String LIKES_KEY = "likes";
-    
+    public static final String GENERIC_NODE_NAME_PARAM = "name";
+
     public abstract class User {
         public static final String USER_LABEL = "User";
         public static final String UID = "UID";
@@ -40,6 +55,43 @@ public abstract class GraphConstants {
     	public static final String POLITICAL_VIEW_KEY = "politicalView";
     	public static final String POLITICAL_VIEW_LABEL = "PoliticalView";
     	public static final String POLITICAL_VIEW_NAME = "name";
+    }
+
+    public abstract class Hometown {
+        public static final String HOMETOWN_KEY = "hometown";
+        public static final String HOMETOWN_LABEL = "Hometown";
+        public static final String HOMETOWN_NAME = "name";
+    }
+
+    public abstract class Education {
+        public static final String EDUCATION_KEY = "education";
+        public static final String EDUCATION_LABEL = "Education";
+        public static final String EDUCATION_NAME = "name";
+    }
+
+    public abstract class EducationLevel {
+        public static final String EDUCATION_LEVEL_KEY = "educationLevel";
+        public static final String EDUCATION_LEVEL_LABEL = "EducationLevel";
+        public static final String EDUCATION_LEVEL_NAME = "name";
+    }
+
+    public abstract class Work {
+        public static final String WORK_KEY = "work";
+        public static final String WORK_LABEL = "Work";
+        public static final String WORK_NAME = "name";
+    }
+
+    public abstract class Favorite {
+        public static final String FAVORITES_KEY = "favorites";
+        public static final String FAVORITE_LABEL = "Favorite";
+        public static final String FAVORITE_ID = "id";
+        public static final String FAVORITE_NAME = "name";
+    }
+
+    public abstract class FavoriteCategory {
+        public static final String FAVORITE_CATEGORY_KEY = "category";
+        public static final String FAVORITE_CATEGORY_LABEL = "FavoriteCategory";
+        public static final String FAVORITE_CATEGORY_NAME = "name";
     }
     
     public abstract class Page {

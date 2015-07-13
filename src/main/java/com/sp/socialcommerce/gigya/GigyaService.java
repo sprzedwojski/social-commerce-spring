@@ -48,7 +48,7 @@ public class GigyaService {
 		// Step 2 - Adding parameters
 		request.setParam("uid", UID);  // set the "uid" parameter to user's ID
 		request.setParam("extraFields", "religion, politicalView, likes, languages, relationshipStatus," +
-				"hometown, education, work,  favorites");
+				"hometown, education, educationLevel, work, favorites");
 		/*address, industry, specialties, skills,*/
 
 		request.setAPIDomain("eu1.gigya.com");
