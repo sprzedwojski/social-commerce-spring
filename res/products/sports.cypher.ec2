@@ -1,0 +1,5 @@
+LOAD CSV WITH HEADERS FROM "file:///home/ec2-user/spring/social-commerce-spring/res/products/sports.csv" AS c
+MERGE (category:ProductCategory { name: c.category })
+CREATE (product:Product { id: c.id, name_pl: c.name_pl, name_en: c.name_en, description_pl: c.description_pl,
+description_en: c.description_en, price_eur: toInt(c.price_eur), img_url: c.img_url, product_url: c.product_url})
+CREATE (product)-[:HAS_CATEGORY]->(category)

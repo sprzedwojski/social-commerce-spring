@@ -16,7 +16,9 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="" data-toggle="modal" data-target="#aboutModal">About</a></li>
-                <li><a href="" data-toggle="modal" data-target="#helpModal">Help</a></li>
+                <c:if test="${param.showHelp}">
+                    <li><a href="" data-toggle="modal" data-target="#helpModal">Help</a></li>
+                </c:if>
                 <li><a href="mailto:szymon.przedwojski@gmail.com" target="_top">Report problem</a></li>
                 <c:if test="${param.showLogout}">
                     <li><a href="<c:url value="/logout" />" >Logout</a></li>

@@ -18,6 +18,7 @@
 <body>
 
 <jsp:include page="../templates/navbar.jsp">
+    <jsp:param name="showHelp" value="true"/>
     <jsp:param name="showLogout" value="true"/>
 </jsp:include>
 
