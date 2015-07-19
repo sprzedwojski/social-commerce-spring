@@ -12,7 +12,7 @@ public class Properties {
     public static final String GIGYA_SITENAME = "localhost.com";
 
     /* AWS */
-//    public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-test/";
+//    public static final String DB_PATH = "/home/ec2-user/neo4j/neo4j-prod/";
 //    public static final String GIGYA_API_KEY = "3_Voo2zFJ8wiFw7Mjd2UWjdsGjX5xNOF-Sf9wj_ilQWk4MKEcav_2fsr28Ag2gTwvM";
 //    public static final String GIGYA_SITENAME = "store.przedwojski.com";
 }
