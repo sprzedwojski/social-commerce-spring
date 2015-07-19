@@ -48,15 +48,19 @@
                             <c:when test="${not empty product.productUrl}">
                                 <a href="${product.productUrl}" target="_blank" class="menu-item list-group-item" rel="tooltip"
                                    title="${product.descriptionEn}">
-                                    <span class="badge">${product.price} &euro;</span>
-                                        ${product.nameEn}
+                                    <c:if test="${product.price > 0.0}">
+                                        <span class="badge">${product.price} &euro;</span>
+                                    </c:if>
+                                    ${product.nameEn}
                                 </a>
                             </c:when>
                             <c:otherwise>
                                 <div class="menu-item list-group-item" rel="tooltip"
                                    title="${product.descriptionEn}">
-                                    <span class="badge">${product.price} &euro;</span>
-                                        ${product.nameEn}
+                                    <c:if test="${product.price > 0.0}">
+                                        <span class="badge">${product.price} &euro;</span>
+                                    </c:if>
+                                    ${product.nameEn}
                                 </div>
                             </c:otherwise>
                         </c:choose>

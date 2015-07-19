@@ -37,11 +37,19 @@
     </div>
 
     <div class="jumbotron" id="category-chooser">
-        <form action="<c:url value="/survey_intro" />" method="POST" id="categories-form">
+
 
             <h3>Choose categories that interest you</h3><h5>(At least 3, the more the better)</h5>
             <br>
 
+            <%--<label class="btn">
+                <input id="check-all" type="checkbox"> Check all
+            </label>--%>
+            <button id="check-all" class="btn btn-primary"
+                    onclick="$('#categories-form input:unchecked').closest('label').click();">Check all</button>
+
+            <br><br>
+        <form action="<c:url value="/survey_intro" />" method="POST" id="categories-form">
             <c:forEach items="${productMap}" var="category" varStatus="status">
                 <c:if test="${status.index % 3 == 0}">
                     <div class="btn-group btn-group-justified" data-toggle="buttons">
@@ -81,7 +89,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(':input:checked').parent('.btn').addClass('active');
-        $("[name='categories']").change(function () {
+        $("[name='categories[]']").change(function () {
             if (this.checked) {
                 this.setAttribute("checked", "checked");
                 this.checked = true;
