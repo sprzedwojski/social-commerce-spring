@@ -19,7 +19,8 @@
                 <c:if test="${param.showHelp}">
                     <li><a href="" data-toggle="modal" data-target="#helpModal">Help</a></li>
                 </c:if>
-                <li><a href="mailto:szymon.przedwojski@gmail.com" target="_top">Report problem</a></li>
+                <%--<li><a href="mailto:szymon.przedwojski@gmail.com" target="_top">Report problem</a></li>--%>
+                <li><a href="http://goo.gl/forms/BCrBnky4K8" target="_blank">Report problem</a></li>
                 <c:if test="${param.showLogout}">
                     <li><a href="<c:url value="/logout" />" >Logout</a></li>
                 </c:if>
@@ -37,8 +38,12 @@
                 <h4 class="modal-title">About</h4>
             </div>
             <div class="modal-body">
-                <p>Reco4Social is a recommender system that works on user's social media information.<br>
-                    To start generating recommendations, it first needs a group of initial ratings of products.</p>
+                <p>Reco4Social is my master thesis project. It is a recommender system using the collaborative filtering approach, enhanced by data from social media.<br>
+                    The aim is to reduce two common problems of such systems: cold start and data sparsity.<br>
+                </p>
+                <p>
+                    Users' data will be analyzed to find similarities between them, and then recommend products that were highly rated by people with similar interests.<br>
+                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

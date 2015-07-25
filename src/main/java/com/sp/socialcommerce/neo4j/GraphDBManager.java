@@ -114,70 +114,9 @@ public class GraphDBManager {
 
 	public void processUserResponse(GSResponse response) {
 		String UID = response.getString(GraphConstants.User.UID, "uid");
-		
 		String userName = response.getString(GraphConstants.User.USER_NICKNAME, null);
 
-		Node user = getUserNode(UID, userName);
-
-		// CITY
-//		String cityName = response.getString(GraphConstants.City.CITY_KEY, null);
-//		logger.info("city: " + cityName);
-//
-//		if(cityName != null) {
-//			Node city = getCityNode(cityName);
-//
-//			if (!hasNodeRelationshipType(user, GraphConstants.RelTypes.LIVES_IN)) {
-//				createRelationship(user, city, GraphConstants.RelTypes.LIVES_IN);
-//			} else {
-//				logger.info(GraphConstants.RelTypes.LIVES_IN + " relationship already exists.");
-//			}
-//		}
-//		cityProcessor.run(response, this, user);
-
-		// RELIGION
-//		String religionName = response.getString(GraphConstants.Religion.RELIGION_KEY, null);
-//		logger.info("religion: " + religionName);
-//
-//		if(religionName != null) {
-//			Node religion = getNode(religionLabel, GraphConstants.Religion.RELIGION_NAME, religionName);
-//			if (religion == null) {
-//				String[][] religionProperties = { {GraphConstants.Religion.RELIGION_NAME, religionName} };
-//				religion = createNode(religionLabel, religionProperties);
-//			}
-//
-//			if (!hasNodeRelationshipType(user, GraphConstants.RelTypes.FOLLOWS_RELIGION)) {
-//				createRelationship(user, religion, GraphConstants.RelTypes.FOLLOWS_RELIGION);
-//			} else {
-//				logger.info(GraphConstants.RelTypes.FOLLOWS_RELIGION + " relationship already exists.");
-//			}
-//		}
-//		religionProcessor.run(response, this, user);
-
-		
-		// POLITICAL VIEW
-//		String politicalViewName = response.getString(GraphConstants.PoliticalView.POLITICAL_VIEW_KEY, null);
-//		logger.info("political view: " + politicalViewName);
-//
-//		if(politicalViewName != null) {
-//			Node politicalView = getNode(politicalViewLabel, GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewName);
-//
-//			if (politicalView == null) {
-//				String[][] politicalViewProperties = { {GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewName} };
-//				politicalView = createNode(politicalViewLabel, politicalViewProperties);
-//			}
-//
-//			if (!hasNodeRelationshipType(user, GraphConstants.RelTypes.HAS_POLITICAL_VIEW)) {
-//				createRelationship(user, politicalView, GraphConstants.RelTypes.HAS_POLITICAL_VIEW);
-//			} else {
-//				logger.info(GraphConstants.RelTypes.HAS_POLITICAL_VIEW + " relationship already exists.");
-//			}
-//		}
-
-		/* HOMETOWN --> simple */
-//		String hometown = response.getString(GraphConstants.Hometown.HOMETOWN_KEY, null);
-//		logger.info("hometown: " + hometown);
-
-		/*education, work,  favorites*/
+		Node user = getUserNode(UID, userName, response == null ? null : response.toString());
 
 		logger.info("Start processors.");
 
@@ -187,34 +126,7 @@ public class GraphDBManager {
 
 		logger.info("End processors.");
 
-
-		/* EDUCATION --> advanced */
-//		String education = response.getString(GraphConstants.Education.EDUCATION_KEY, null);
-//		logger.info("education: " + education);
-
-		/* EDUCATION LEVEL --> simple */
-//		String educationLevel = response.getString(GraphConstants.EducationLevel.EDUCATION_LEVEL_KEY, null);
-//		logger.info("education level: " + educationLevel);
-
-		/* WORK --> advanced */
-//		String work = response.getString(GraphConstants.Work.WORK_KEY, null);
-//		logger.info("work: " + work);
-
-		// DONE gender
-
-		// DONE relationshipStatus
-
-		// TODO languages (?) moze to juz olac...
-
-		/* FAVORITES */
-//		new FavoritesProcessor().run(response, this, user);
-
-
 		logger.info("starting processing pages...");
-
-		// PAGES
-//		new PagesProcessor().run(response, this, user);
-
 	}
 
 	public void processUserFriendsResponse(String UID, GSResponse response) {
@@ -287,36 +199,6 @@ public class GraphDBManager {
 		}
 	}
 
-	/*public List<String> getRelatedNodesIds(Node node) {
-		try (Transaction tx = graphDb.beginTx()) {
-			List<String> ids = new ArrayList<String>();
-			Iterable<Relationship> pages = node.getRelationships(GraphConstants.RelTypes.LIKES);
-			Iterator<Relationship> it = pages.iterator();
-			while(it.hasNext()) {
-				Relationship relationship = (Relationship)it.next();
-				Node page = relationship.getOtherNode(node);
-				String id = (String)page.getProperty(GraphConstants.Page.PAGE_ID);
-				ids.add(id);
-			}
-			return ids;
-		}
-	}*/
-/*
-	public List<String> getUserFavoritesIds(Node node) {
-		try (Transaction tx = graphDb.beginTx()) {
-			List<String> ids = new ArrayList<String>();
-			Iterable<Relationship> favorites = node.getRelationships(GraphConstants.RelTypes.FAVORITES);
-			Iterator<Relationship> it = favorites.iterator();
-			while(it.hasNext()) {
-				Relationship relationship = (Relationship)it.next();
-				Node page = relationship.getOtherNode(node);
-				String id = (String)page.getProperty(GraphConstants.Page.PAGE_ID);
-				ids.add(id);
-			}
-			return ids;
-		}
-	}*/
-
 	public List<String> getUserFriendsIds(Node node) {
 		try (Transaction tx = graphDb.beginTx()) {
 			List<String> ids = new ArrayList<String>();
@@ -332,41 +214,13 @@ public class GraphDBManager {
 		}		
 	}
 	
-//	public Node getUserNode(String UID) {
-//		try ( Transaction tx = graphDb.beginTx() ) {
-//			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
-//			tx.success();
-//			if (user == null) {
-//				logger.info("User not found. Creating new user.");
-//				return createUserNode(UID);
-//			} else {
-//				logger.info("Existing user found.");
-//				return user;
-//			}
-//		}
-//	}
-	
-//	public Node getUserNode(String UID, String fName, String lName) {
-//		try ( Transaction tx = graphDb.beginTx() ) {
-//			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
-//			tx.success();
-//			if (user == null) {
-//				logger.info("User not found. Creating new user.");
-//				return createUserNode(UID, fName, lName);
-//			} else {
-//				logger.info("Existing user found.");
-//				return user;
-//			}
-//		}
-//	}
-	
-	public Node getUserNode(String UID, String name) {
+	public Node getUserNode(String UID, String name, String response) {
 		try ( Transaction tx = graphDb.beginTx() ) {
 			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
 			tx.success();
 			if (user == null) {
 				logger.info("User not found. Creating new user.");
-				return createUserNode(UID, name);
+				return createUserNode(UID, name, response);
 			} else {
 				logger.info("Existing user found.");
 				return user;
@@ -387,33 +241,16 @@ public class GraphDBManager {
 			}
 		}
 	}
-
-//	public Node createUserNode(String UID) {
-//		String[][] userProperties = { {GraphConstants.User.UID, UID} };
-//		return createNode(userLabel, userProperties);
-//	}
 	
-//	public Node createUserNode(String UID, String fName, String lName) {
-//		try ( Transaction tx = graphDb.beginTx() ) {
-//			String userName = fName + " " + lName;
-//			Node node = graphDb.createNode();
-//			node.addLabel(userLabel);
-//			node.setProperty(GraphConstants.User.UID, UID);
-//			node.setProperty(GraphConstants.User.USER_NAME, userName);
-//			tx.success();
-//			logger.info("User node created successfully (" + userName + ")");
-//
-//			return node;
-//		}
-//	}
-	
-	public Node createUserNode(String UID, String name) {
+	public Node createUserNode(String UID, String name, String response) {
 		try ( Transaction tx = graphDb.beginTx() ) {
-//			String userName = fName + " " + lName;
 			Node node = graphDb.createNode();
 			node.addLabel(userLabel);
 			node.setProperty(GraphConstants.User.UID, UID);
 			node.setProperty(GraphConstants.User.USER_NAME, name);
+			if(response != null) {
+				node.setProperty(GraphConstants.User.USER_GIGYA_RESPONSE, response);
+			}
 			tx.success();
 			logger.info("User node created successfully (" + name + ")");
 
@@ -547,10 +384,6 @@ public class GraphDBManager {
 			return products;
 		}
 	}
-
-//	public List<Product> getAllProductsWithRatingsForUser(String uid) {
-//
-//	}
 
 	/**
 	 * Not efficient. Iterating over all RATES relationships during each rating.
