@@ -1,3 +1,4 @@
+/*
 function rateProductAjax(prod_id, score, category) {
     console.log("category: " + category);
     console.log("category.toString: " + category.toString());
@@ -25,4 +26,4 @@ $(document).ready(function(){
             rateProductAjax(this.id, score, $(".product-category").attr('data-category'));
         }
     });
-});
+});*/

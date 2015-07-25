@@ -46,7 +46,7 @@
                 <input id="check-all" type="checkbox"> Check all
             </label>--%>
             <button id="check-all" class="btn btn-primary"
-                    onclick="$('#categories-form input:unchecked').closest('label').click();">Check all</button>
+                    onclick="$('#categories-form input:unchecked').closest('label').click();">Choose all</button>
 
             <br><br>
         <form action="<c:url value="/survey_intro" />" method="POST" id="categories-form">

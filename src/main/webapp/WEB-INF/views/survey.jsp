@@ -91,7 +91,37 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="<c:url value="/resources/raty/jquery.raty.js" />"></script>
-<script type="text/javascript" src="<c:url value="/resources/js/my_raty_survey.js" />"></script>
+<%--<script type="text/javascript" src="<c:url value="/resources/js/my_raty_survey.js" />"></script>--%>
+<script>
+    function rateProductAjax(prod_id, score, category) {
+        console.log("category: " + category);
+        console.log("category.toString: " + category.toString());
+
+        $.ajax({
+            type: 'POST',
+            url : '<c:url value="/survey/rate" />',
+            data: "prod_id=" + prod_id + "&score=" + score + "&category=" + category.toString()
+        });
+    }
+
+    $(document).ready(function(){
+        $('.rating').raty({
+            cancel  : true,
+            path: "resources/raty/images/",
+            starOff : 'star-off-big.png',
+            starOn  : 'star-on-big.png',
+            cancelOff: 'cancel-off-big.png',
+            cancelOn: 'cancel-on-big.png',
+            hints: ['hate it', 'not bad', 'ok', 'like it', 'love it'],
+            score: function() {
+                return $(this).attr('data-score');
+            },
+            click: function(score, evt) {
+                rateProductAjax(this.id, score, $(".product-category").attr('data-category'));
+            }
+        });
+    });
+</script>
 <script type="text/javascript" src="<c:url value="/resources/js/my_raty_example.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/my_raty_common.js" />"></script>
 

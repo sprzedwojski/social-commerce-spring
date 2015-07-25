@@ -37,7 +37,7 @@
                 <h4 class="modal-title">About</h4>
             </div>
             <div class="modal-body">
-                <p>Reco4Social is a recommender systems that works on user's social media information.<br>
+                <p>Reco4Social is a recommender system that works on user's social media information.<br>
                     To start generating recommendations, it first needs a group of initial ratings of products.</p>
             </div>
             <div class="modal-footer">
