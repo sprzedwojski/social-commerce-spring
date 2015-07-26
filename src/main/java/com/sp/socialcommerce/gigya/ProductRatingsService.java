@@ -41,7 +41,7 @@ public class ProductRatingsService {
         Map<String, List<Product>> productsByCategories;
         productsByCategories = GDBM.getAllProductsByCategories(uid);
         filterCategories(productsByCategories, categories);
-        System.out.println("filtered categories: " + productsByCategories.toString());
+//        System.out.println("filtered categories: " + productsByCategories.toString());
 //        }
     	return productsByCategories;
     }

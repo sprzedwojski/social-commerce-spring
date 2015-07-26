@@ -42,7 +42,7 @@
                     The aim is to reduce two common problems of such systems: cold start and data sparsity.<br>
                 </p>
                 <p>
-                    Users' data will be analyzed to find similarities between them, and then recommend products that were highly rated by people with similar interests.<br>
+                    Users' data will be analyzed to find similarities between them and then recommend products that were highly rated by people with similar interests.<br>
                 </p>
             </div>
             <div class="modal-footer">

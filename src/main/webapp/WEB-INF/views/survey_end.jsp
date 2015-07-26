@@ -38,7 +38,7 @@
             </p>
             <p>
                 <a class="btn btn-primary btn-lg" href="<c:url value="/survey_intro" />" role="button">Rate more!</a>
-                <a class="btn btn-primary btn-lg" href="<c:url value="/logout" />" role="button">Logout</a>
+                <a class="btn btn-primary btn-lg" href="<c:url value="/logout" />" role="button">I'm done</a>
             </p>
         </div>
 
@@ -55,32 +55,5 @@
 <script type="text/javascript" src="<c:url value="/resources/js/my_raty_example.js" />"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/my_raty_common.js" />"></script>
 
-<script type="text/javascript">
-/*    $(document).ready(function() {
-        $(':input:checked').parent('.btn').addClass('active');
-        $("[name='categories']").change(function() {
-            if(this.checked) {
-                this.setAttribute("checked", "checked");
-                this.checked = true;
-            } else {
-                this.setAttribute("checked", ""); // For IE
-                this.removeAttribute("checked"); // For other browsers
-                this.checked = false;
-            }
-        });
-
-        $("#categories-form").validate({
-            rules: {
-                'categories[]': {
-                    required: true,
-                    minlength: 2
-                }
-            },
-            messages: {
-                'categories[]': "Please select at least 2 categories."
-            }
-        });
-    });*/
-</script>
 </body>
 </html>
