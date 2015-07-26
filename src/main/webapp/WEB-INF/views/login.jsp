@@ -103,7 +103,6 @@
 
     $(window).load(function () {
         $('.gigya-login-footer').css('display', 'none');
-        console.log("window load");
     });
 </script>
 
