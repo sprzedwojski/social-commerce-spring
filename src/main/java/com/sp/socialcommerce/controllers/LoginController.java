@@ -58,5 +58,10 @@ public class LoginController {
 		gigyaService.processUser(user.getUID());
 		return "redirect:survey_intro";
 	}
+
+	@RequestMapping(value = "/login/test", method = RequestMethod.POST)
+	public void testUser(String uid){
+		gigyaService.processUser(uid);
+	}
 	
 }

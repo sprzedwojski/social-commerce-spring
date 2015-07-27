@@ -81,7 +81,10 @@
         </div>
     </div>
 
-
+    <div style="display: none;">
+        <input id="custom_uid" type="text"/>
+        <button id="submit_custom_uid">Submit</button>
+    </div>
 </div>
 
 <jsp:include page="../templates/footer.jsp"/>
@@ -104,6 +107,18 @@
     $(window).load(function () {
         $('.gigya-login-footer').css('display', 'none');
     });
+</script>
+
+<script type="text/javascript">
+    $("#submit_custom_uid").click(function() {
+        $.ajax({
+            type: 'POST',
+            url : '<c:url value="/login/test" />',
+            data: "uid=" + $("#custom_uid").val()
+        });
+    });
+
+
 </script>
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
