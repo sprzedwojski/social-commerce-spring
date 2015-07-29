@@ -21,7 +21,7 @@ public class ArrayProcessor implements IUserResponseProcessor {
     @Override
     public void run(GSResponse response, GraphDBManager dbManager, Node user) {
 
-        GSArray array = response.getArray(responseKey, null);
+        GSArray array = response.getArray(responseKey, new GSArray());
         logger.info(responseKey + ": " + array.toString());
 
         Iterator<Object> iterator = array.iterator();
