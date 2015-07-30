@@ -9,7 +9,6 @@ import com.sp.socialcommerce.models.User;
 import com.sp.socialcommerce.prop.Properties;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.unsafe.impl.batchimport.cache.MemoryStatsVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;

@@ -76,6 +76,7 @@
                     <input type="hidden" name="signatureTimestamp" id="signatureTimestamp"
                            th:field="*{signatureTimestamp}"/>
                     <input type="hidden" name="UIDSignature" id="UIDSignature" th:field="*{UIDSignature}"/>
+                    <input type="hidden" name="userInfo" id="userInfo" th:field="*{userInfo}"/>
                 </form>
             </div>
         </div>
@@ -97,8 +98,21 @@
                 eventObj.signatureTimestamp);
         document.getElementById("UIDSignature").setAttribute("value",
                 eventObj.UIDSignature);
+        /*$("#login_form").submit();*/
+
+        gigya.socialize.getUserInfo({
+            callback:GetUserInfo,
+            extraFields:"likes"
+        })
+    }
+
+    function GetUserInfo(eventObj) {
+        console.log(eventObj);
+        document.getElementById("userInfo").setAttribute("value", eventObj);
+
         $("#login_form").submit();
     }
+
     gigya.socialize.addEventHandlers({
         onLogin: GetUID
     });

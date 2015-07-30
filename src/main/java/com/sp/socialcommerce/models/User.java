@@ -8,6 +8,7 @@ public class User implements Label{
 	private String UID;
 	private String signatureTimestamp;
 	private String UIDSignature;
+	private String userInfo;
 	
 	public String getUID() {
 		return UID;
@@ -26,6 +27,14 @@ public class User implements Label{
 	}
 	public void setUIDSignature(String UIDSignature) {
 		this.UIDSignature = UIDSignature;
+	}
+
+	public String getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(String userInfo) {
+		this.userInfo = userInfo;
 	}
 
 	@Override
