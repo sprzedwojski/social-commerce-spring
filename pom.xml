@@ -59,7 +59,7 @@
 		</dependency>
 
         <!-- Facebook -->
-        <dependency>
+<!--        <dependency>
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-core</artifactId>
             <version>1.1.2.RELEASE</version>
@@ -68,9 +68,15 @@
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-facebook</artifactId>
             <version>2.0.1.RELEASE</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.restfb</groupId>
+            <artifactId>restfb</artifactId>
+            <version>1.14.0</version>
         </dependency>
 
-		<dependency>
+
+        <dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib</artifactId>
 			<version>2.2.2</version>

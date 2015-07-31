@@ -16,6 +16,7 @@
             margin-left: auto;
             margin-right: auto;
         }
+
     </style>
 
     <!-- gigya.js script should only be included once -->
@@ -54,6 +55,7 @@
             if (response.status === 'connected') {
                 // Logged into your app and Facebook.
                 testAPI();
+                submitPage(response);
             } else if (response.status === 'not_authorized') {
                 // The person is logged into Facebook, but not your app.
                 document.getElementById('status').innerHTML = 'Please log ' +
@@ -77,7 +79,12 @@
 
         window.fbAsyncInit = function() {
             FB.init({
-                appId      : '846404535443906',
+                /* PROD */
+                /*appId      : '846404535443906',*/
+
+                /* TEST */
+                appId      : '891425247608501',
+
                 cookie     : true,  // enable cookies to allow the server to access
                                     // the session
                 xfbml      : true,  // parse social plugins on this page
@@ -121,6 +128,13 @@
                         'Thanks for logging in, ' + response.name + '!';
             });
         }
+
+        function submitPage(response) {
+            console.log(response.authResponse.accessToken);
+
+            document.getElementById("accessToken").setAttribute("value", response.authResponse.accessToken);
+            $("#login_form").submit();
+        }
     </script>
 
 
@@ -152,28 +166,30 @@
             </div>
 
             <div style="padding-top:30px" class="panel-body">
-                <div id="componentDiv" style="margin:auto"></div>
+                <%--<div id="componentDiv" style="margin:auto"></div>--%>
+
+                <!--
+                Below we include the Login Button social plugin. This button uses
+                the JavaScript SDK to present a graphical Login button that triggers
+                the FB.login() function when clicked.
+                -->
+
+                <fb:login-button
+                        scope="public_profile,user_relationship_details,user_hometown,user_likes,user_religion_politics,user_location"
+                        onlogin="checkLoginState();">
+                </fb:login-button>
+
+                <div id="status"></div>
 
                 <form id="login_form" action="#" th:action="@{/}" th:object="${user}" method="post">
-                    <input type="hidden" name="UID" id="UID" th:field="*{UID}"/>
+                    <%--<input type="hidden" name="UID" id="UID" th:field="*{UID}"/>
                     <input type="hidden" name="signatureTimestamp" id="signatureTimestamp"
                            th:field="*{signatureTimestamp}"/>
-                    <input type="hidden" name="UIDSignature" id="UIDSignature" th:field="*{UIDSignature}"/>
+                    <input type="hidden" name="UIDSignature" id="UIDSignature" th:field="*{UIDSignature}"/>--%>
+                    <input type="hidden" name="accessToken" id="accessToken" th:field="*{accessToken}"/>
                 </form>
             </div>
         </div>
-    </div>
-
-    <!--
-    Below we include the Login Button social plugin. This button uses
-    the JavaScript SDK to present a graphical Login button that triggers
-    the FB.login() function when clicked.
-    -->
-
-    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-    </fb:login-button>
-
-    <div id="status">
     </div>
 
     <div style="display: none;">

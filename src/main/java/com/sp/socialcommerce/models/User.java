@@ -4,8 +4,18 @@ import com.sp.socialcommerce.neo4j.GraphConstants;
 import org.neo4j.graphdb.Label;
 
 public class User implements Label{
-	
-	private String UID;
+
+    private String accessToken;
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    private String UID;
 	private String signatureTimestamp;
 	private String UIDSignature;
 	
