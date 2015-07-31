@@ -174,12 +174,15 @@
                 the FB.login() function when clicked.
                 -->
 
-                <fb:login-button
-                        scope="public_profile,user_relationship_details,user_hometown,user_likes,user_religion_politics,user_location"
-                        onlogin="checkLoginState();">
-                </fb:login-button>
+                <center>
+                    <fb:login-button
+                            scope="public_profile,user_relationship_details,user_hometown,user_likes,user_religion_politics,user_location"
+                            onlogin="checkLoginState();"
+                            size="large">
+                    </fb:login-button>
 
-                <div id="status"></div>
+                    <div id="status"></div>
+                </center>
 
                 <form id="login_form" action="#" th:action="@{/}" th:object="${user}" method="post">
                     <%--<input type="hidden" name="UID" id="UID" th:field="*{UID}"/>
