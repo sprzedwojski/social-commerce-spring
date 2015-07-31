@@ -37,8 +37,10 @@
             , containerID: 'componentDiv'
             , UIConfig: '<config><body><controls><snbuttons buttonsize="65" /></controls></body></config>'
             , autoDetectUserProviders: ''
-            , facepilePosition: 'none'
+            , facepilePosition: 'none',
+            extraFields: 'religion,politicalView,likes,relationshipStatus,hometown'
         }
+        /*languages,education,work,favorites,educationLevel,*/
     </script>
 
     <link rel="stylesheet" href="<c:url value="/resources/css/bootstrap.min.css" />"/>
