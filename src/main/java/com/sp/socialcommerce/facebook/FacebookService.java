@@ -160,8 +160,9 @@ public class FacebookService {
 				logger.info("count total:" + counter);*/
 
 				logger.info("Searching for 'after'...");
-				if(jsonObject.getJsonObject("paging") != null)
-					if(jsonObject.getJsonObject("cursors") != null)
+
+				if(jsonObject.has("paging"))
+					if(jsonObject.getJsonObject("paging").has("cursors"))
 						after = (String) jsonObject.getJsonObject("paging").getJsonObject("cursors").get("after");
 				logger.info("After: " + after);
 
