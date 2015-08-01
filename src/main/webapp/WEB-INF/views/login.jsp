@@ -179,7 +179,7 @@
                     <fb:login-button
                             scope="public_profile,user_relationship_details,user_hometown,user_likes,user_religion_politics,user_location"
                             onlogin="checkLoginState();"
-                            size="large">
+                            size="xlarge">
                     </fb:login-button>
 
                     <div id="status"></div>

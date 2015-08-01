@@ -114,8 +114,7 @@ public class SurveyController {
             for(int i=0; i<categories.length; i++) {
                 if(categories[i].equals(currentCategory)) {
                     if(categories.length <= i+1) {
-                        // FIXME redirect na strone zakonczenia
-                        logger.info("redirect to survey_intro");
+                        logger.info("redirect to survey_end");
                         return "redirect:survey_end";
                     } else {
                         nextCategory = categories[i+1];

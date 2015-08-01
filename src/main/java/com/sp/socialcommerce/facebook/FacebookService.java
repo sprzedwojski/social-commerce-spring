@@ -12,6 +12,7 @@ import com.sp.socialcommerce.neo4j.GraphDBManager;
 import com.sp.socialcommerce.prop.ApplicationProperties;
 import com.sp.socialcommerce.prop.Properties;
 import org.apache.commons.lang.StringUtils;
+import org.neo4j.cypher.internal.compiler.v2_0.functions.Str;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ public class FacebookService {
 	public static final String MAP_USER_HOMETOWN = "userHometown";
 	public static final String MAP_USER_LOCATION = "userLocation";
 	public static final String MAP_USER_GENDER = "userGender";
+
+	public static final String MAP_PROLONGED_TOKEN = "prolongedToken";
 	
 	@Autowired
 	private ApplicationProperties applicationProperties;
@@ -165,6 +168,23 @@ public class FacebookService {
 
 			responseMap.put(MAP_USER_FRIENDS, friendsArrayList);
 
+
+
+			// ==============================
+			// PROLONG TOKEN
+			// ==============================
+
+			JsonObject prolongedToken = facebookClient.fetchObject("oauth/access_token", JsonObject.class,
+					Parameter.with("grant_type", "fb_exchange_token"),
+					Parameter.with("client_id", Properties.FB_APP_ID),
+					Parameter.with("client_secret", Properties.FB_APP_SECRET),
+					Parameter.with("fb_exchange_token", accessToken));
+
+			logger.info("prolongedToken: " + prolongedToken.toString());
+
+			if(prolongedToken != null && prolongedToken.has("access_token")) {
+				responseMap.put(MAP_PROLONGED_TOKEN, prolongedToken.get("access_token"));
+			}
 
 		} catch (FacebookJsonMappingException e) {
 			// Looks like this API method didn't really return a list of users

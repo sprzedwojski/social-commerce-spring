@@ -129,7 +129,8 @@ public class GraphDBManager {
 
 		com.restfb.types.User userProfile = (com.restfb.types.User)responseMap.get(FacebookService.MAP_USER_PROFILE);
 
-		Node user = getUserNode(userProfile.getId(), userProfile.getName(), null);
+		Node user = getUserNode(userProfile.getId(), userProfile.getName(),
+				responseMap.containsKey(FacebookService.MAP_PROLONGED_TOKEN) ? (String) responseMap.get(FacebookService.MAP_PROLONGED_TOKEN) : null);
 
 		logger.info("Start processors.");
 
@@ -229,13 +230,13 @@ public class GraphDBManager {
 		}		
 	}
 	
-	public Node getUserNode(String UID, String name, String response) {
+	public Node getUserNode(String UID, String name, String prolongedToken) {
 		try ( Transaction tx = graphDb.beginTx() ) {
 			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
 			tx.success();
 			if (user == null) {
 				logger.info("User not found. Creating new user.");
-				return createUserNode(UID, name, response);
+				return createUserNode(UID, name, prolongedToken);
 			} else {
 				logger.info("Existing user found.");
 				return user;
@@ -257,14 +258,14 @@ public class GraphDBManager {
 		}
 	}
 	
-	public Node createUserNode(String UID, String name, String response) {
+	public Node createUserNode(String UID, String name, String prolongedToken) {
 		try ( Transaction tx = graphDb.beginTx() ) {
 			Node node = graphDb.createNode();
 			node.addLabel(userLabel);
 			node.setProperty(GraphConstants.User.UID, UID);
 			node.setProperty(GraphConstants.User.USER_NAME, name);
-			if(response != null) {
-				node.setProperty(GraphConstants.User.USER_GIGYA_RESPONSE, response);
+			if(prolongedToken != null) {
+				node.setProperty(FacebookService.MAP_PROLONGED_TOKEN, prolongedToken);
 			}
 			tx.success();
 			logger.info("User node created successfully (" + name + ")");
