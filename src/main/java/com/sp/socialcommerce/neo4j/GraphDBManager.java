@@ -240,6 +240,7 @@ public class GraphDBManager {
 				user = createUserNode(UID, name, prolongedToken);
 			} else {
 				logger.info("Existing user found.");
+				logger.info("Prolonged token: " + prolongedToken);
 
 				if(prolongedToken != null) {
 					String dbProlongedToken = null;
