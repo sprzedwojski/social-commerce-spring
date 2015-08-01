@@ -152,11 +152,19 @@ public class FacebookService {
 					break;
 				}
 
+				logger.info("Adding friendsArray to list...");
 				likesArrayList.add(friendsArray);
-				counter += friendsArray.length();
+
+				/*counter += friendsArray.length();*/
 				/*logger.info("friends array: " + friendsArray.toString());
 				logger.info("count total:" + counter);*/
-				after = (String) jsonObject.getJsonObject("paging").getJsonObject("cursors").get("after");
+
+				logger.info("Searching for 'after'...");
+				if(jsonObject.getJsonObject("paging") != null)
+					if(jsonObject.getJsonObject("cursors") != null)
+						after = (String) jsonObject.getJsonObject("paging").getJsonObject("cursors").get("after");
+				logger.info("After: " + after);
+
 			} while(StringUtils.isNotBlank(after));
 
 			/*FIXME TEMP TEST*/
