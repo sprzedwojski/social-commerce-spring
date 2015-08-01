@@ -61,7 +61,7 @@ public class GigyaService {
 		    logger.info("Success in getUserInfo operation.");
 		    logger.info(response.toString());
 
-			GDBM.processUserResponse(response);
+			/*GDBM.processUserResponse(response);*/
 		} 
 		else 
 		{  // Error
@@ -92,7 +92,7 @@ public class GigyaService {
 			logger.info("Success in getFriendsInfo operation.");
 			logger.info(response.toString());
 			
-			GDBM.processUserFriendsResponse(UID, response);
+			/*GDBM.processUserFriendsResponse(UID, response);*/
 		}
 		else
 		{  // Error

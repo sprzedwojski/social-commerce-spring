@@ -1,6 +1,7 @@
 package com.sp.socialcommerce.controllers;
 
-import com.sp.socialcommerce.gigya.ProductRatingsService;
+import com.sp.socialcommerce.facebook.FacebookService;
+import com.sp.socialcommerce.neo4j.ProductRatingsService;
 import com.sp.socialcommerce.labels.Product;
 import com.sp.socialcommerce.prop.ApplicationProperties;
 import com.sp.socialcommerce.prop.PropertiesConstants;
@@ -35,12 +36,14 @@ public class SurveyIntroController {
     public String surveyPage(ModelMap modelMap, HttpServletRequest request) {
 
         // If the user is not logged in, we do not allow him to see the survey
-        if(request.getSession().getAttribute("uid") == null) {
+        if(request.getSession().getAttribute(FacebookService.USER_ID) == null
+                || request.getSession().getAttribute(FacebookService.USER_ACCESS_TOKEN) == null) {
             return "redirect:login";
         }
 
 //        List<Product> productList = productRatingsService.getProducts(request.getSession().getAttribute("uid").toString());
-        Map<String, List<Product>> productMap = productRatingsService.getProductsByCategories(request.getSession().getAttribute("uid").toString());
+        Map<String, List<Product>> productMap = productRatingsService.getProductsByCategories(
+                request.getSession().getAttribute(FacebookService.USER_ID).toString());
 
 //        modelMap.addAttribute("productList", productList);
         modelMap.addAttribute("productMap", productMap);

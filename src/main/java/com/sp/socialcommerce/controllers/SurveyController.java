@@ -1,8 +1,7 @@
 package com.sp.socialcommerce.controllers;
 
-import com.sp.socialcommerce.gigya.ProductRatingsService;
 import com.sp.socialcommerce.labels.Product;
-import org.apache.commons.lang.StringUtils;
+import com.sp.socialcommerce.neo4j.ProductRatingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

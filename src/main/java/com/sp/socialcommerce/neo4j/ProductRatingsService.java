@@ -1,15 +1,12 @@
-package com.sp.socialcommerce.gigya;
+package com.sp.socialcommerce.neo4j;
+
+import com.sp.socialcommerce.labels.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
-
-import com.sp.socialcommerce.labels.Product;
-import com.sp.socialcommerce.neo4j.GraphDBManager;
 
 /**
  * Class responsible for handling products rating process.

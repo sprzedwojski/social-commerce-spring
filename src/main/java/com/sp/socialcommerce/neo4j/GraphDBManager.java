@@ -4,6 +4,9 @@ import com.gigya.socialize.GSArray;
 import com.gigya.socialize.GSKeyNotFoundException;
 import com.gigya.socialize.GSObject;
 import com.gigya.socialize.GSResponse;
+import com.restfb.json.JsonArray;
+import com.restfb.json.JsonObject;
+import com.sp.socialcommerce.facebook.FacebookService;
 import com.sp.socialcommerce.labels.*;
 import com.sp.socialcommerce.models.User;
 import com.sp.socialcommerce.prop.Properties;
@@ -36,7 +39,7 @@ public class GraphDBManager {
 	Label favoriteCategoryLabel = new FavoriteCategory();
 	Label educationLevelLabel = new EducationLevel();
 
-	IObjectProcessor educationProcessor, workProcessor;
+	/*IObjectProcessor educationProcessor, workProcessor;
 
 	{
 		educationProcessor = new ObjectProcessorImpl("school",
@@ -64,30 +67,34 @@ public class GraphDBManager {
 				},
 				GraphConstants.RelTypes.WORKED_IN
 		);
-	}
+	}*/
 
 	IUserResponseProcessor[] processors = {
-		new SimpleProcessor(GraphConstants.City.CITY_KEY, GraphConstants.City.CITY_NAME, cityLabel, GraphConstants.RelTypes.LIVES_IN),
-		new SimpleProcessor(GraphConstants.Hometown.HOMETOWN_KEY, GraphConstants.City.CITY_NAME, cityLabel, GraphConstants.RelTypes.WAS_BORN_IN),
-		new SimpleProcessor("gender", "name", new Label() {
+		new SimpleProcessor(/*GraphConstants.City.CITY_KEY,*/ FacebookService.MAP_USER_LOCATION,
+				GraphConstants.City.CITY_NAME, cityLabel, GraphConstants.RelTypes.LIVES_IN),
+		new SimpleProcessor(/*GraphConstants.Hometown.HOMETOWN_KEY,*/ FacebookService.MAP_USER_HOMETOWN,
+				GraphConstants.City.CITY_NAME, cityLabel, GraphConstants.RelTypes.WAS_BORN_IN),
+		new SimpleProcessor(FacebookService.MAP_USER_GENDER, "name", new Label() {
 			@Override
 			public String name() {
 				return "Gender";
 			}
 		}, GraphConstants.RelTypes.IS_OF_GENDER),
-		new SimpleProcessor("relationshipStatus", "name", new Label() {
+		/*new SimpleProcessor("relationshipStatus", "name", new Label() {
 				@Override
 				public String name() {
 					return "RelationshipStatus";
 				}
-			}, GraphConstants.RelTypes.HAS_RELATIONSHIP_STATUS),
-		new SimpleProcessor(GraphConstants.Religion.RELIGION_KEY, GraphConstants.Religion.RELIGION_NAME, religionLabel, GraphConstants.RelTypes.FOLLOWS_RELIGION),
-		new SimpleProcessor(GraphConstants.PoliticalView.POLITICAL_VIEW_KEY, GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewLabel, GraphConstants.RelTypes.HAS_POLITICAL_VIEW),
-		new SimpleProcessor(GraphConstants.EducationLevel.EDUCATION_LEVEL_KEY, GraphConstants.EducationLevel.EDUCATION_LEVEL_NAME, educationLevelLabel, GraphConstants.RelTypes.HAS_EDUCATION_LEVEL),
+			}, GraphConstants.RelTypes.HAS_RELATIONSHIP_STATUS),*/
+		new SimpleProcessor(/*GraphConstants.Religion.RELIGION_KEY,*/ FacebookService.MAP_USER_RELIGION,
+				GraphConstants.Religion.RELIGION_NAME, religionLabel, GraphConstants.RelTypes.FOLLOWS_RELIGION),
+		new SimpleProcessor(/*GraphConstants.PoliticalView.POLITICAL_VIEW_KEY,*/ FacebookService.MAP_USER_POLITICAL,
+				GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewLabel, GraphConstants.RelTypes.HAS_POLITICAL_VIEW),
+		/*new SimpleProcessor(GraphConstants.EducationLevel.EDUCATION_LEVEL_KEY, GraphConstants.EducationLevel.EDUCATION_LEVEL_NAME, educationLevelLabel, GraphConstants.RelTypes.HAS_EDUCATION_LEVEL),
 		new ArrayProcessor(GraphConstants.Education.EDUCATION_KEY, educationProcessor),
 		new ArrayProcessor(GraphConstants.Work.WORK_KEY, workProcessor),
 		new FavoritesProcessor(),
-		new PagesProcessor()
+		new PagesProcessor()*/
 	};
 
 	GraphDatabaseService graphDb;
@@ -112,47 +119,57 @@ public class GraphDBManager {
 	    } );
 	}
 
-	public void processUserResponse(GSResponse response) {
-		String UID = response.getString(GraphConstants.User.UID, "uid");
-		String userName = response.getString(GraphConstants.User.USER_NICKNAME, null);
 
-		Node user = getUserNode(UID, userName, response == null ? null : response.toString());
+
+	public void processUserResponse(/*GSResponse response*/ Map<String, Object> responseMap) {
+		/*String UID = response.getString(GraphConstants.User.UID, "uid");
+		String userName = response.getString(GraphConstants.User.USER_NICKNAME, null);*/
+
+		logger.info("Inside processUserResponse");
+
+		com.restfb.types.User userProfile = (com.restfb.types.User)responseMap.get(FacebookService.MAP_USER_PROFILE);
+
+		Node user = getUserNode(userProfile.getId(), userProfile.getName(), null);
 
 		logger.info("Start processors.");
 
 		for(IUserResponseProcessor processor : processors) {
-			processor.run(response, this, user);
+			processor.run(responseMap, this, user);
 		}
+
+		new PagesProcessor().run(responseMap, this, user);
+
+		processUserFriendsResponse(responseMap, user);
 
 		logger.info("End processors.");
-
-		logger.info("starting processing pages...");
 	}
 
-	public void processUserFriendsResponse(String UID, GSResponse response) {
-		Node user = getNode(userLabel, GraphConstants.User.UID, UID);
-		if(user == null) {
-			logger.error("User with UID=" + UID + " doesn't exist. Aborting user friends processing.");
+	public void processUserFriendsResponse(Map<String, Object> responseMap, Node user) {
+
+		logger.info("Inside FriendsProcessor.");
+
+		if(!responseMap.containsKey(FacebookService.MAP_USER_FRIENDS)) {
+			logger.error("ResponseMap doesn't contain user friends!");
 			return;
 		}
-		
+
+		List<JsonArray> friendsList = (List<JsonArray>)responseMap.get(FacebookService.MAP_USER_FRIENDS);
+
 		List<String> existingUserFriendsIds = getUserFriendsIds(user);
-		
-		GSArray friends = response.getArray("friends", null);
-		
-		try {
-			for(int i=0; i<friends.length(); i++) {
-				GSObject row = friends.getObject(i);
-				String friendUID = (String)row.get(GraphConstants.User.UID);
-				logger.info("Processing friend with UID=" + friendUID);
-				
-				if(!existingUserFriendsIds.contains(friendUID)) {
-					Node friend = getNode(userLabel, GraphConstants.User.UID, friendUID);
-					if(friend == null) {
-						String friendName = (String)row.get(GraphConstants.User.USER_NICKNAME);
+
+		for(JsonArray friendsArray : friendsList) {
+			for (int i = 0; i < friendsArray.length(); i++) {
+				JsonObject jsonObject = friendsArray.getJsonObject(i);
+				String friendId = (String) jsonObject.get("id");
+				logger.info("Processing friend with ID=" + friendId);
+
+				if (!existingUserFriendsIds.contains(friendId)) {
+					Node friend = getNode(userLabel, GraphConstants.User.UID, friendId);
+					if (friend == null) {
+						String friendName = (String) jsonObject.get(/*GraphConstants.User.USER_NICKNAME*/"name");
 						String[][] friendUserParameters = {
-								{GraphConstants.User.UID, friendUID},
-								{GraphConstants.User.USER_NAME, friendName} };
+								{GraphConstants.User.UID, friendId},
+								{GraphConstants.User.USER_NAME, friendName}};
 						friend = createNode(userLabel, friendUserParameters);
 						logger.info("Created new node of type " + userLabel.name() + ": " + friendName);
 					}
@@ -161,8 +178,6 @@ public class GraphDBManager {
 					logger.info("Users are already connected.");
 				}
 			}
-		} catch (GSKeyNotFoundException e) {
-			e.printStackTrace();
 		}
 	}
 	

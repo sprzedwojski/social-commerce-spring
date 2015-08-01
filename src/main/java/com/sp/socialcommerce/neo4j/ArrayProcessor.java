@@ -7,6 +7,7 @@ import com.gigya.socialize.GSResponse;
 import org.neo4j.graphdb.Node;
 
 import java.util.Iterator;
+import java.util.Map;
 
 public class ArrayProcessor implements IUserResponseProcessor {
 
@@ -19,7 +20,13 @@ public class ArrayProcessor implements IUserResponseProcessor {
     }
 
     @Override
-    public void run(GSResponse response, GraphDBManager dbManager, Node user) {
+    public void run(Map<String, Object> responseMap, GraphDBManager dbManager, Node user) {
+
+    }
+
+    @Override
+    public void run(GSResponse response,
+                    GraphDBManager dbManager, Node user) {
 
         GSArray array = response.getArray(responseKey, new GSArray());
         logger.info(responseKey + ": " + array.toString());
