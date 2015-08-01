@@ -1,18 +1,16 @@
 
 package com.sp.socialcommerce.facebook;
 
-import com.gigya.socialize.GSRequest;
-import com.gigya.socialize.GSResponse;
-import com.restfb.*;
+import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
+import com.restfb.Parameter;
+import com.restfb.Version;
 import com.restfb.exception.*;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
-import com.restfb.types.Likes;
-import com.restfb.types.NamedFacebookType;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
 import com.sp.socialcommerce.prop.ApplicationProperties;
 import com.sp.socialcommerce.prop.Properties;
-import com.sp.socialcommerce.prop.PropertiesConstants;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.lang.model.element.Name;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 /**

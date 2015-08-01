@@ -1,5 +1,6 @@
 package com.sp.socialcommerce.controllers;
 
+import com.sp.socialcommerce.facebook.FacebookService;
 import com.sp.socialcommerce.labels.Product;
 import com.sp.socialcommerce.neo4j.ProductRatingsService;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class SurveyController {
 
     @RequestMapping(value="/rate", method = RequestMethod.POST)
     public String rate(HttpServletRequest request) {
-        String uid = (String) request.getSession().getAttribute("uid");
+        String uid = (String) request.getSession().getAttribute(FacebookService.USER_ID);
         String productId = request.getParameter("prod_id");
         String score = request.getParameter("score");
         String category = request.getParameter("category");
@@ -75,7 +76,8 @@ public class SurveyController {
             logger.info("surveyPage GET");
 
             // If the user is not logged in, we do not allow him to see the survey
-            if (request.getSession().getAttribute("uid") == null) {
+            if(request.getSession().getAttribute(FacebookService.USER_ID) == null
+                    || request.getSession().getAttribute(FacebookService.USER_ACCESS_TOKEN) == null) {
                 return "redirect:login";
             }
 
@@ -95,7 +97,7 @@ public class SurveyController {
 
         if (request.getSession().getAttribute("productMap") == null) {
             productMap = productRatingsService.getProductsByCategories(
-                    request.getSession().getAttribute("uid").toString(), categories);
+                    request.getSession().getAttribute(FacebookService.USER_ID).toString(), categories);
             request.getSession().setAttribute("productMap", productMap);
         } else {
             productMap = (Map<String, List<Product>>) request.getSession().getAttribute("productMap");
