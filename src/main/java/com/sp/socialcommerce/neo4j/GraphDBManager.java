@@ -10,6 +10,7 @@ import com.sp.socialcommerce.facebook.FacebookService;
 import com.sp.socialcommerce.labels.*;
 import com.sp.socialcommerce.models.User;
 import com.sp.socialcommerce.prop.Properties;
+import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.unsafe.impl.batchimport.cache.MemoryStatsVisitor;
@@ -240,8 +241,10 @@ public class GraphDBManager {
 			} else {
 				logger.info("Existing user found.");
 
-				String dbProlongedToken = (String) user.getProperty(GraphConstants.User.USER_PROLONGED_TOKEN);
-				if(!prolongedToken.equals(dbProlongedToken)) {
+				String dbProlongedToken = null;
+				if(user.hasProperty(GraphConstants.User.USER_PROLONGED_TOKEN))
+					dbProlongedToken = (String) user.getProperty(GraphConstants.User.USER_PROLONGED_TOKEN);
+				if(StringUtils.isBlank(dbProlongedToken) || !prolongedToken.equals(dbProlongedToken)) {
 					logger.info("Updating user prolonged token in the DB.");
 					user.setProperty(GraphConstants.User.USER_PROLONGED_TOKEN, prolongedToken);
 				}
