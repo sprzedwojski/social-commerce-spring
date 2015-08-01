@@ -121,7 +121,6 @@ public class FacebookService {
 				after = (String) jsonObject.getJsonObject("paging").getJsonObject("cursors").get("after");
 			} while(StringUtils.isNotBlank(after));
 
-			/*FIXME TEMP TEST*/
 			responseMap.put(MAP_USER_LIKES, likesArrayList);
 
 
@@ -153,7 +152,7 @@ public class FacebookService {
 				}
 
 				logger.info("Adding friendsArray to list...");
-				likesArrayList.add(friendsArray);
+				friendsArrayList.add(friendsArray);
 
 				/*counter += friendsArray.length();*/
 				/*logger.info("friends array: " + friendsArray.toString());
@@ -168,7 +167,6 @@ public class FacebookService {
 
 			} while(StringUtils.isNotBlank(after));
 
-			/*FIXME TEMP TEST*/
 			responseMap.put(MAP_USER_FRIENDS, friendsArrayList);
 
 
