@@ -10,6 +10,7 @@ import com.sp.socialcommerce.gigya.GigyaService;
 import com.sp.socialcommerce.models.User;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
 import com.sp.socialcommerce.prop.Properties;
+import com.sp.socialcommerce.prop.PropertiesConstants;
 import org.neo4j.graphdb.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,7 @@ public class LoginController {
 		}
 
 		model.addAttribute("user", new User() );
+        model.addAttribute("fbAppId", Properties.FB_APP_ID);
 
 		return "login";
 	}

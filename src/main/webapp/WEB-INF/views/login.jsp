@@ -83,7 +83,7 @@
                 /*appId      : '846404535443906',*/
 
                 /* TEST */
-                appId      : '891425247608501',
+                appId      : ${fbAppId},/*'891425247608501',*/
 
                 cookie     : true,  // enable cookies to allow the server to access
                                     // the session
