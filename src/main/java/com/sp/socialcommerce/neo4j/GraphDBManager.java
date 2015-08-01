@@ -241,12 +241,14 @@ public class GraphDBManager {
 			} else {
 				logger.info("Existing user found.");
 
-				String dbProlongedToken = null;
-				if(user.hasProperty(GraphConstants.User.USER_PROLONGED_TOKEN))
-					dbProlongedToken = (String) user.getProperty(GraphConstants.User.USER_PROLONGED_TOKEN);
-				if(StringUtils.isBlank(dbProlongedToken) || !prolongedToken.equals(dbProlongedToken)) {
-					logger.info("Updating user prolonged token in the DB.");
-					user.setProperty(GraphConstants.User.USER_PROLONGED_TOKEN, prolongedToken);
+				if(prolongedToken != null) {
+					String dbProlongedToken = null;
+					if (user.hasProperty(GraphConstants.User.USER_PROLONGED_TOKEN))
+						dbProlongedToken = (String) user.getProperty(GraphConstants.User.USER_PROLONGED_TOKEN);
+					if (StringUtils.isBlank(dbProlongedToken) || !prolongedToken.equals(dbProlongedToken)) {
+						logger.info("Updating user prolonged token in the DB.");
+						user.setProperty(GraphConstants.User.USER_PROLONGED_TOKEN, prolongedToken);
+					}
 				}
 			}
 			tx.success();
