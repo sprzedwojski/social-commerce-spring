@@ -36,7 +36,7 @@ public abstract class GraphConstants {
         public static final String USER_NAME = "name";
         public static final String USER_NICKNAME = "nickname";
         /*public static final String USER_GIGYA_RESPONSE = "gigya_response";*/
-
+        public static final String USER_PROLONGED_TOKEN = "prolongedToken";
     }
 
     public abstract class City {

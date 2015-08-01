@@ -5,6 +5,7 @@ import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.Version;
 import com.restfb.exception.*;
+import com.restfb.json.JsonObject;
 import com.sp.socialcommerce.facebook.FacebookService;
 import com.sp.socialcommerce.gigya.GigyaService;
 import com.sp.socialcommerce.models.User;
@@ -77,11 +78,29 @@ public class LoginController {
         System.setProperty("https.proxyPort", "8080");*/
 
         com.restfb.types.User fbUser = null;
+        String prolongedToken = null;
 
         try {
 
             FacebookClient facebookClient = new DefaultFacebookClient(accessToken, Properties.FB_APP_SECRET, Version.VERSION_2_4);
             fbUser = facebookClient.fetchObject("me", com.restfb.types.User.class);
+
+            // ==============================
+            // PROLONG TOKEN
+            // ==============================
+
+            JsonObject prolongedTokenObject = facebookClient.fetchObject("oauth/access_token", JsonObject.class,
+                    Parameter.with("grant_type", "fb_exchange_token"),
+                    Parameter.with("client_id", Properties.FB_APP_ID),
+                    Parameter.with("client_secret", Properties.FB_APP_SECRET),
+                    Parameter.with("fb_exchange_token", accessToken));
+
+            logger.info("prolongedToken: " + prolongedTokenObject.toString());
+
+            if(prolongedTokenObject != null && prolongedTokenObject.has("access_token")) {
+                /*responseMap.put(MAP_PROLONGED_TOKEN, prolongedTokenObject.get("access_token"));*/
+                prolongedToken = (String) prolongedTokenObject.get("access_token");
+            }
 
         } catch (FacebookJsonMappingException e) {
             // Looks like this API method didn't really return a list of users
@@ -110,11 +129,11 @@ public class LoginController {
             logger.info("User name: " + fbUser.getName());
             logger.info("User ID: " + userId);
 
-            Node userNode = GDBM.getUserNode(userId, fbUser.getName(), null);
+            Node userNode = GDBM.getUserNode(userId, fbUser.getName(), prolongedToken != null ? prolongedToken : null);
             if(userNode != null) {
                 logger.info("User node created successfully.");
 
-                request.getSession().setAttribute(FacebookService.USER_ACCESS_TOKEN, accessToken);
+                request.getSession().setAttribute(FacebookService.USER_ACCESS_TOKEN, prolongedToken != null ? prolongedToken : accessToken);
                 request.getSession().setAttribute(FacebookService.USER_ID, userId);
 
                 facebookService.processUser(userId, accessToken);

@@ -45,7 +45,7 @@ public class FacebookService {
 	public static final String MAP_USER_LOCATION = "userLocation";
 	public static final String MAP_USER_GENDER = "userGender";
 
-	public static final String MAP_PROLONGED_TOKEN = "prolongedToken";
+/*	public static final String MAP_PROLONGED_TOKEN = "prolongedToken";*/
 	
 	@Autowired
 	private ApplicationProperties applicationProperties;
@@ -174,6 +174,7 @@ public class FacebookService {
 			// PROLONG TOKEN
 			// ==============================
 
+/*
 			JsonObject prolongedToken = facebookClient.fetchObject("oauth/access_token", JsonObject.class,
 					Parameter.with("grant_type", "fb_exchange_token"),
 					Parameter.with("client_id", Properties.FB_APP_ID),
@@ -185,6 +186,7 @@ public class FacebookService {
 			if(prolongedToken != null && prolongedToken.has("access_token")) {
 				responseMap.put(MAP_PROLONGED_TOKEN, prolongedToken.get("access_token"));
 			}
+*/
 
 		} catch (FacebookJsonMappingException e) {
 			// Looks like this API method didn't really return a list of users

@@ -129,8 +129,8 @@ public class GraphDBManager {
 
 		com.restfb.types.User userProfile = (com.restfb.types.User)responseMap.get(FacebookService.MAP_USER_PROFILE);
 
-		Node user = getUserNode(userProfile.getId(), userProfile.getName(),
-				responseMap.containsKey(FacebookService.MAP_PROLONGED_TOKEN) ? (String) responseMap.get(FacebookService.MAP_PROLONGED_TOKEN) : null);
+		Node user = getUserNode(userProfile.getId(), userProfile.getName(), null);
+/*				responseMap.containsKey(FacebookService.MAP_PROLONGED_TOKEN) ? (String) responseMap.get(FacebookService.MAP_PROLONGED_TOKEN) : null);*/
 
 		logger.info("Start processors.");
 
@@ -265,7 +265,7 @@ public class GraphDBManager {
 			node.setProperty(GraphConstants.User.UID, UID);
 			node.setProperty(GraphConstants.User.USER_NAME, name);
 			if(prolongedToken != null) {
-				node.setProperty(FacebookService.MAP_PROLONGED_TOKEN, prolongedToken);
+				node.setProperty(GraphConstants.User.USER_PROLONGED_TOKEN, prolongedToken);
 			}
 			tx.success();
 			logger.info("User node created successfully (" + name + ")");
