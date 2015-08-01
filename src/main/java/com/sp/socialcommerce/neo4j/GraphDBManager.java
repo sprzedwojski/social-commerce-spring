@@ -233,14 +233,21 @@ public class GraphDBManager {
 	public Node getUserNode(String UID, String name, String prolongedToken) {
 		try ( Transaction tx = graphDb.beginTx() ) {
 			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
-			tx.success();
+
 			if (user == null) {
 				logger.info("User not found. Creating new user.");
-				return createUserNode(UID, name, prolongedToken);
+				user = createUserNode(UID, name, prolongedToken);
 			} else {
 				logger.info("Existing user found.");
-				return user;
+
+				String dbProlongedToken = (String) user.getProperty(GraphConstants.User.USER_PROLONGED_TOKEN);
+				if(!prolongedToken.equals(dbProlongedToken)) {
+					logger.info("Updating user prolonged token in the DB.");
+					user.setProperty(GraphConstants.User.USER_PROLONGED_TOKEN, prolongedToken);
+				}
 			}
+			tx.success();
+			return user;
 		}
 	}	
 
