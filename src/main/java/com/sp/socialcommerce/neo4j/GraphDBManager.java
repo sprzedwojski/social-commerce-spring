@@ -228,6 +228,8 @@ public class GraphDBManager {
 				ids.add(id);
 			}
 			return ids;
+
+
 		}		
 	}
 	

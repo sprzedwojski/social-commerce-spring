@@ -59,7 +59,11 @@ public class FacebookService {
 		HashMap<String, Object> responseMap = new HashMap<>();
 
 		try {
+			logger.info("Inside processUser try...");
+
 			FacebookClient facebookClient = new DefaultFacebookClient(accessToken, Properties.FB_APP_SECRET, Version.VERSION_2_4);
+
+			logger.info("FacebookClient: " + facebookClient==null ? null : facebookClient.toString());
 
 			// ==============================
 			// USER PROFILE
@@ -68,17 +72,29 @@ public class FacebookService {
 			com.restfb.types.User fbUser = facebookClient.fetchObject("me", com.restfb.types.User.class,
 					Parameter.with("fields", "age_range,hometown,location,political,religion,relationship_status,gender,sports," +
 							"favorite_athletes,favorite_teams"));
-			responseMap.put(MAP_USER_PROFILE, fbUser);
-			responseMap.put(MAP_USER_GENDER, fbUser.getGender());
-			responseMap.put(MAP_USER_HOMETOWN, fbUser.getHometownName());
-			responseMap.put(MAP_USER_LOCATION, fbUser.getLocation().getName());
-			responseMap.put(MAP_USER_POLITICAL, fbUser.getPolitical());
-			responseMap.put(MAP_USER_RELIGION, fbUser.getReligion());
 
-			logger.info("User profile: " + fbUser.toString());
-			/*logger.info("User name: " + fbUser.getName());
-			logger.info("User political: " + fbUser.getPolitical());
-			logger.info("User religion:" + fbUser.getReligion());*/
+			if(fbUser != null) {
+				responseMap.put(MAP_USER_PROFILE, fbUser);
+
+				if(fbUser.getGender() != null)
+					responseMap.put(MAP_USER_GENDER, fbUser.getGender());
+
+				if(fbUser.getHometownName() != null)
+					responseMap.put(MAP_USER_HOMETOWN, fbUser.getHometownName());
+
+				if(fbUser.getLocation() != null)
+					responseMap.put(MAP_USER_LOCATION, fbUser.getLocation().getName());
+
+				if(fbUser.getPolitical() != null)
+					responseMap.put(MAP_USER_POLITICAL, fbUser.getPolitical());
+
+				if(fbUser.getReligion() != null)
+					responseMap.put(MAP_USER_RELIGION, fbUser.getReligion());
+
+				logger.info("User profile: " + fbUser.toString());
+			} else {
+				logger.error("Facebook user is null!");
+			}
 
 
 
