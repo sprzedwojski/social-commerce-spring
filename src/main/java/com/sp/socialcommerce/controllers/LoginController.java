@@ -57,7 +57,7 @@ public class LoginController {
 			return "redirect:survey_intro";
 		}
 
-		model.addAttribute("user", new User() );
+		model.addAttribute("user", new User());
         model.addAttribute("fbAppId", Properties.FB_APP_ID);
 
 		return "login";
@@ -104,23 +104,28 @@ public class LoginController {
 
         } catch (FacebookJsonMappingException e) {
             // Looks like this API method didn't really return a list of users
+            logger.error("FacebookJsonMappingException\n" + e);
         } catch (FacebookNetworkException e) {
             // An error occurred at the network level
-            System.out.println("API returned HTTP status code " + e.getHttpStatusCode());
+            logger.error("API returned HTTP status code " + e.getHttpStatusCode());
         } catch (FacebookOAuthException e) {
             // Authentication failed - bad access token?
+            logger.error("FacebookOAuthException\n" + e);
         } catch (FacebookGraphException e) {
             // The Graph API returned a specific error
-            System.out.println("Call failed. API says: " + e.getErrorMessage());
+            logger.error("Call failed. API says: " + e.getErrorMessage());
         } catch (FacebookResponseStatusException e) {
             // Old-style Facebook error response.
             // The Graph API only throws these when FQL calls fail.
             // You'll see this exception more if you use the Old REST API
             // via LegacyFacebookClient.
             if (e.getErrorCode() == 200)
-                System.out.println("Permission denied!");
+                logger.error("Permission denied!\n" + e);
+            else
+                logger.error("FacebookResponseStatusException\n" + e);
         } catch (FacebookException e) {
             // This is the catchall handler for any kind of Facebook exception
+            logger.error("FacebookException\n" + e);
         }
 
         if(fbUser != null) {

@@ -177,10 +177,11 @@
 
                 <center>
                     <fb:login-button
-                            scope="public_profile,user_relationship_details,user_hometown,user_likes,user_religion_politics,user_location"
+                            scope="public_profile,user_relationship_details,user_hometown,user_likes,user_religion_politics,user_location,user_friends"
                             onlogin="checkLoginState();"
                             size="large">
                     </fb:login-button>
+                    <%--,user_friends--%>
 
                     <div id="status"></div>
                 </center>
