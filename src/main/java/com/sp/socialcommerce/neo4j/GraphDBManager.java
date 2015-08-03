@@ -38,7 +38,7 @@ public class GraphDBManager {
 	Label productLabel = new Product();
 	Label favoriteLabel = new Favorite();
 	Label favoriteCategoryLabel = new FavoriteCategory();
-	Label educationLevelLabel = new EducationLevel();
+	/*Label educationLevelLabel = new EducationLevel();*/
 
 	/*IObjectProcessor educationProcessor, workProcessor;
 
