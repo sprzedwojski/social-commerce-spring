@@ -17,6 +17,7 @@ import com.sp.socialcommerce.prop.PropertiesConstants;
  * Class responsible for asynchronously connecting with Gigya.
  */
 @Service
+@Deprecated
 public class GigyaService {
 
 	private static final Logger logger = LoggerFactory.getLogger(GigyaService.class);
