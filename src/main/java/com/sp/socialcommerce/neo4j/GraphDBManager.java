@@ -1,9 +1,5 @@
 package com.sp.socialcommerce.neo4j;
 
-import com.gigya.socialize.GSArray;
-import com.gigya.socialize.GSKeyNotFoundException;
-import com.gigya.socialize.GSObject;
-import com.gigya.socialize.GSResponse;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
 import com.sp.socialcommerce.facebook.FacebookService;
@@ -13,7 +9,6 @@ import com.sp.socialcommerce.prop.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.unsafe.impl.batchimport.cache.MemoryStatsVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -104,6 +99,12 @@ public class GraphDBManager {
 		graphDb = new GraphDatabaseFactory().newEmbeddedDatabase( Properties.DB_PATH );
 		registerShutdownHook( graphDb );
 	}
+
+    // For tests only
+    public GraphDBManager(GraphDatabaseService graphDb) {
+        this.graphDb = graphDb;
+        registerShutdownHook(this.graphDb);
+    }
 	
 	private static void registerShutdownHook( final GraphDatabaseService graphDb )
 	{
@@ -216,6 +217,15 @@ public class GraphDBManager {
 		}
 	}
 
+    public List<String> getUserFriendsIds(String userId) {
+        Node user = getUserNode(userId);
+        if(user == null) {
+            logger.error("Couldn't find user node with id=" + userId);
+            return null;
+        }
+        return getUserFriendsIds(user);
+    }
+
 	public List<String> getUserFriendsIds(Node node) {
 		try (Transaction tx = graphDb.beginTx()) {
 			List<String> ids = new ArrayList<String>();
@@ -228,10 +238,22 @@ public class GraphDBManager {
 				ids.add(id);
 			}
 			return ids;
-
-
 		}		
 	}
+
+    public Node getUserNode(String userId) {
+        try ( Transaction tx = graphDb.beginTx() ) {
+            Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, userId);
+
+            if (user == null) {
+                logger.info("User not found.");
+            } else {
+                logger.info("Existing user found.");
+            }
+            tx.success();
+            return user;
+        }
+    }
 	
 	public Node getUserNode(String UID, String name, String prolongedToken) {
 		try ( Transaction tx = graphDb.beginTx() ) {

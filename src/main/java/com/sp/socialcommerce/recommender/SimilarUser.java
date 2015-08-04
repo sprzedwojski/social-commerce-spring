@@ -10,8 +10,13 @@ public class SimilarUser implements Comparable {
 
     private static final Logger logger = LoggerFactory.getLogger(SimilarUser.class);
 
-    String userId;
-    double similarity = 0.0;
+    /*String userId;*/
+    double similaritySum = 0;
+    double similarityPercentage = 0.0;
+
+    public void calculateSimilarityPercentage(double max) {
+        similarityPercentage = similaritySum*100/max;
+    }
 
     @Override
     public int compareTo(Object o) {
@@ -21,7 +26,7 @@ public class SimilarUser implements Comparable {
         }
 
         // descending order - the most similar on top
-        double diff = ((SimilarUser) o).similarity - this.similarity;
+        double diff = ((SimilarUser) o).similarityPercentage - this.similarityPercentage;
         if(diff == 0.0)
             return 0;
         else if(diff > 0.0)

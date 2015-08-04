@@ -72,10 +72,10 @@ public class LoginController {
 
 		logger.info("The client access token is {}.", accessToken);
 
-        /*System.setProperty("http.proxyHost", "w3cache.amg.net.pl");
+        System.setProperty("http.proxyHost", "w3cache.amg.net.pl");
         System.setProperty("http.proxyPort", "8080");
         System.setProperty("https.proxyHost", "w3cache.amg.net.pl");
-        System.setProperty("https.proxyPort", "8080");*/
+        System.setProperty("https.proxyPort", "8080");
 
         com.restfb.types.User fbUser = null;
         String prolongedToken = null;

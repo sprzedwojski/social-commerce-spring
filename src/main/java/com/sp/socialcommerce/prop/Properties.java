@@ -6,8 +6,11 @@ package com.sp.socialcommerce.prop;
 public class Properties {
 
 
+    /* WORK DEV */
+    public static final String DB_PATH = "/home/szymon/programs/neo4j/2015-08-04-neo4j-prod-bkp_spring/";
+
     /* HOME */
-    public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";
+    /*public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";*/
     public static final String FB_APP_SECRET = "0fe684088057ab1512e6402934dac8fa";
     public static final String FB_APP_ID = "891425247608501";
 
