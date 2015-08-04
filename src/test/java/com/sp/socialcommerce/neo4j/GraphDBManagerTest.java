@@ -21,7 +21,7 @@ public class GraphDBManagerTest /*extends TestCase */{
     {
         if(graphDb == null)
             graphDb = new TestGraphDatabaseFactory().newImpermanentDatabase();
-        System.out.println("graphDb is " + (graphDb == null ? "null" : "not null"));
+        /*System.out.println("graphDb is " + (graphDb == null ? "null" : "not null"));*/
 
         if(GDBM == null)
             GDBM = new GraphDBManager(graphDb);
@@ -34,7 +34,7 @@ public class GraphDBManagerTest /*extends TestCase */{
     }
 
     @Test
-    public void aa() {
+    public void testTest() {
         Assert.assertTrue(true);
     }
 

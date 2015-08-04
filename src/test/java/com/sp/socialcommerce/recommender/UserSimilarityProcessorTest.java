@@ -2,6 +2,7 @@ package com.sp.socialcommerce.recommender;
 
 import com.sp.socialcommerce.neo4j.GraphConstants;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,12 +18,12 @@ import static org.junit.Assert.assertThat;
  */
 public class UserSimilarityProcessorTest {
 
-/*    @Test
-    public void shouldFindSimilarUsers() throws Exception {
-        assert true;
-    }*/
+    UserSimilarityProcessor userSimilarityProcessor;
 
-
+    @Before
+    public void init() {
+        userSimilarityProcessor = new UserSimilarityProcessor();
+    }
 
     @Test
     public void shouldCalculateSimilarityPercentage() throws Exception {
@@ -131,5 +132,22 @@ public class UserSimilarityProcessorTest {
         usp.processUserFriends(new ArrayList<String>() {{add(id3);}}, map1);
         Assert.assertEquals(map1.get(id3).similaritySum, weight+initialSimilarity, 0.01);
 
+    }
+
+    @Test
+    public void testProcessUserLikes() throws Exception {
+        double weight = GraphConstants.similarityWeights.get(GraphConstants.RelTypes.LIKES);
+
+        Map<String, Integer> commonLikes = new HashMap<>();
+        final String id1 = "1";
+        int likesNumber = 10;
+        commonLikes.put(id1, likesNumber);
+
+        Map<String, SimilarUser> similarUserHashMap = new HashMap<>();
+        SimilarUser user1 = new SimilarUser();
+        similarUserHashMap.put(id1, user1);
+
+        userSimilarityProcessor.processUserLikes(commonLikes, similarUserHashMap);
+        Assert.assertEquals(similarUserHashMap.get(id1).similaritySum, weight*likesNumber, 0.01);
     }
 }

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
@@ -18,6 +19,7 @@ import java.util.*;
  */
 @Async
 @Scope("session")
+@Service
 public class UserSimilarityProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(UserSimilarityProcessor.class);
@@ -46,6 +48,16 @@ public class UserSimilarityProcessor {
             SimilarUser similarUser = createSimilarUserIfNotExistsAndPutIntoMap(map, friendId);
             similarUser.similaritySum += similarityWeight;
         }
+    }
+
+    public void processUserLikes(Map<String, Integer> numberOfCommonLikes, Map<String, SimilarUser> map) {
+        if(!GraphConstants.similarityWeights.containsKey(GraphConstants.RelTypes.LIKES)) {
+            logger.error("No similarity weights for key " + GraphConstants.RelTypes.LIKES.toString());
+            return;
+        }
+        double similarityWeight = GraphConstants.similarityWeights.get(GraphConstants.RelTypes.LIKES);
+
+        numberOfCommonLikes.forEach((x,y) -> createSimilarUserIfNotExistsAndPutIntoMap(map, x).similaritySum += similarityWeight*y);
     }
 
     public SimilarUser createSimilarUserIfNotExistsAndPutIntoMap(Map<String, SimilarUser> map, String id) {
