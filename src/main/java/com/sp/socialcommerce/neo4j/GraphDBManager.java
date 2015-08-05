@@ -386,7 +386,6 @@ public class GraphDBManager {
 					Node product = rating.getOtherNode(user);
 					userProductRatings.put(Integer.parseInt(product.getProperty(GraphConstants.Product.PRODUCT_ID).toString()),
 							rating.getProperty(GraphConstants.Rates.RATING_VALUE).toString());
-//					logger.info("Setting userProductRating...");
 				}
 			}
 
@@ -485,5 +484,15 @@ public class GraphDBManager {
 			tx.success();
 		}
 	}
-	
+
+
+
+    // ==============================
+    // RECOMMENDER
+    // ==============================
+
+    public void getAllCommonNodesBetweenUsers(Node user1, Node user2) {
+
+    }
+
 }
