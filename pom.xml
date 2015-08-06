@@ -53,11 +53,11 @@
 		</dependency>
 
 		<!-- Gigya Java SDK [local repo] -->
-		<dependency>
+		<!--<dependency>
 			<groupId>com.gigya</groupId>
 			<artifactId>gigya-java-sdk</artifactId>
 			<version>3.1.2</version>
-		</dependency>
+		</dependency>-->
 
         <!-- Facebook -->
 <!--        <dependency>

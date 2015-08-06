@@ -1,13 +1,7 @@
 package com.sp.socialcommerce.neo4j;
 
-import com.gigya.socialize.GSArray;
-import com.gigya.socialize.GSKeyNotFoundException;
-import com.gigya.socialize.GSObject;
-import com.gigya.socialize.GSResponse;
 import org.neo4j.graphdb.Node;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class FavoritesProcessor implements IUserResponseProcessor {
@@ -17,7 +11,7 @@ public class FavoritesProcessor implements IUserResponseProcessor {
 
     }
 
-    @Override
+    /*@Override
     public void run(GSResponse response, GraphDBManager dbManager, Node user) {
         GSObject favorites = response.getObject(GraphConstants.Favorite.FAVORITES_KEY, null);
         logger.info("favorites: " + favorites);
@@ -81,5 +75,5 @@ public class FavoritesProcessor implements IUserResponseProcessor {
         } else {
             logger.warn("Favorites is NULL");
         }
-    }
+    }*/
 }

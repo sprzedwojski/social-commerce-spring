@@ -1,15 +1,10 @@
 package com.sp.socialcommerce.neo4j;
 
-import com.gigya.socialize.GSArray;
-import com.gigya.socialize.GSKeyNotFoundException;
-import com.gigya.socialize.GSObject;
-import com.gigya.socialize.GSResponse;
 import org.neo4j.graphdb.Node;
 
-import java.util.Iterator;
 import java.util.Map;
 
-public class ArrayProcessor implements IUserResponseProcessor {
+public class ArrayProcessor /*implements IUserResponseProcessor*/ {
 
     private String responseKey;
     private IObjectProcessor objectProcessor;
@@ -19,11 +14,12 @@ public class ArrayProcessor implements IUserResponseProcessor {
         this.objectProcessor = objectProcessor;
     }
 
-    @Override
+/*    @Override
     public void run(Map<String, Object> responseMap, GraphDBManager dbManager, Node user) {
 
-    }
+    }*/
 
+/*
     @Override
     public void run(GSResponse response,
                     GraphDBManager dbManager, Node user) {
@@ -43,5 +39,6 @@ public class ArrayProcessor implements IUserResponseProcessor {
         }
 
     }
+*/
 
 }

@@ -41,11 +41,9 @@ public class SurveyIntroController {
             return "redirect:login";
         }
 
-//        List<Product> productList = productRatingsService.getProducts(request.getSession().getAttribute("uid").toString());
         Map<String, List<Product>> productMap = productRatingsService.getProductsByCategories(
                 request.getSession().getAttribute(FacebookService.USER_ID).toString());
 
-//        modelMap.addAttribute("productList", productList);
         modelMap.addAttribute("productMap", productMap);
 
         // TODO pobrac i przekazac opis ankiety dla uzytkownikow

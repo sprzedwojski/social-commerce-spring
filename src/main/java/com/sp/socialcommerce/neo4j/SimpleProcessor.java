@@ -1,6 +1,5 @@
 package com.sp.socialcommerce.neo4j;
 
-import com.gigya.socialize.GSResponse;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
@@ -46,8 +45,8 @@ public class SimpleProcessor implements IUserResponseProcessor {
         }
     }
 
-    @Override
-    public void run(GSResponse response, GraphDBManager dbManager, Node user) {
+/*    @Override
+    public void run(GSResponse response, GraphDBManager dbManager, Node user) {*/
 
 /*        String name = response.getString(responseKey, null);
 		logger.info(responseKey + ": " + name);
@@ -65,5 +64,5 @@ public class SimpleProcessor implements IUserResponseProcessor {
 				logger.info(relationshipType + " relationship already exists.");
 			}
 		}*/
-    }
+//    }
 }
