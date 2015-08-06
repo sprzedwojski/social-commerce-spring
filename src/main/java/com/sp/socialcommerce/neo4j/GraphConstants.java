@@ -3,7 +3,6 @@ package com.sp.socialcommerce.neo4j;
 import org.neo4j.graphdb.RelationshipType;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import static com.sp.socialcommerce.neo4j.GraphConstants.RelTypes.*;
 
@@ -34,7 +33,7 @@ public abstract class GraphConstants {
         HAS_RELATIONSHIP_STATUS /* User -> RelationshipStatus */
     }
 
-    public static final HashMap<Enum, Double> similarityWeights = new HashMap<Enum, Double>() {{
+    public static final HashMap<RelationshipType, Double> similarityWeights = new HashMap<RelationshipType, Double>() {{
         put(LIVES_IN, 1.0);
         put(WAS_BORN_IN, 1.0);
         put(FOLLOWS_RELIGION, 3.0);

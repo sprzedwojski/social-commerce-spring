@@ -1,11 +1,16 @@
 package com.sp.socialcommerce.neo4j;
 
+import com.sp.socialcommerce.labels.*;
+import com.sp.socialcommerce.models.User;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.*;
 import org.neo4j.test.TestGraphDatabaseFactory;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author <a href="mailto:szymon.przedwojski@amg.net.pl">Szymon Przedwojski</a>
@@ -13,18 +18,25 @@ import org.neo4j.test.TestGraphDatabaseFactory;
 public class GraphDBManagerTest /*extends TestCase */{
 
     protected GraphDatabaseService graphDb;
-
     private GraphDBManager GDBM;
+    Label userLabel, cityLabel, pageLabel, productLabel, religionLabel, politicalLabel;
 
     @Before
     public void prepareTestDatabase()
     {
         if(graphDb == null)
             graphDb = new TestGraphDatabaseFactory().newImpermanentDatabase();
-        /*System.out.println("graphDb is " + (graphDb == null ? "null" : "not null"));*/
+            /*graphDb = new TestGraphDatabaseFactory().newEmbeddedDatabase(Properties.DB_PATH);*/
 
         if(GDBM == null)
             GDBM = new GraphDBManager(graphDb);
+
+        userLabel = new User();
+        cityLabel = new City();
+        pageLabel = new Page();
+        productLabel = new Product();
+        religionLabel = new Religion();
+        politicalLabel = new PoliticalView();
     }
 
     @After
@@ -36,6 +48,62 @@ public class GraphDBManagerTest /*extends TestCase */{
     @Test
     public void testTest() {
         Assert.assertTrue(true);
+    }
+
+    @Test
+    public void testGetOtherUsersWithRelationship() throws Exception {
+        // 10205351905711072 -> Szymon P.
+        /*GDBM.getOtherUsersWithRelationship(GDBM.getUserNode("10205351905711072"));*/
+        /*System.out.println(GDBM.getAllProducts().size());*/
+        /*assert true;*/
+
+        Node user1;
+
+        try(Transaction tx = graphDb.beginTx()){
+            user1 = graphDb.createNode(userLabel);
+            user1.setProperty("UID", "1");
+
+            Node user2 = graphDb.createNode(userLabel);
+            user2.setProperty("UID", "2");
+
+            Node user3 = graphDb.createNode(userLabel);
+            user3.setProperty("UID", "3");
+
+            Node page1 = graphDb.createNode(pageLabel);
+            Node page2 = graphDb.createNode(pageLabel);
+            Node page3 = graphDb.createNode(pageLabel);
+
+            user1.createRelationshipTo(user2, GraphConstants.RelTypes.KNOWS);
+            user1.createRelationshipTo(user3, GraphConstants.RelTypes.KNOWS);
+
+            user1.createRelationshipTo(page1, GraphConstants.RelTypes.LIKES);
+            user3.createRelationshipTo(page1, GraphConstants.RelTypes.LIKES);
+
+            user1.createRelationshipTo(page2, GraphConstants.RelTypes.LIKES);
+            user2.createRelationshipTo(page2, GraphConstants.RelTypes.LIKES);
+            user3.createRelationshipTo(page2, GraphConstants.RelTypes.LIKES);
+
+            tx.success();
+        }
+
+        Map<String, Map<String, AtomicInteger>> commonMap = GDBM.getOtherUsersWithRelationship(user1);
+
+        /*System.out.println("commonMap size: " + commonMap.size());
+        System.out.println("has likes?: " + ((Map)commonMap.get("1")).containsKey(GraphConstants.RelTypes.LIKES.toString()));
+        System.out.println("relType: " + commonMap.get("1").get(GraphConstants.RelTypes.LIKES.toString()));*/
+
+        int expectedNumberOfLikesForUser3 = 2;
+        int receivedNumberOfLikesForUser3 = commonMap.get("3").get(GraphConstants.RelTypes.LIKES.toString()).intValue();
+
+        Assert.assertEquals(expectedNumberOfLikesForUser3, receivedNumberOfLikesForUser3);
+
+        int expectedNumberOfLikesForUser2 = 1;
+        int receivedNumberOfLikesForUser2 = commonMap.get("2").get(GraphConstants.RelTypes.LIKES.toString()).intValue();
+
+        Assert.assertEquals(expectedNumberOfLikesForUser2, receivedNumberOfLikesForUser2);
+
+        // KNOWS relationships not counted
+        Assert.assertTrue(!commonMap.get("2").containsKey(GraphConstants.RelTypes.KNOWS.toString()));
     }
 
 /*    @Test

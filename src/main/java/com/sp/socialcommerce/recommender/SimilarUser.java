@@ -10,7 +10,7 @@ public class SimilarUser implements Comparable {
 
     private static final Logger logger = LoggerFactory.getLogger(SimilarUser.class);
 
-    /*String userId;*/
+    String userId;
     double similaritySum = 0;
     double similarityPercentage = 0.0;
 
@@ -34,5 +34,17 @@ public class SimilarUser implements Comparable {
         else
             return -1;
         /*return Integer.parseInt(Double.toString(Math.signum(((SimilarUser) o).similarity) - this.similarity));*/
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public double getSimilaritySum() {
+        return similaritySum;
+    }
+
+    public double getSimilarityPercentage() {
+        return similarityPercentage;
     }
 }

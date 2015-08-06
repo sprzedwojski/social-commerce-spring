@@ -16,6 +16,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Configuration
@@ -101,9 +102,9 @@ public class GraphDBManager {
 	}
 
     // For tests only
-    public GraphDBManager(GraphDatabaseService graphDb) {
-        this.graphDb = graphDb;
-        registerShutdownHook(this.graphDb);
+    public GraphDBManager(GraphDatabaseService db) {
+        graphDb = db;
+        registerShutdownHook(graphDb);
     }
 	
 	private static void registerShutdownHook( final GraphDatabaseService graphDb )
@@ -254,7 +255,30 @@ public class GraphDBManager {
             return user;
         }
     }
-	
+
+    public String getUserName(String userId) {
+        try ( Transaction tx = graphDb.beginTx() ) {
+            Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, userId);
+
+            if (user == null) {
+                logger.info("User not found.");
+            } else {
+                logger.info("Existing user found.");
+            }
+
+            String name = null;
+
+            if(user.hasProperty(GraphConstants.User.USER_NAME)) {
+                name = (String)user.getProperty(GraphConstants.User.USER_NAME);
+            } else {
+                logger.error("User doesn't have property 'name'");
+            }
+
+            tx.success();
+            return name;
+        }
+    }
+
 	public Node getUserNode(String UID, String name, String prolongedToken) {
 		try ( Transaction tx = graphDb.beginTx() ) {
 			Node user = graphDb.findNode(userLabel, GraphConstants.User.UID, UID);
@@ -491,7 +515,83 @@ public class GraphDBManager {
     // RECOMMENDER
     // ==============================
 
-    public void getAllCommonNodesBetweenUsers(Node user1, Node user2) {
+/*    public Map<String, Map<RelationshipType, Integer>> getAllRelationshipsOfUser(Node user1) {
+        try(Transaction tx = graphDb.beginTx()) {
+
+            // <userId, <relationshipType, count>>
+            Map<String, Map<RelationshipType, Integer>> commonMap = new HashMap<>();
+
+            Iterable<Relationship> relationships = user1.getRelationships();
+
+
+
+            relationships.forEach((r) -> {
+                String userId =
+                RelationshipType relType = r.getType();
+
+            });
+
+            tx.success();
+            return commonMap;
+        }
+    }*/
+
+    /*public void getAllCommonNodesBetweenUsers(Node user1, Node user2) {
+        try(Transaction tx = graphDb.beginTx()) {
+
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put( "user1", user1 );
+            params.put( "user2", user2 );
+
+            Result result = graphDb.execute("");
+
+            tx.success();
+        }
+    }*/
+
+    public Map<String, Map<String, AtomicInteger>> getOtherUsersWithRelationship(Node user) {
+
+        try(Transaction tx = graphDb.beginTx()) {
+            Map<String, Map<String, AtomicInteger>> commonMap = new HashMap<>();
+
+            String userKey = "user";
+            String[] filterRelationshipKeys = {"filt_rel1", "filt_rel2"};
+            String userIdKey = "userId";
+            String relTypeKey = "relType";
+
+            // Ignore KNOWS and RATES relationships
+            Map<String, Object> params = new HashMap<>();
+            params.put( userKey, user );
+            params.put( filterRelationshipKeys[0], "KNOWS" );
+            params.put( filterRelationshipKeys[1], "RATES" );
+
+            String query = String.format("match (m:User)-[r1]-(k)-[r2]-(n:User) " +
+                    "where m={%s} and not(type(r1)={%s}) and not(type(r1)={%s}) and type(r1)=type(r2) " +
+                    "return n.UID as %s, type(r1) as %s", userKey, filterRelationshipKeys[0], filterRelationshipKeys[1], userIdKey, relTypeKey);
+
+            Result result = graphDb.execute(query, params);
+
+            result.forEachRemaining(
+                    (row) -> {
+                        String userId = (String)row.get(userIdKey);
+                        String relType = (String)row.get(relTypeKey);
+                        if(commonMap.containsKey(userId)) {
+                            if(commonMap.get(userId).containsKey(relType)) {
+                                commonMap.get(userId).get(relType).incrementAndGet();
+                            } else {
+                                commonMap.get(userId).put(relType, new AtomicInteger(1));
+                            }
+                        } else {
+                            commonMap.put(userId, new HashMap<String, AtomicInteger>(){{
+                                put(relType, new AtomicInteger(1));
+                            }});
+                        }
+                    }
+            );
+
+            tx.success();
+            return commonMap;
+        }
 
     }
 

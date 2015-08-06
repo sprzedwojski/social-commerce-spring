@@ -1,14 +1,23 @@
 package com.sp.socialcommerce.recommender;
 
+import com.sp.socialcommerce.labels.*;
+import com.sp.socialcommerce.models.User;
 import com.sp.socialcommerce.neo4j.GraphConstants;
+import com.sp.socialcommerce.neo4j.GraphDBManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.test.TestGraphDatabaseFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertThat;
@@ -19,10 +28,31 @@ import static org.junit.Assert.assertThat;
 public class UserSimilarityProcessorTest {
 
     UserSimilarityProcessor userSimilarityProcessor;
+    protected GraphDatabaseService graphDb;
+    private GraphDBManager GDBM;
+    Label userLabel, cityLabel, pageLabel, productLabel, religionLabel, politicalLabel;
 
     @Before
     public void init() {
         userSimilarityProcessor = new UserSimilarityProcessor();
+    }
+
+    @Before
+    public void prepareTestDatabase()
+    {
+        if(graphDb == null)
+            graphDb = new TestGraphDatabaseFactory().newImpermanentDatabase();
+            /*graphDb = new TestGraphDatabaseFactory().newEmbeddedDatabase(Properties.DB_PATH);*/
+
+        if(GDBM == null)
+            GDBM = new GraphDBManager(graphDb);
+
+        userLabel = new User();
+        cityLabel = new City();
+        pageLabel = new Page();
+        productLabel = new Product();
+        religionLabel = new Religion();
+        politicalLabel = new PoliticalView();
     }
 
     @Test
@@ -64,7 +94,7 @@ public class UserSimilarityProcessorTest {
             System.out.println(u.similarity);*/
 
         UserSimilarityProcessor usp = new UserSimilarityProcessor();
-        users = usp.sortUsersDescendingWithSimilarity(users);
+        users = usp.sortUsersDescendingWithSimilarityPercentage(users);
 
   /*      System.out.println("Users:");
         for(SimilarUser u : users)
@@ -149,5 +179,83 @@ public class UserSimilarityProcessorTest {
 
         userSimilarityProcessor.processUserLikes(commonLikes, similarUserHashMap);
         Assert.assertEquals(similarUserHashMap.get(id1).similaritySum, weight*likesNumber, 0.01);
+    }
+
+    @Test
+    public void testProcessCommonMap() throws Exception {
+        Node user1;
+
+        try(Transaction tx = graphDb.beginTx()){
+            user1 = graphDb.createNode(userLabel);
+            user1.setProperty("UID", "1");
+
+            Node user2 = graphDb.createNode(userLabel);
+            user2.setProperty("UID", "2");
+
+            Node user3 = graphDb.createNode(userLabel);
+            user3.setProperty("UID", "3");
+
+            Node page1 = graphDb.createNode(pageLabel);
+            Node page2 = graphDb.createNode(pageLabel);
+            Node page3 = graphDb.createNode(pageLabel);
+
+            user1.createRelationshipTo(user2, GraphConstants.RelTypes.KNOWS);
+            user1.createRelationshipTo(user3, GraphConstants.RelTypes.KNOWS);
+
+            user1.createRelationshipTo(page1, GraphConstants.RelTypes.LIKES);
+            user3.createRelationshipTo(page1, GraphConstants.RelTypes.LIKES);
+
+            user1.createRelationshipTo(page2, GraphConstants.RelTypes.LIKES);
+            user2.createRelationshipTo(page2, GraphConstants.RelTypes.LIKES);
+            user3.createRelationshipTo(page2, GraphConstants.RelTypes.LIKES);
+
+            tx.success();
+        }
+
+        Map<String, Map<String, AtomicInteger>> commonMap = GDBM.getOtherUsersWithRelationship(user1);
+        Map<String, SimilarUser> similarUsersMap = new HashMap<>();
+
+        userSimilarityProcessor.processCommonMap(commonMap, similarUsersMap);
+
+        double expectedSimilarityToUser2 = GraphConstants.similarityWeights.get(GraphConstants.RelTypes.LIKES);
+        double expectedSimilarityToUser3 = GraphConstants.similarityWeights.get(GraphConstants.RelTypes.LIKES) * 2;
+
+        Assert.assertEquals(expectedSimilarityToUser2, similarUsersMap.get("2").similaritySum, 0.01);
+        Assert.assertEquals(expectedSimilarityToUser3, similarUsersMap.get("3").similaritySum, 0.01);
+    }
+
+    @Test
+    public void testSortBySimilarity() {
+//        Random random = new Random(System.currentTimeMillis());
+//        Map<String, Integer> testMap = new HashMap<String, Integer>(1000);
+//        for(int i = 0 ; i < 1000 ; ++i) {
+//            testMap.put( "SomeString" + random.nextInt(), random.nextInt());
+//        }
+
+        SimilarUser user1 = new SimilarUser();
+        user1.similaritySum = 10.0;
+
+        SimilarUser user2 = new SimilarUser();
+        user2.similaritySum = 100.0;
+
+        SimilarUser user3 = new SimilarUser();
+        user3.similaritySum = 50.0;
+
+        Map<String, SimilarUser> testMap = new HashMap<>();
+        testMap.put("1", user1);
+        testMap.put("2", user2);
+        testMap.put("3", user3);
+
+        testMap = userSimilarityProcessor.sortUsersDescendingWithSimilarity(testMap);
+        Assert.assertEquals( 3, testMap.size() );
+
+        double previous = -1.0;
+        for(Map.Entry<String, SimilarUser> entry : testMap.entrySet()) {
+            Assert.assertNotNull( entry.getValue() );
+            if (previous != -1.0) {
+                Assert.assertTrue( entry.getValue().similaritySum <= previous );
+            }
+            previous = entry.getValue().similaritySum;
+        }
     }
 }
