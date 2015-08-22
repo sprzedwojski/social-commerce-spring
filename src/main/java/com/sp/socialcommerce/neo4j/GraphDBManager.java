@@ -390,7 +390,34 @@ public class GraphDBManager {
 		
 		return map;
 	}
-	
+
+	public Map<Integer, String> getUserProductRatings(String userId) {
+		try(Transaction tx = graphDb.beginTx()) {
+			Map<Integer, String> userProductRatings = new HashMap<>();
+
+			Node user = null;
+
+			if (userId != null) {
+				user = graphDb.findNode(userLabel, GraphConstants.User.UID, userId);
+			}
+
+			if (user != null) {
+				Iterable<Relationship> ratings = user.getRelationships(GraphConstants.RelTypes.RATES);
+				Iterator<Relationship> it = ratings.iterator();
+				while (it.hasNext()) {
+					Relationship rating = it.next();
+					Node product = rating.getOtherNode(user);
+					userProductRatings.put(Integer.parseInt(product.getProperty(GraphConstants.Product.PRODUCT_ID).toString()),
+							rating.getProperty(GraphConstants.Rates.RATING_VALUE).toString());
+				}
+			}
+
+			tx.success();
+
+			return userProductRatings;
+		}
+	}
+
 	public List<Product> getAllProducts(String uid) {
 		try(Transaction tx = graphDb.beginTx()) {
 			ResourceIterator iterator = graphDb.findNodes(productLabel);
@@ -552,7 +579,7 @@ public class GraphDBManager {
     public Map<String, Map<String, AtomicInteger>> getOtherUsersWithRelationship(Node user) {
 
         try(Transaction tx = graphDb.beginTx()) {
-            Map<String, Map<String, AtomicInteger>> commonMap = new HashMap<>();
+            Map<String, Map<String, AtomicInteger>> commonInterestsMap = new HashMap<>();
 
             String userKey = "user";
             String[] filterRelationshipKeys = {"filt_rel1", "filt_rel2"};
@@ -567,7 +594,8 @@ public class GraphDBManager {
 
             String query = String.format("match (m:User)-[r1]-(k)-[r2]-(n:User) " +
                     "where m={%s} and not(type(r1)={%s}) and not(type(r1)={%s}) and type(r1)=type(r2) " +
-                    "return n.UID as %s, type(r1) as %s", userKey, filterRelationshipKeys[0], filterRelationshipKeys[1], userIdKey, relTypeKey);
+                    "return n.UID as %s, type(r1) as %s", userKey, filterRelationshipKeys[0],
+					filterRelationshipKeys[1], userIdKey, relTypeKey);
 
             Result result = graphDb.execute(query, params);
 
@@ -575,22 +603,22 @@ public class GraphDBManager {
                     (row) -> {
                         String userId = (String)row.get(userIdKey);
                         String relType = (String)row.get(relTypeKey);
-                        if(commonMap.containsKey(userId)) {
-                            if(commonMap.get(userId).containsKey(relType)) {
-                                commonMap.get(userId).get(relType).incrementAndGet();
+                        if(commonInterestsMap.containsKey(userId)) {
+                            if(commonInterestsMap.get(userId).containsKey(relType)) {
+                                commonInterestsMap.get(userId).get(relType).incrementAndGet();
                             } else {
-                                commonMap.get(userId).put(relType, new AtomicInteger(1));
+                                commonInterestsMap.get(userId).put(relType, new AtomicInteger(1));
                             }
                         } else {
-                            commonMap.put(userId, new HashMap<String, AtomicInteger>(){{
-                                put(relType, new AtomicInteger(1));
-                            }});
+                            commonInterestsMap.put(userId, new HashMap<String, AtomicInteger>() {{
+								put(relType, new AtomicInteger(1));
+							}});
                         }
                     }
             );
 
             tx.success();
-            return commonMap;
+            return commonInterestsMap;
         }
 
     }

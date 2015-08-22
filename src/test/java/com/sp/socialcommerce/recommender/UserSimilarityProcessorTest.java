@@ -215,7 +215,7 @@ public class UserSimilarityProcessorTest {
         Map<String, Map<String, AtomicInteger>> commonMap = GDBM.getOtherUsersWithRelationship(user1);
         Map<String, SimilarUser> similarUsersMap = new HashMap<>();
 
-        userSimilarityProcessor.processCommonMap(commonMap, similarUsersMap);
+        userSimilarityProcessor.processCommonInterestsMap(commonMap, similarUsersMap);
 
         double expectedSimilarityToUser2 = GraphConstants.similarityWeights.get(GraphConstants.RelTypes.LIKES);
         double expectedSimilarityToUser3 = GraphConstants.similarityWeights.get(GraphConstants.RelTypes.LIKES) * 2;

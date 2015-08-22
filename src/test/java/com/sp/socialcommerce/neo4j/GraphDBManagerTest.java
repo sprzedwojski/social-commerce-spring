@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.neo4j.graphdb.*;
+import org.neo4j.kernel.impl.core.GraphProperties;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
 import java.util.Map;
@@ -106,7 +107,37 @@ public class GraphDBManagerTest /*extends TestCase */{
         Assert.assertTrue(!commonMap.get("2").containsKey(GraphConstants.RelTypes.KNOWS.toString()));
     }
 
-/*    @Test
+    @Test
+    public void testGetUserProductRatings() throws Exception {
+        Node user1;
+
+        try(Transaction tx = graphDb.beginTx()){
+            user1 = graphDb.createNode(userLabel);
+            user1.setProperty("UID", "1");
+
+            Node product1 = graphDb.createNode(productLabel);
+            Node product2 = graphDb.createNode(productLabel);
+
+            product1.setProperty(GraphConstants.Product.PRODUCT_ID, "1001");
+            product2.setProperty(GraphConstants.Product.PRODUCT_ID, "1002");
+
+            Relationship rates1 = user1.createRelationshipTo(product1, GraphConstants.RelTypes.RATES);
+            rates1.setProperty(GraphConstants.Rates.RATING_VALUE, "5");
+
+            Relationship rates2 = user1.createRelationshipTo(product2, GraphConstants.RelTypes.RATES);
+            rates2.setProperty(GraphConstants.Rates.RATING_VALUE, "3");
+
+            tx.success();
+        }
+
+        Map<Integer, String> productsRatings = GDBM.getUserProductRatings("1");
+//        productsRatings.forEach((x,y) -> System.out.println(x + ": " + y));
+        Assert.assertEquals(2, productsRatings.size());
+        Assert.assertEquals("5", productsRatings.get(1001));
+        Assert.assertEquals("3", productsRatings.get(1002));
+    }
+
+    /*    @Test
     public void testGetCityNode() throws Exception {
         Node n = null;
         try ( Transaction tx = graphDb.beginTx() )

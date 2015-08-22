@@ -30,12 +30,11 @@ public class UserSimilarityProcessor {
     @Autowired
     private GraphDBManager GDBM;
 
-    private Map<String, SimilarUser> similarUsersMap = new LinkedHashMap<>();
-
     public List<SimilarUser> findSimilarUsers(String userId, int howMany) {
         List<SimilarUser> similarUsersSortedList = new ArrayList<>(howMany);
+        Map<String, SimilarUser> similarUsersMap = new LinkedHashMap<>();
 
-        processCommonMap(GDBM.getOtherUsersWithRelationship(GDBM.getUserNode(userId)), similarUsersMap);
+        processCommonInterestsMap(GDBM.getOtherUsersWithRelationship(GDBM.getUserNode(userId)), similarUsersMap);
         similarUsersMap = sortUsersDescendingWithSimilarity(similarUsersMap);
 
         int counter = 0;
@@ -65,8 +64,8 @@ public class UserSimilarityProcessor {
         }
     }
 
-    public void processCommonMap(Map<String, Map<String, AtomicInteger>> commonMap, Map<String, SimilarUser> similarUsersMap) {
-        commonMap.forEach((userId, relMap) -> {
+    public void processCommonInterestsMap(Map<String, Map<String, AtomicInteger>> commonInterestsMap, Map<String, SimilarUser> similarUsersMap) {
+        commonInterestsMap.forEach((userId, relMap) -> {
             SimilarUser user = createSimilarUserIfNotExistsAndPutIntoMap(similarUsersMap, userId);
             relMap.forEach((relName, count) -> {
                 double similarityWeight = GraphConstants.similarityWeights.get(GraphConstants.RelTypes.valueOf(relName));
