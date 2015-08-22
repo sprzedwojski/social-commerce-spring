@@ -2,6 +2,9 @@ package com.sp.socialcommerce.labels;
 
 import com.sp.socialcommerce.neo4j.GraphConstants;
 import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.register.Register;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +26,8 @@ public class Product implements Label {
     private String category;
 
     private String rating;
+
+
 
     public String getRating() {
         return rating;

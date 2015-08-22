@@ -393,7 +393,7 @@ public class GraphDBManager {
 
 	public Map<Integer, String> getUserProductRatings(String userId) {
 		try(Transaction tx = graphDb.beginTx()) {
-			Map<Integer, String> userProductRatings = new HashMap<>();
+			Map<Integer, String> userProductRatings = new LinkedHashMap<>();
 
 			Node user = null;
 
@@ -444,7 +444,7 @@ public class GraphDBManager {
 			List<Product> products = new ArrayList<Product>();
 			while(iterator.hasNext()) {
 				pNode = (Node)iterator.next();
-				Product product = new Product();
+/*				Product product = new Product();
 				product.setId(Integer.parseInt(pNode.getProperty(GraphConstants.Product.PRODUCT_ID).toString()));
 				product.setImageUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_IMG_URL).toString());
 				product.setNameEn(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_EN).toString());
@@ -462,7 +462,9 @@ public class GraphDBManager {
 				}
 				if(pNode.hasProperty(GraphConstants.Product.PRODUCT_PROD_URL)) {
 					product.setProductUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_PROD_URL).toString());
-				}
+				}*/
+
+				Product product = parseProduct(pNode);
 
 				if(user != null) {
 					if(userProductRatings.containsKey(product.getId())) {
@@ -470,11 +472,11 @@ public class GraphDBManager {
 					}
 				}
 
-				Iterable<Relationship> relationships = pNode.getRelationships(GraphConstants.RelTypes.HAS_CATEGORY);								
+/*				Iterable<Relationship> relationships = pNode.getRelationships(GraphConstants.RelTypes.HAS_CATEGORY);
 				Relationship rel = relationships.iterator().next();
 				if(rel != null) {
 					product.setCategory(rel.getOtherNode(pNode).getProperty(GraphConstants.ProductCategory.PRODUCT_CATEGORY_NAME).toString().toLowerCase());
-				}
+				}*/
 
 				products.add(product);
 
@@ -622,5 +624,40 @@ public class GraphDBManager {
         }
 
     }
+
+	public Product parseProduct(Node pNode) {
+		try(Transaction tx = graphDb.beginTx()) {
+			Product product = new Product();
+			product.setId(Integer.parseInt(pNode.getProperty(GraphConstants.Product.PRODUCT_ID).toString()));
+			product.setImageUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_IMG_URL).toString());
+			product.setNameEn(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_EN).toString());
+			if (pNode.hasProperty(GraphConstants.Product.PRODUCT_NAME_PL)) {
+				product.setNamePl(pNode.getProperty(GraphConstants.Product.PRODUCT_NAME_PL).toString());
+			}
+			if (pNode.hasProperty(GraphConstants.Product.PRODUCT_DESC_PL)) {
+				product.setDescriptionPl(pNode.getProperty(GraphConstants.Product.PRODUCT_DESC_PL).toString());
+			}
+			if (pNode.hasProperty(GraphConstants.Product.PRODUCT_DESC_EN)) {
+				product.setDescriptionEn(pNode.getProperty(GraphConstants.Product.PRODUCT_DESC_EN).toString());
+			}
+			if (pNode.hasProperty(GraphConstants.Product.PRODUCT_PRICE_EUR)) {
+				product.setPrice(Double.parseDouble(pNode.getProperty(GraphConstants.Product.PRODUCT_PRICE_EUR).toString()));
+			}
+			if (pNode.hasProperty(GraphConstants.Product.PRODUCT_PROD_URL)) {
+				product.setProductUrl(pNode.getProperty(GraphConstants.Product.PRODUCT_PROD_URL).toString());
+			}
+
+			Iterable<Relationship> relationships = pNode.getRelationships(GraphConstants.RelTypes.HAS_CATEGORY);
+			if(relationships.iterator().hasNext()) {
+				Relationship rel = relationships.iterator().next();
+				if (rel != null) {
+					product.setCategory(rel.getOtherNode(pNode).getProperty(GraphConstants.ProductCategory.PRODUCT_CATEGORY_NAME).toString().toLowerCase());
+				}
+			}
+
+			tx.success();
+			return product;
+		}
+	}
 
 }

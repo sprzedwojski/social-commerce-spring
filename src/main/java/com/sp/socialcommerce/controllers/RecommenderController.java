@@ -1,7 +1,9 @@
 package com.sp.socialcommerce.controllers;
 
+import com.sp.socialcommerce.labels.Product;
 import com.sp.socialcommerce.neo4j.GraphConstants;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
+import com.sp.socialcommerce.recommender.ProductRecommender;
 import com.sp.socialcommerce.recommender.SimilarUser;
 import com.sp.socialcommerce.recommender.UserSimilarityProcessor;
 import org.neo4j.graphdb.Node;
@@ -28,6 +30,9 @@ public class RecommenderController {
     private UserSimilarityProcessor userSimilarityProcessor;
 
     @Autowired
+    private ProductRecommender productRecommender;
+
+    @Autowired
     protected GraphDBManager GDBM;
 
 
@@ -43,9 +48,15 @@ public class RecommenderController {
         List<SimilarUser> similarUserList = userSimilarityProcessor.findSimilarUsers(userId, 5);
         final long endTime = System.currentTimeMillis();
 
-        similarUserList.forEach((x) -> logger.info("id: " + x.getUserId() + " | name: " + GDBM.getUserName(x.getUserId()) + " | similarity: " + x.getSimilaritySum()));
+        System.out.println("Total execution time (user similarity): " + (endTime - startTime) + " ms");
 
-        System.out.println("Total execution time: " + (endTime - startTime) + " ms");
+        similarUserList.forEach((x) -> {
+            logger.info("id: " + x.getUserId() + " | name: " + GDBM.getUserName(x.getUserId()) + " | similarity: " + x.getSimilaritySum());
+            /*List<Product> highestRatedUserProducts = productRecommender.getUserHighestRatedProductsSortedDescendigly(x.getUserId(), 30);*/
+            List<Product> highestRatedUserProducts = productRecommender.getUserHighestRatedProducts(x.getUserId(), 5);
+            highestRatedUserProducts.forEach(prod -> logger.info("> prod: " + prod.getNameEn() + " | rating: " + prod.getRating()));
+        });
+
 
         return "recommend/similar";
     }
