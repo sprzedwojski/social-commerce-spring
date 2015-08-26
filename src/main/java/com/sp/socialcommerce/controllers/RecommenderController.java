@@ -58,7 +58,9 @@ public class RecommenderController {
                           @RequestParam(value = "num_of_similar_users") String numOfSimilarUsers,
                           @RequestParam(value = "min_sim_users_ratings") String minSimUsersRatings) {
         List<String> userIds = GDBM.getAllUsers();
+
         List<Double> correctnessList = new ArrayList<>();
+        List<Double> rmseList = new ArrayList<>();
 
         final long startTime = System.currentTimeMillis();
 
@@ -91,8 +93,20 @@ public class RecommenderController {
                 }
             });
             double correctness = recommendationValidator.getRecommendationCorrectness();
-            logger.info("Correctness: " + correctness);
+            double rmse = recommendationValidator.getRMSE();
+
+            if(!Double.isNaN(correctness) && !Double.isNaN(rmse)) {
+                correctnessList.add(correctness);
+                rmseList.add(rmse);
+            }
+
+            logger.info("Correctness: " + correctness + " | RSME: " + rmse);
         });
+
+        double avgCorrectness = RecommendationValidator.calculateListAverage(correctnessList);
+        double avgRmse = RecommendationValidator.calculateListAverage(rmseList);
+
+        logger.info("Avg correctness: " + avgCorrectness + " | Avg RMSE: " + avgRmse);
 
         final long endTime = System.currentTimeMillis();
         System.out.println("Total execution time: " + (endTime - startTime) + " ms");
