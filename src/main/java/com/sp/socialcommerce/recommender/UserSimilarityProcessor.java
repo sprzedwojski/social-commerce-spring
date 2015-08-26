@@ -31,7 +31,7 @@ public class UserSimilarityProcessor {
     private GraphDBManager GDBM;
 
     public List<SimilarUser> findSimilarUsers(String userId, int howMany) {
-        List<SimilarUser> similarUsersSortedList = new ArrayList<>(howMany);
+        List<SimilarUser> similarUsersSortedList = new ArrayList<>();
         Map<String, SimilarUser> similarUsersMap = new LinkedHashMap<>();
 
         processCommonInterestsMap(GDBM.getOtherUsersWithRelationship(GDBM.getUserNode(userId)), similarUsersMap);
@@ -49,6 +49,26 @@ public class UserSimilarityProcessor {
 
         return similarUsersSortedList;
         /*return sortUsersDescendingWithSimilarity(similarUsersMap);*/
+    }
+
+    public List<SimilarUser> findRandomUsers(String userId, int howMany) {
+        List<SimilarUser> randomUsersList = new ArrayList<>();
+        List<String> allUsersIds = GDBM.getAllUsers();
+        Collections.shuffle(allUsersIds);
+
+        int counter = 0;
+        for(String id : allUsersIds) {
+            if(counter < howMany) {
+                if (!id.equals(userId)) {
+                    counter++;
+                    SimilarUser user = new SimilarUser();
+                    user.userId = id;
+                    randomUsersList.add(user);
+                }
+            } else break;
+        }
+
+        return randomUsersList;
     }
 
     public void processUserFriends(List<String> friendsIdList, Map<String, SimilarUser> map) {

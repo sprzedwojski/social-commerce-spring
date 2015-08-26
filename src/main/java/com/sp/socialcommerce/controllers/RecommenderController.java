@@ -56,7 +56,8 @@ public class RecommenderController {
     @RequestMapping(method = RequestMethod.POST, value = "/all")
     public String testAll(@RequestParam(value = "lowest_rating") String lowestRating,
                           @RequestParam(value = "num_of_similar_users") String numOfSimilarUsers,
-                          @RequestParam(value = "min_sim_users_ratings") String minSimUsersRatings) {
+                          @RequestParam(value = "min_sim_users_ratings") String minSimUsersRatings,
+                          @RequestParam(value = "random_users", required = false, defaultValue = "false") String randomUsers) {
         List<String> userIds = GDBM.getAllUsers();
 
         List<Double> correctnessList = new ArrayList<>();
@@ -65,8 +66,14 @@ public class RecommenderController {
         final long startTime = System.currentTimeMillis();
 
         userIds.forEach(userId -> {
-            List<SimilarUser> similarUserList =
-                    userSimilarityProcessor.findSimilarUsers(userId, StringUtils.isNotBlank(numOfSimilarUsers) ? Integer.parseInt(numOfSimilarUsers) : NUM_OF_SIMILAR_USERS);
+            List<SimilarUser> similarUserList = null;
+
+            if(Boolean.parseBoolean(randomUsers) == false)
+                similarUserList = userSimilarityProcessor.findSimilarUsers(userId, StringUtils.isNotBlank(numOfSimilarUsers)
+                        ? Integer.parseInt(numOfSimilarUsers) : NUM_OF_SIMILAR_USERS);
+            else
+                similarUserList = userSimilarityProcessor.findRandomUsers(userId, StringUtils.isNotBlank(numOfSimilarUsers)
+                        ? Integer.parseInt(numOfSimilarUsers) : NUM_OF_SIMILAR_USERS);
 
             Map<String, List<Product>> similarUserProductsMap = new HashMap<>();
 
