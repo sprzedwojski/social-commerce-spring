@@ -33,9 +33,12 @@
                 <div class="panel-title text-center">Find similar users</div>
             </div>
 
-            <div style="margin: auto;">
-                <input id="custom_uid" type="text"/>
-                <button id="submit_custom_uid">Submit</button>
+            <div style="margin: auto; font-family: monospace">
+                <br>User Id ................ <input id="custom_uid" type="text"/>
+                <br>Lowest rating .......... <input id="lowest_rating" type="text"/>
+                <br>Num of similar users ... <input id="num_of_similar_users" type="text"/>
+                <br>Min sim users ratings .. <input id="min_sim_users_ratings" type="text"/>
+                <br><button id="submit_custom_uid">Submit</button><button id="submit_all">All</button>
             </div>
 
         </div>
@@ -53,6 +56,18 @@
             type: 'POST',
             url : '<c:url value="/recommend" />',
             data: "user_id=" + $("#custom_uid").val()
+                    + "&lowest_rating=" + $("#lowest_rating").val()
+                    + "&num_of_similar_users=" + $("#num_of_similar_users").val()
+                    + "&min_sim_users_ratings=" + $("#min_sim_users_ratings").val()
+        });
+    });
+    $("#submit_all").click(function() {
+        $.ajax({
+            type: 'POST',
+            url : '<c:url value="/recommend/all" />',
+            data: "lowest_rating=" + $("#lowest_rating").val()
+            + "&num_of_similar_users=" + $("#num_of_similar_users").val()
+            + "&min_sim_users_ratings=" + $("#min_sim_users_ratings").val()
         });
     });
 </script>

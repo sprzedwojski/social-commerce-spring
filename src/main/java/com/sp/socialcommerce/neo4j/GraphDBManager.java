@@ -218,6 +218,19 @@ public class GraphDBManager {
 		}
 	}
 
+    public List<String> getAllUsers() {
+        try (Transaction tx = graphDb.beginTx()) {
+            List<String> ids = new ArrayList<>();
+            ResourceIterator it = graphDb.findNodes(userLabel);
+            it.forEachRemaining(user -> {
+                if(((Node) user).hasProperty(GraphConstants.User.UID))
+                    ids.add((String) ((Node) user).getProperty(GraphConstants.User.UID));
+            });
+
+            return ids;
+        }
+    }
+
     public List<String> getUserFriendsIds(String userId) {
         Node user = getUserNode(userId);
         if(user == null) {
