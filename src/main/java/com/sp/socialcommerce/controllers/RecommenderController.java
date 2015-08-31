@@ -76,6 +76,7 @@ public class RecommenderController {
                         ? Integer.parseInt(numOfSimilarUsers) : NUM_OF_SIMILAR_USERS);
 
             Map<String, List<Product>> similarUserProductsMap = new HashMap<>();
+            Map<String, Double> similarUserSimilarityMap = new HashMap<>();
 
             similarUserList.forEach((x) -> {
                 List<Product> highestRatedUserProducts =
@@ -83,14 +84,22 @@ public class RecommenderController {
                 /*highestRatedUserProducts.forEach(prod -> logger.info("> prod: " + prod.getNameEn() + " | rating: " + prod.getRating()));*/
 
                 similarUserProductsMap.put(x.getUserId(), highestRatedUserProducts);
+                similarUserSimilarityMap.put(x.getUserId(), x.getSimilaritySum());
             });
 
             Map<Integer, String> realRatings = GDBM.getUserProductRatings(userId);
 
             recommendationValidator = new RecommendationValidator();
 
-            Map<Product, Double> products = productRecommender.getRecommendedProductsForUser(similarUserProductsMap, -1,
-                    StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
+            Map<Product, Double> products = null;
+
+            if(Boolean.parseBoolean(randomUsers) == false)
+                products = productRecommender.getRecommendedProductsForUser(similarUserProductsMap, similarUserSimilarityMap, -1,
+                        StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
+            else
+                products = productRecommender.getRecommendedProductsForUserRandom(similarUserProductsMap, -1,
+                        StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
+
             products.forEach((prod, r) -> {
                 String realRating = null;
                 /*Double individualCorrectness = null;*/
@@ -135,6 +144,7 @@ public class RecommenderController {
         System.out.println("Total execution time (user similarity): " + (endTime - startTime) + " ms");
 
         Map<String, List<Product>> similarUserProductsMap = new HashMap<>();
+        Map<String, Double> similarUserSimilarityMap = new HashMap<>();
         
         similarUserList.forEach((x) -> {
             logger.info("id: " + x.getUserId() + " | name: " + GDBM.getUserName(x.getUserId()) + " | similarity: " + x.getSimilaritySum());
@@ -143,6 +153,7 @@ public class RecommenderController {
             highestRatedUserProducts.forEach(prod -> logger.info("> prod: " + prod.getNameEn() + " | rating: " + prod.getRating()));
             
             similarUserProductsMap.put(x.getUserId(), highestRatedUserProducts);
+            similarUserSimilarityMap.put(x.getUserId(), x.getSimilaritySum());
         });
 
         logger.info("\n\n ..:: RECOMMENDED ::..\n\n");
@@ -151,7 +162,7 @@ public class RecommenderController {
 
         recommendationValidator = new RecommendationValidator();
 
-        Map<Product, Double> products = productRecommender.getRecommendedProductsForUser(similarUserProductsMap, -1,
+        Map<Product, Double> products = productRecommender.getRecommendedProductsForUser(similarUserProductsMap, similarUserSimilarityMap, -1,
                 StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
         products.forEach((prod, r) -> {
             String realRating = null;

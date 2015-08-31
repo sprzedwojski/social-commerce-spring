@@ -33,25 +33,25 @@ public abstract class GraphConstants {
         HAS_RELATIONSHIP_STATUS /* User -> RelationshipStatus */
     }
 
-    public static final HashMap<RelationshipType, Double> similarityWeights = new HashMap<RelationshipType, Double>() {{
+    /*public static final HashMap<RelationshipType, Double> similarityWeights = new HashMap<RelationshipType, Double>() {{
         put(LIVES_IN, 1.0);
         put(WAS_BORN_IN, 1.0);
         put(FOLLOWS_RELIGION, 3.0);
         put(HAS_POLITICAL_VIEW, 3.0);
         put(LIKES, 1.0);
-        put(KNOWS, 2.0);
+        put(KNOWS, 10.0);
         put(IS_OF_GENDER, 5.0);
-    }};
+    }};*/
 
-    /*public static final HashMap<RelationshipType, Double> similarityWeights = new HashMap<RelationshipType, Double>() {{
+    public static final HashMap<RelationshipType, Double> similarityWeights = new HashMap<RelationshipType, Double>() {{
         put(LIVES_IN, 3.0);
         put(WAS_BORN_IN, 3.0);
         put(FOLLOWS_RELIGION, 5.0);
         put(HAS_POLITICAL_VIEW, 5.0);
         put(LIKES, 1.0);
-        put(KNOWS, 2.0);
+        put(KNOWS, 20.0);
         put(IS_OF_GENDER, 10.0);
-    }};*/
+    }};
 
 //    public static final String NAME = "name";
     /*public static final String LIKES_KEY = "likes";*/

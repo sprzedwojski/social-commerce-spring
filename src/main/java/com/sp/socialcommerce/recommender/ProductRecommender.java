@@ -29,7 +29,70 @@ public class ProductRecommender {
 
     public static final int ALL_PRODUCTS_FLAG = -1;
 
-    public Map<Product, Double> getRecommendedProductsForUser(Map<String, List<Product>> similarUserProductsMap, int howMany, int minNumberOfSimilarUserRatings) {
+    public Map<Product, Double> getRecommendedProductsForUser(Map<String, List<Product>> similarUserProductsMap, Map<String, Double> similarUserSimilarityMap,
+                                                              int howMany, int minNumberOfSimilarUserRatings) {
+
+        // <productId, List<[productRating,similarity]>>
+        Map<Integer, List<Double[]>> recommendableProducts = new HashMap<>();
+
+        Map<Integer, Product> helperProductIdMap = new HashMap<>();
+
+        similarUserProductsMap.forEach((similarUserId, productsList) ->
+            productsList.forEach(product -> {
+                if(recommendableProducts.containsKey(product.getId())) {
+                    recommendableProducts.get(product.getId()).add(new Double[]{Double.parseDouble(product.getRating()), similarUserSimilarityMap.get(similarUserId)});
+                } else {
+                    recommendableProducts.put(product.getId(), new ArrayList<Double[]>() {{
+                        /*add(Integer.parseInt(product.getRating()));*/
+                        add(new Double[]{Double.parseDouble(product.getRating()), similarUserSimilarityMap.get(similarUserId)});
+                    }});
+                    helperProductIdMap.put(product.getId(), product);
+                }
+            })
+        );
+
+        Map<Product, Double> productsSuggestedRatingMap = new LinkedHashMap<>();
+
+        recommendableProducts.forEach((productId, ratingsList) -> {
+            if(ratingsList.size() >= minNumberOfSimilarUserRatings) { // suggest a product only if at least X similar people rated it
+                /*double ratingsSum = 0.0;*/
+                double numeratorSum = 0.0, denominatorSum = 0.0;
+
+                for (Double[] pair : ratingsList) {
+                    double rating = pair[0];
+                    double similarity = pair[1];
+
+                    /*ratingsSum += rating;*/
+                    numeratorSum += rating * similarity;
+                    denominatorSum += similarity;
+                }
+                /*double average = ratingsSum / ratingsList.size();*/
+                double weightedAverage = numeratorSum / denominatorSum;
+
+                productsSuggestedRatingMap.put(helperProductIdMap.get(productId), /*average*/ weightedAverage);
+            }
+        });
+
+        Map<Product, Double> sortedProductsAverageRatingMap = sortProductsDescendingWithRating(productsSuggestedRatingMap);
+
+        if(howMany != ALL_PRODUCTS_FLAG) {
+            Map<Product, Double> filteredSortedProductsAverageRatingMap = new LinkedHashMap<>();
+            int counter = 0;
+            /*sortedProductsAverageRatingMap.forEach((product, rating) -> {*/
+            for(Map.Entry<Product, Double> entry : sortedProductsAverageRatingMap.entrySet()) {
+                if(counter <= howMany) {
+                    counter++;
+                    filteredSortedProductsAverageRatingMap.put(entry.getKey(), entry.getValue());
+                } else break;
+            }
+
+            return filteredSortedProductsAverageRatingMap;
+        }
+
+        return sortedProductsAverageRatingMap;
+    }
+
+    public Map<Product, Double> getRecommendedProductsForUserRandom(Map<String, List<Product>> similarUserProductsMap, int howMany, int minNumberOfSimilarUserRatings) {
 
         // <productId, List<productRatings>>
         Map<Integer, List<Integer>> recommendableProducts = new HashMap<>();
@@ -37,16 +100,16 @@ public class ProductRecommender {
         Map<Integer, Product> helperProductIdMap = new HashMap<>();
 
         similarUserProductsMap.forEach((similarUserId, productsList) ->
-            productsList.forEach(product -> {
-                if(recommendableProducts.containsKey(product.getId()))
-                    recommendableProducts.get(product.getId()).add(Integer.parseInt(product.getRating()));
-                else {
-                    recommendableProducts.put(product.getId(), new ArrayList<Integer>() {{
-                        add(Integer.parseInt(product.getRating()));
-                    }});
-                    helperProductIdMap.put(product.getId(), product);
-                }
-            })
+                        productsList.forEach(product -> {
+                            if(recommendableProducts.containsKey(product.getId()))
+                                recommendableProducts.get(product.getId()).add(Integer.parseInt(product.getRating()));
+                            else {
+                                recommendableProducts.put(product.getId(), new ArrayList<Integer>() {{
+                                    add(Integer.parseInt(product.getRating()));
+                                }});
+                                helperProductIdMap.put(product.getId(), product);
+                            }
+                        })
         );
 
         Map<Product, Double> productsSuggestedRatingMap = new LinkedHashMap<>();

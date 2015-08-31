@@ -612,7 +612,13 @@ public class GraphDBManager {
                     "return n.UID as %s, type(r1) as %s", userKey, filterRelationshipKeys[0],
 					filterRelationshipKeys[1], userIdKey, relTypeKey);
 
-            Result result = graphDb.execute(query, params);
+            String queryWithKnows = String.format("match (m:User)-[r1]-(k)-[r2]-(n:User) " +
+                            "where m={%s} and not(type(r1)={%s}) and type(r1)=type(r2) " +
+                            "return n.UID as %s, type(r1) as %s", userKey,
+                    filterRelationshipKeys[1], userIdKey, relTypeKey);
+
+            /*Result result = graphDb.execute(query, params);*/
+            Result result = graphDb.execute(queryWithKnows, params);
 
             result.forEachRemaining(
                     (row) -> {
