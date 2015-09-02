@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -69,7 +71,7 @@ public class ProductRecommender {
                 /*double average = ratingsSum / ratingsList.size();*/
                 double weightedAverage = numeratorSum / denominatorSum;
 
-                productsSuggestedRatingMap.put(helperProductIdMap.get(productId), /*average*/ weightedAverage);
+                productsSuggestedRatingMap.put(helperProductIdMap.get(productId), /*average*/ round(weightedAverage));
             }
         });
 
@@ -122,7 +124,7 @@ public class ProductRecommender {
                 }
                 double average = ratingsSum / ratingsList.size();
 
-                productsSuggestedRatingMap.put(helperProductIdMap.get(productId), average);
+                productsSuggestedRatingMap.put(helperProductIdMap.get(productId), round(average));
             }
         });
 
@@ -143,6 +145,17 @@ public class ProductRecommender {
         }
 
         return sortedProductsAverageRatingMap;
+    }
+
+    /**
+     * Rounds the number to the nearest integer.
+     * @param var
+     * @return
+     */
+    public double round(double var) {
+        BigDecimal bd = new BigDecimal(var);
+        bd = bd.setScale(0, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     /**
