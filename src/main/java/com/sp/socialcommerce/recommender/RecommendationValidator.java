@@ -50,6 +50,15 @@ public class RecommendationValidator {
         return Math.sqrt( sum / realAndSuggestedRatings.size() );
     }
 
+    public double getMAE() {
+        double sum = 0.0;
+        for(Double[] realAndSuggestedRating : realAndSuggestedRatings) {
+            sum += Math.abs((realAndSuggestedRating[0] - realAndSuggestedRating[1]));
+        }
+
+        return Math.sqrt( sum / realAndSuggestedRatings.size() );
+    }
+
     private double calculateIndividualCorrectness(double var1, double var2) {
         return (MAX_POSSIBLE_DIFF - Math.abs(var1 - var2)) / MAX_POSSIBLE_DIFF;
     }

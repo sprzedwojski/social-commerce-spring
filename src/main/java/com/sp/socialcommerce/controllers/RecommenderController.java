@@ -3,10 +3,7 @@ package com.sp.socialcommerce.controllers;
 import com.sp.socialcommerce.labels.Product;
 import com.sp.socialcommerce.neo4j.GraphConstants;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
-import com.sp.socialcommerce.recommender.ProductRecommender;
-import com.sp.socialcommerce.recommender.RecommendationValidator;
-import com.sp.socialcommerce.recommender.SimilarUser;
-import com.sp.socialcommerce.recommender.UserSimilarityProcessor;
+import com.sp.socialcommerce.recommender.*;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.Node;
 import org.slf4j.Logger;
@@ -37,9 +34,12 @@ public class RecommenderController {
 
     @Autowired
     private UserSimilarityProcessor userSimilarityProcessor;
-
     @Autowired
     private ProductRecommender productRecommender;
+    @Autowired
+    private PredictiveAccuracyValidator predictiveAccuracyValidator;
+    @Autowired
+    private ClassificationAccuracyValidator classificationAccuracyValidator;
 
     private RecommendationValidator recommendationValidator;
 
@@ -53,22 +53,58 @@ public class RecommenderController {
         return "recommend/home";
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/all_classification")
+    public String testAllClassification(@RequestParam(value = "lowest_rating") String lowestRating,
+                          @RequestParam(value = "num_of_similar_users") String numOfSimilarUsers,
+                          @RequestParam(value = "min_sim_users_ratings") String minSimUsersRatings,
+                          @RequestParam(value = "random_users", required = false, defaultValue = "false") String randomUsers) {
+
+        Map<String, Double> classificationAccuracyMap = classificationAccuracyValidator.validate(lowestRating, numOfSimilarUsers, minSimUsersRatings/*, randomUsers*/);
+
+        Double avgPrecision=null, avgRecall=null, avgFMeasure=null;
+        if(classificationAccuracyMap.containsKey(ClassificationAccuracyValidator.PRECISION)) {
+            avgPrecision = classificationAccuracyMap.get(ClassificationAccuracyValidator.PRECISION);
+        }
+        if(classificationAccuracyMap.containsKey(ClassificationAccuracyValidator.RECALL)) {
+            avgRecall = classificationAccuracyMap.get(ClassificationAccuracyValidator.RECALL);
+        }
+        if(classificationAccuracyMap.containsKey(ClassificationAccuracyValidator.FMEASURE)) {
+            avgFMeasure = classificationAccuracyMap.get(ClassificationAccuracyValidator.FMEASURE);
+        }
+        logger.info("Avg precision: " + avgPrecision + " | Avg recall: " + avgRecall + " | Avg fmeasure: " + avgFMeasure);
+
+        return "recommend/similar";
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/all")
     public String testAll(@RequestParam(value = "lowest_rating") String lowestRating,
                           @RequestParam(value = "num_of_similar_users") String numOfSimilarUsers,
                           @RequestParam(value = "min_sim_users_ratings") String minSimUsersRatings,
                           @RequestParam(value = "random_users", required = false, defaultValue = "false") String randomUsers) {
-        List<String> userIds = GDBM.getAllUsers();
+
+        Map<String, Double> predictiveAccuracyMap = predictiveAccuracyValidator.validate(lowestRating, numOfSimilarUsers, minSimUsersRatings, randomUsers);
+
+        Double avgRmse=null, avgMae=null;
+        if(predictiveAccuracyMap.containsKey(PredictiveAccuracyValidator.RMSE)) {
+            avgRmse = predictiveAccuracyMap.get(PredictiveAccuracyValidator.RMSE);
+        }
+        if(predictiveAccuracyMap.containsKey(PredictiveAccuracyValidator.MAE)) {
+            avgMae = predictiveAccuracyMap.get(PredictiveAccuracyValidator.MAE);
+        }
+        logger.info("Avg RMSE: " + avgRmse + " | Avg MAE: " + avgMae);
+
+        /*List<String> userIds = GDBM.getAllUsers();
 
         List<Double> correctnessList = new ArrayList<>();
         List<Double> rmseList = new ArrayList<>();
+        List<Double> maeList = new ArrayList<>();
 
         final long startTime = System.currentTimeMillis();
 
         userIds.forEach(userId -> {
             List<SimilarUser> similarUserList = null;
 
-            if(Boolean.parseBoolean(randomUsers) == false)
+            if(!Boolean.parseBoolean(randomUsers))
                 similarUserList = userSimilarityProcessor.findSimilarUsers(userId, StringUtils.isNotBlank(numOfSimilarUsers)
                         ? Integer.parseInt(numOfSimilarUsers) : NUM_OF_SIMILAR_USERS);
             else
@@ -81,7 +117,7 @@ public class RecommenderController {
             similarUserList.forEach((x) -> {
                 List<Product> highestRatedUserProducts =
                         productRecommender.getUserHighestRatedProducts(x.getUserId(), StringUtils.isNotBlank(lowestRating) ? Integer.parseInt(lowestRating) : 1);
-                /*highestRatedUserProducts.forEach(prod -> logger.info("> prod: " + prod.getNameEn() + " | rating: " + prod.getRating()));*/
+                *//*highestRatedUserProducts.forEach(prod -> logger.info("> prod: " + prod.getNameEn() + " | rating: " + prod.getRating()));*//*
 
                 similarUserProductsMap.put(x.getUserId(), highestRatedUserProducts);
                 similarUserSimilarityMap.put(x.getUserId(), x.getSimilaritySum());
@@ -93,7 +129,7 @@ public class RecommenderController {
 
             Map<Product, Double> products = null;
 
-            if(Boolean.parseBoolean(randomUsers) == false)
+            if(!Boolean.parseBoolean(randomUsers))
                 products = productRecommender.getRecommendedProductsForUser(similarUserProductsMap, similarUserSimilarityMap, -1,
                         StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
             else
@@ -102,30 +138,33 @@ public class RecommenderController {
 
             products.forEach((prod, r) -> {
                 String realRating = null;
-                /*Double individualCorrectness = null;*/
+                *//*Double individualCorrectness = null;*//*
                 if(realRatings.containsKey(prod.getId())) {
                     realRating = realRatings.get(prod.getId());
-                    /*individualCorrectness = */recommendationValidator.addRatings(Double.parseDouble(realRating), r);
+                    *//*individualCorrectness = *//*recommendationValidator.addRatings(Double.parseDouble(realRating), r);
                 }
             });
             double correctness = recommendationValidator.getRecommendationCorrectness();
             double rmse = recommendationValidator.getRMSE();
+            double mae = recommendationValidator.getMAE();
 
-            if(!Double.isNaN(correctness) && !Double.isNaN(rmse)) {
+            if(!Double.isNaN(correctness) && !Double.isNaN(rmse) && !Double.isNaN(mae)) {
                 correctnessList.add(correctness);
                 rmseList.add(rmse);
+                maeList.add(mae);
             }
 
-            logger.info("Correctness: " + correctness + " | RSME: " + rmse);
+            logger.info("Correctness: " + correctness + " | RSME: " + rmse + " | MAE: " + mae);
         });
 
         double avgCorrectness = RecommendationValidator.calculateListAverage(correctnessList);
         double avgRmse = RecommendationValidator.calculateListAverage(rmseList);
+        double avgMae = RecommendationValidator.calculateListAverage(maeList);
 
-        logger.info("Avg correctness: " + avgCorrectness + " | Avg RMSE: " + avgRmse);
+        logger.info("Avg correctness: " + avgCorrectness + " | Avg RMSE: " + avgRmse + " | Avg MAE: " + avgMae);
 
         final long endTime = System.currentTimeMillis();
-        System.out.println("Total execution time: " + (endTime - startTime) + " ms");
+        System.out.println("Total execution time: " + (endTime - startTime) + " ms");*/
 
         return "recommend/similar";
     }

@@ -38,7 +38,12 @@
                 <br>Lowest rating .......... <input id="lowest_rating" type="text"/>
                 <br>Num of similar users ... <input id="num_of_similar_users" type="text"/>
                 <br>Min sim users ratings .. <input id="min_sim_users_ratings" type="text"/>
-                <br><button id="submit_custom_uid">Submit</button><button id="submit_all">All</button><button id="submit_random">Random</button>
+                <br>
+                <button id="submit_custom_uid">Submit</button>
+                <button id="submit_all">All</button>
+                <button id="submit_random">Random</button>
+                <br>
+                <button id="submit_all_classification">Classification all</button>
             </div>
 
         </div>
@@ -78,6 +83,15 @@
             + "&num_of_similar_users=" + $("#num_of_similar_users").val()
             + "&min_sim_users_ratings=" + $("#min_sim_users_ratings").val()
             + "&random_users=true"
+        });
+    });
+    $("#submit_all_classification").click(function() {
+        $.ajax({
+            type: 'POST',
+            url : '<c:url value="/recommend/all_classification" />',
+            data: "lowest_rating=" + $("#lowest_rating").val()
+            + "&num_of_similar_users=" + $("#num_of_similar_users").val()
+            + "&min_sim_users_ratings=" + $("#min_sim_users_ratings").val()
         });
     });
 </script>
