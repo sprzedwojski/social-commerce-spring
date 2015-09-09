@@ -56,7 +56,8 @@ public class RecommendationValidator {
             sum += Math.abs((realAndSuggestedRating[0] - realAndSuggestedRating[1]));
         }
 
-        return Math.sqrt( sum / realAndSuggestedRatings.size() );
+//        return Math.sqrt( sum / realAndSuggestedRatings.size() );
+        return sum / realAndSuggestedRatings.size();
     }
 
     private double calculateIndividualCorrectness(double var1, double var2) {

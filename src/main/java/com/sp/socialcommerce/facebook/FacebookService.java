@@ -8,6 +8,7 @@ import com.restfb.Version;
 import com.restfb.exception.*;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
+import com.restfb.types.User;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
 import com.sp.socialcommerce.prop.ApplicationProperties;
 import com.sp.socialcommerce.prop.Properties;
@@ -16,12 +17,11 @@ import org.neo4j.cypher.internal.compiler.v2_0.functions.Str;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class responsible for asynchronously connecting with Facebook.
@@ -49,12 +49,21 @@ public class FacebookService {
 	
 	@Autowired
 	private ApplicationProperties applicationProperties;
-	
-	@Autowired
+
+    @Qualifier("graphDBManager")
+    @Autowired
 	private GraphDBManager GDBM;
-	
+
+    private Set<String> userProcessingSet = new HashSet<>();
+
+    public boolean isProcessingUser(String userId) {
+        return userProcessingSet.contains(userId);
+    }
+
 	@Async
 	public void processUser(String userId, String accessToken) {
+
+        userProcessingSet.add(userId);
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 
@@ -69,7 +78,7 @@ public class FacebookService {
 			// USER PROFILE
 			// ==============================
 
-			com.restfb.types.User fbUser = facebookClient.fetchObject("me", com.restfb.types.User.class,
+			User fbUser = facebookClient.fetchObject("me", User.class,
 					Parameter.with("fields", "age_range,hometown,location,political,religion,relationship_status,gender,sports," +
 							"favorite_athletes,favorite_teams"));
 
@@ -231,6 +240,8 @@ public class FacebookService {
 		}
 
 		GDBM.processUserResponse(responseMap);
+
+        userProcessingSet.remove(userId);
 	}
 	
 

@@ -51,7 +51,8 @@ public class LoginController {
 		// If user id is present in the session we will not log him in again, but redirect directly to the survey
 		if(request.getSession().getAttribute(FacebookService.USER_ID) != null
                 && request.getSession().getAttribute(FacebookService.USER_ACCESS_TOKEN) != null) {
-			return "redirect:survey_intro";
+			/*return "redirect:survey_intro";*/
+            return "redirect:";
 		}
 
 		model.addAttribute("user", new User());
@@ -139,7 +140,8 @@ public class LoginController {
                 request.getSession().setAttribute(FacebookService.USER_ID, userId);
 
                 facebookService.processUser(userId, accessToken);
-                return "redirect:survey_intro";
+                /*return "redirect:survey_intro";*/
+                return "redirect:";
             }
             else
                 logger.error("Error creating user node!");

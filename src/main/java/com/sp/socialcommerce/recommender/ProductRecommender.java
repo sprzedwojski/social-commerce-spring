@@ -3,6 +3,7 @@ package com.sp.socialcommerce.recommender;
 import com.sp.socialcommerce.labels.Product;
 import com.sp.socialcommerce.neo4j.GraphConstants;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,25 @@ public class ProductRecommender {
     @Qualifier("graphDBManager")
     @Autowired
     GraphDBManager GDBM;
-
-    /*private class RecommendableProduct {
-        String productId;
-        List<Integer> productRatings;
-    }*/
+    @Autowired
+    UserSimilarityProcessor userSimilarityProcessor;
 
     public static final int ALL_PRODUCTS_FLAG = -1;
+
+    public Map<Product, Double> getRecommendedProductsForUser(String userId, int K, int minNumberOfSimilarUserRatings, int lowestRating) {
+        List<SimilarUser> similarUserList = userSimilarityProcessor.findSimilarUsers(userId, K);
+
+        Map<String, List<Product>> similarUserProductsMap = new HashMap<>();
+        Map<String, Double> similarUserSimilarityMap = new HashMap<>();
+
+        similarUserList.forEach((x) -> {
+            List<Product> highestRatedUserProducts = this.getUserHighestRatedProducts(x.getUserId(), lowestRating);
+            similarUserProductsMap.put(x.getUserId(), highestRatedUserProducts);
+            similarUserSimilarityMap.put(x.getUserId(), x.getSimilaritySum());
+        });
+
+        return getRecommendedProductsForUser(similarUserProductsMap, similarUserSimilarityMap, K, minNumberOfSimilarUserRatings);
+    }
 
     public Map<Product, Double> getRecommendedProductsForUser(Map<String, List<Product>> similarUserProductsMap, Map<String, Double> similarUserSimilarityMap,
                                                               int howMany, int minNumberOfSimilarUserRatings) {
