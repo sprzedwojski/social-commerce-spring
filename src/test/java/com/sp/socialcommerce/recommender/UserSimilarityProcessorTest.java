@@ -1,7 +1,7 @@
 package com.sp.socialcommerce.recommender;
 
 import com.sp.socialcommerce.labels.*;
-import com.sp.socialcommerce.models.User;
+import com.sp.socialcommerce.labels.User;
 import com.sp.socialcommerce.neo4j.GraphConstants;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
 import org.junit.Assert;

@@ -7,7 +7,7 @@ import com.restfb.Version;
 import com.restfb.exception.*;
 import com.restfb.json.JsonObject;
 import com.sp.socialcommerce.facebook.FacebookService;
-import com.sp.socialcommerce.models.User;
+import com.sp.socialcommerce.labels.User;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
 import com.sp.socialcommerce.prop.Properties;
 import org.neo4j.graphdb.Node;
@@ -33,12 +33,8 @@ public class LoginController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-	/*@Autowired
-	private GigyaService gigyaService;*/
-
     @Autowired
     private FacebookService facebookService;
-
     @Autowired
     private GraphDBManager GDBM;
 
@@ -46,7 +42,7 @@ public class LoginController {
      * Simply selects the home view to render by returning its name.
      */
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String home(Locale locale, Model model, HttpServletRequest request) {
+	public String home(Model model, HttpServletRequest request) {
 
 		// If user id is present in the session we will not log him in again, but redirect directly to the survey
 		if(request.getSession().getAttribute(FacebookService.USER_ID) != null
@@ -62,7 +58,7 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String homeSubmit(@ModelAttribute User user, Locale locale, Model model, HttpServletRequest request) {
+	public String homeSubmit(@ModelAttribute User user, Model model, HttpServletRequest request) {
 		model.addAttribute("user", user);
 
         String accessToken = null, userId = null;

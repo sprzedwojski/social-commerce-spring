@@ -27,18 +27,6 @@
 
 <div class="container">
 
-    <%--<div id="loginbox" style="margin-top: 50px;"
-         class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <div class="panel-title text-center">Items recommended for you</div>
-            </div>
-
-
-
-        </div>
-    </div>--%>
-
     <div class="col-md-12">
         <div class="page-header text-center">
             <h1 id="rec-title">
@@ -50,53 +38,6 @@
             <img src='<c:url value="/resources/ajax-loader3.gif" />' style="margin: auto"/>
         </div>
     </div>
-
-    <%--<div class="col-md-12">
-
-        <c:forEach items="${productMap}" var="category">
-            <div class="page-header text-center">
-                <h1>
-
-                </h1>
-            </div>
-
-            <div class="productsrow ${category.key}">
-                <c:forEach items="${category.value}" var="product">
-                    <div class="product menu-category ${product.category}">
-                        <c:choose>
-                            <c:when test="${not empty product.productUrl}">
-                                <a href="${product.productUrl}" target="_blank" class="menu-item list-group-item" rel="tooltip"
-                                   title="${product.descriptionEn}">
-                                    <c:if test="${product.price > 0.0}">
-                                        <span class="badge">${product.price} &euro;</span>
-                                    </c:if>
-                                        ${product.nameEn}
-                                </a>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="menu-item list-group-item" rel="tooltip"
-                                     title="${product.descriptionEn}">
-                                    <c:if test="${product.price > 0.0}">
-                                        <span class="badge">${product.price} &euro;</span>
-                                    </c:if>
-                                        ${product.nameEn}
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
-
-                        <div class="product-image">
-                            <img class="product-image menu-item list-group-item" src="${product.imageUrl}">
-                        </div>
-                        <div id="${product.id}" class="menu-item list-group-item rating"
-                             data-score="${product.rating}"></div>
-                    </div>
-                    <div class="product-category" style="display: none;" data-category="${category.key}"></div>
-                </c:forEach>
-            </div>
-            <hr>
-
-        </c:forEach>
-    </div>--%>
 
 </div>
 

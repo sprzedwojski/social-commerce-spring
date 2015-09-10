@@ -29,7 +29,11 @@ public class ProductRecommender {
 
     public static final int ALL_PRODUCTS_FLAG = -1;
 
-    public Map<Product, Double> getRecommendedProductsForUser(String userId, int K, int minNumberOfSimilarUserRatings, int lowestRating) {
+    public Map<Product, Double> getRecommendedProductsForUser(String userId) {
+        int K = 10;
+        int minNumberOfSimilarUserRatings = 4;
+        int lowestRating = 4;
+
         List<SimilarUser> similarUserList = userSimilarityProcessor.findSimilarUsers(userId, K);
 
         Map<String, List<Product>> similarUserProductsMap = new HashMap<>();

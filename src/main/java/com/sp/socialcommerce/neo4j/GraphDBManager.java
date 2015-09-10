@@ -4,7 +4,7 @@ import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
 import com.sp.socialcommerce.facebook.FacebookService;
 import com.sp.socialcommerce.labels.*;
-import com.sp.socialcommerce.models.User;
+import com.sp.socialcommerce.labels.User;
 import com.sp.socialcommerce.prop.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.*;

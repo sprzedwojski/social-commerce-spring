@@ -9,9 +9,11 @@ import com.restfb.exception.*;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
 import com.restfb.types.User;
+import com.sp.socialcommerce.labels.Product;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
 import com.sp.socialcommerce.prop.ApplicationProperties;
 import com.sp.socialcommerce.prop.Properties;
+import com.sp.socialcommerce.recommender.ProductRecommender;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.cypher.internal.compiler.v2_0.functions.Str;
 import org.slf4j.Logger;
@@ -53,6 +55,8 @@ public class FacebookService {
     @Qualifier("graphDBManager")
     @Autowired
 	private GraphDBManager GDBM;
+    @Autowired
+    ProductRecommender productRecommender;
 
     private Set<String> userProcessingSet = new HashSet<>();
 
@@ -240,6 +244,10 @@ public class FacebookService {
 		}
 
 		GDBM.processUserResponse(responseMap);
+
+
+        // Recommendations
+        /*Map<Product, Double> productsMap = productRecommender.getRecommendedProductsForUser(userId);*/
 
         userProcessingSet.remove(userId);
 	}

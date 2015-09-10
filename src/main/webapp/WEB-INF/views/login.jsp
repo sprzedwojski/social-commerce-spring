@@ -7,41 +7,12 @@
     <link rel="shortcut icon" type="image/x-icon" href="<c:url value="/resources/img/favicon.ico" />"/>
 
     <style>
-        .gigya-login-footer {
-            display: none !important;
-        }
-
         img.center {
             display: block;
             margin-left: auto;
             margin-right: auto;
         }
-
     </style>
-
-    <!-- gigya.js script should only be included once -->
-    <%--<script type="text/javascript"
-            src="http://cdn.gigya.com/js/gigya.js?apiKey=${apikey}">
-        {
-            siteName: '${sitename}',
-            enabledProviders:'facebook'
-        }
-    </script>
-    <script type="text/javascript">
-        var login_params =
-        {
-            version: 2
-            , showTermsLink: 'false'
-            , height: 92
-            , width: 150
-            , containerID: 'componentDiv'
-            , UIConfig: '<config><body><controls><snbuttons buttonsize="65" /></controls></body></config>'
-            , autoDetectUserProviders: ''
-            , facepilePosition: 'none',
-            extraFields: 'religion,politicalView,likes,relationshipStatus,hometown'
-        }
-        /*languages,education,work,favorites,educationLevel,*/
-    </script>--%>
 
     <script>
         // This is called with the results from from FB.getLoginStatus().
@@ -54,7 +25,6 @@
             // for FB.getLoginStatus().
             if (response.status === 'connected') {
                 // Logged into your app and Facebook.
-                /*testAPI();*/
                 submitPage(response);
             } else if (response.status === 'not_authorized') {
                 // The person is logged into Facebook, but not your app.
@@ -79,11 +49,7 @@
 
         window.fbAsyncInit = function() {
             FB.init({
-                /* PROD */
-                /*appId      : '846404535443906',*/
-
-                /* TEST */
-                appId      : ${fbAppId},/*'891425247608501',*/
+                appId      : ${fbAppId},
 
                 cookie     : true,  // enable cookies to allow the server to access
                                     // the session
@@ -167,74 +133,34 @@
             </div>
 
             <div style="padding-top:30px" class="panel-body">
-                <%--<div id="componentDiv" style="margin:auto"></div>--%>
 
                 <!--
                 Below we include the Login Button social plugin. This button uses
                 the JavaScript SDK to present a graphical Login button that triggers
                 the FB.login() function when clicked.
                 -->
-
                 <center>
                     <fb:login-button
                             scope="public_profile,user_relationship_details,user_hometown,user_likes,user_religion_politics,user_location,user_friends"
                             onlogin="checkLoginState();"
                             size="large">
                     </fb:login-button>
-                    <%--,user_friends--%>
 
                     <div id="status"></div>
                 </center>
 
                 <form id="login_form" action="#" th:action="@{/}" th:object="${user}" method="post">
-                    <%--<input type="hidden" name="UID" id="UID" th:field="*{UID}"/>
-                    <input type="hidden" name="signatureTimestamp" id="signatureTimestamp"
-                           th:field="*{signatureTimestamp}"/>
-                    <input type="hidden" name="UIDSignature" id="UIDSignature" th:field="*{UIDSignature}"/>--%>
                     <input type="hidden" name="accessToken" id="accessToken" th:field="*{accessToken}"/>
                 </form>
             </div>
         </div>
     </div>
 
-    <div style="display: none;">
-        <input id="custom_uid" type="text"/>
-        <button id="submit_custom_uid">Submit</button>
-    </div>
 </div>
 
 <jsp:include page="../templates/footer.jsp"/>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<%--<script type="text/javascript">
-    function GetUID(eventObj) {
-        document.getElementById("UID").setAttribute("value", eventObj.UID);
-        document.getElementById("signatureTimestamp").setAttribute("value",
-                eventObj.signatureTimestamp);
-        document.getElementById("UIDSignature").setAttribute("value",
-                eventObj.UIDSignature);
-        $("#login_form").submit();
-    }
-    gigya.socialize.addEventHandlers({
-        onLogin: GetUID
-    });
-    gigya.socialize.showLoginUI(login_params);
-
-    $(window).load(function () {
-        $('.gigya-login-footer').css('display', 'none');
-    });
-</script>--%>
-
-<script type="text/javascript">
-    $("#submit_custom_uid").click(function() {
-        $.ajax({
-            type: 'POST',
-            url : '<c:url value="/login/test" />',
-            data: "uid=" + $("#custom_uid").val()
-        });
-    });
-</script>
-
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </body>
 </html>

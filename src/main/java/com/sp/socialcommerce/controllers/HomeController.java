@@ -30,9 +30,9 @@ public class HomeController {
     @Autowired
     FacebookService facebookService;
 
-    private final int K = 3;
+/*    private final int K = 3;
     private final int MIN_SIMILAR_USERS_RATINGS = 2;
-    private final int LOWEST_RATING = 4;
+    private final int LOWEST_RATING = 4;*/
 
     @RequestMapping(method = RequestMethod.GET)
     public String home(HttpServletRequest request) {
@@ -58,7 +58,7 @@ public class HomeController {
             isProcessingUser = facebookService.isProcessingUser(userId);
         }
 
-        Map<Product, Double> productsMap = productRecommender.getRecommendedProductsForUser(userId, K, MIN_SIMILAR_USERS_RATINGS, LOWEST_RATING);
+        Map<Product, Double> productsMap = productRecommender.getRecommendedProductsForUser(userId/*, K, MIN_SIMILAR_USERS_RATINGS, LOWEST_RATING*/);
         modelMap.addAttribute("productMap", productsMap);
 
         return "recommendations";

@@ -1,4 +1,4 @@
-package com.sp.socialcommerce.models;
+package com.sp.socialcommerce.labels;
 
 import com.sp.socialcommerce.neo4j.GraphConstants;
 import org.neo4j.graphdb.Label;

@@ -1,13 +1,12 @@
 package com.sp.socialcommerce.neo4j;
 
 import com.sp.socialcommerce.labels.*;
-import com.sp.socialcommerce.models.User;
+import com.sp.socialcommerce.labels.User;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.neo4j.graphdb.*;
-import org.neo4j.kernel.impl.core.GraphProperties;
 import org.neo4j.test.TestGraphDatabaseFactory;
 
 import java.util.Map;
