@@ -29,10 +29,11 @@ public class ProductRecommender {
 
     public static final int ALL_PRODUCTS_FLAG = -1;
 
+    private int K;
+    private int minNumberOfSimilarUserRatings;
+    private int lowestRating;
+
     public Map<Product, Double> getRecommendedProductsForUser(String userId) {
-        int K = 10;
-        int minNumberOfSimilarUserRatings = 4;
-        int lowestRating = 4;
 
         List<SimilarUser> similarUserList = userSimilarityProcessor.findSimilarUsers(userId, K);
 
@@ -45,7 +46,7 @@ public class ProductRecommender {
             similarUserSimilarityMap.put(x.getUserId(), x.getSimilaritySum());
         });
 
-        return getRecommendedProductsForUser(similarUserProductsMap, similarUserSimilarityMap, K, minNumberOfSimilarUserRatings);
+        return getRecommendedProductsForUser(similarUserProductsMap, similarUserSimilarityMap, -1, minNumberOfSimilarUserRatings);
     }
 
     public Map<Product, Double> getRecommendedProductsForUser(Map<String, List<Product>> similarUserProductsMap, Map<String, Double> similarUserSimilarityMap,
@@ -77,6 +78,7 @@ public class ProductRecommender {
                 /*double ratingsSum = 0.0;*/
                 double numeratorSum = 0.0, denominatorSum = 0.0;
 
+                // Suma wazona przy wyliczaniu oceny - bierzemy pod uwage similarity uzytkownika
                 for (Double[] pair : ratingsList) {
                     double rating = pair[0];
                     double similarity = pair[1];
@@ -237,4 +239,16 @@ public class ProductRecommender {
         return result;
     }
 
+
+    public void setK(int k) {
+        K = k;
+    }
+
+    public void setMinNumberOfSimilarUserRatings(int minNumberOfSimilarUserRatings) {
+        this.minNumberOfSimilarUserRatings = minNumberOfSimilarUserRatings;
+    }
+
+    public void setLowestRating(int lowestRating) {
+        this.lowestRating = lowestRating;
+    }
 }

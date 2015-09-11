@@ -20,13 +20,12 @@ import java.util.stream.Stream;
  *
  * @author <a href="mailto:szymon.przedwojski@amg.net.pl">Szymon Przedwojski</a>
  */
-/*@Async
-@Scope("session")*/
 @Service
 public class UserSimilarityProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(UserSimilarityProcessor.class);
 
+    @Qualifier("graphDBManager")
     @Autowired
     private GraphDBManager GDBM;
 
@@ -46,9 +45,7 @@ public class UserSimilarityProcessor {
                 similarUsersSortedList.add(user);
             } else break;
         }
-
         return similarUsersSortedList;
-        /*return sortUsersDescendingWithSimilarity(similarUsersMap);*/
     }
 
     public List<SimilarUser> findRandomUsers(String userId, int howMany) {
@@ -120,8 +117,7 @@ public class UserSimilarityProcessor {
         return users;
     }
 
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortUsersDescendingWithSimilarity( Map<K, V> map )
-    {
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortUsersDescendingWithSimilarity( Map<K, V> map ) {
         Map<K,V> result = new LinkedHashMap<>();
         Stream<Map.Entry<K,V>> st = map.entrySet().stream();
 

@@ -61,6 +61,23 @@
         });
     };
 
+    var get_recommendations_manual = function(lowest_rating, k, min_sim_users_ratings) {
+        $.ajax({
+            type: 'GET',
+            url : '<c:url value="/recommendations/manual" />',
+            data: "lowest_rating=" + lowest_rating
+            + "&num_of_similar_users=" + k
+            + "&min_sim_users_ratings=" + min_sim_users_ratings,
+            success: function(data, textStatus) {
+                $("#rec-title").html("Items recommended for you");
+                $("#recommendations-box").html(data);
+            },
+            error: function() {
+                alert('Not OKay');
+            }
+        });
+    };
+
     $(document).ready(get_recommendations);
 </script>
 

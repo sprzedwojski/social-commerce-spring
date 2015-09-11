@@ -262,7 +262,7 @@ public class GraphDBManager {
             if (user == null) {
                 logger.info("User not found.");
             } else {
-                logger.info("Existing user found.");
+                logger.debug("Existing user found.");
             }
             tx.success();
             return user;

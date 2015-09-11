@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -57,6 +58,35 @@ public class HomeController {
             Thread.sleep(500);
             isProcessingUser = facebookService.isProcessingUser(userId);
         }
+
+        productRecommender.setLowestRating(4);
+        productRecommender.setK(6);
+        productRecommender.setMinNumberOfSimilarUserRatings(5);
+
+        Map<Product, Double> productsMap = productRecommender.getRecommendedProductsForUser(userId/*, K, MIN_SIMILAR_USERS_RATINGS, LOWEST_RATING*/);
+        modelMap.addAttribute("productMap", productsMap);
+
+        return "recommendations";
+    }
+
+    @RequestMapping(value = "recommendations/manual", method = RequestMethod.GET)
+    public String getRecommendationsManual(ModelMap modelMap, HttpServletRequest request,
+                                           @RequestParam(value = "lowest_rating") String lowestRating,
+                                           @RequestParam(value = "num_of_similar_users") String numOfSimilarUsers,
+                                           @RequestParam(value = "min_sim_users_ratings") String minSimUsersRatings) throws InterruptedException {
+
+        String userId = (String) request.getSession().getAttribute(FacebookService.USER_ID);
+
+        boolean isProcessingUser = facebookService.isProcessingUser(userId);
+        while (isProcessingUser){
+            System.out.println("\n\n\n\n PROCESSING USER. WAITING WITH RECOMMENDATIONS. \n\n\n\n");
+            Thread.sleep(500);
+            isProcessingUser = facebookService.isProcessingUser(userId);
+        }
+
+        productRecommender.setLowestRating(Integer.parseInt(lowestRating));
+        productRecommender.setK(Integer.parseInt(numOfSimilarUsers));
+        productRecommender.setMinNumberOfSimilarUserRatings(Integer.parseInt(minSimUsersRatings));
 
         Map<Product, Double> productsMap = productRecommender.getRecommendedProductsForUser(userId/*, K, MIN_SIMILAR_USERS_RATINGS, LOWEST_RATING*/);
         modelMap.addAttribute("productMap", productsMap);

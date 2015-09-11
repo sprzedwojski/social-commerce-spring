@@ -30,7 +30,7 @@ public class ClassificationAccuracyValidator {
     private static final int NUM_OF_SIMILAR_USERS = 10;
     private static final int MIN_SIMILAR_USERS_RATINGS = 4;
 
-    private static final double RELEVANCY_THRESHOLD = 4.0;
+    public static final double RELEVANCY_THRESHOLD = 4.0;
 
     @Autowired
     private UserSimilarityProcessor userSimilarityProcessor;
@@ -77,25 +77,22 @@ public class ClassificationAccuracyValidator {
                         StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
 
 
-            /*List<Product> relevantProducts = new ArrayList<>();*/
             AtomicInteger relevantProducts = new AtomicInteger();
 
             products.forEach((prod, r) -> {
                 double realRating;
                 if(realRatings.containsKey(prod.getId())) {
                     realRating = Double.parseDouble(realRatings.get(prod.getId()));
-                    if(realRating > RELEVANCY_THRESHOLD)
-                        /*relevantProducts.add(prod);*/
+                    if(realRating >= RELEVANCY_THRESHOLD)
                         relevantProducts.incrementAndGet();
                 }
             });
 
-            /*List<Product> allRelevantProducts = new ArrayList<>();*/
             AtomicInteger allRelevantProducts = new AtomicInteger();
 
             realRatings.forEach((prodId, ratingString) -> {
                 double rating = Double.parseDouble(ratingString);
-                if(rating > RELEVANCY_THRESHOLD)
+                if(rating >= RELEVANCY_THRESHOLD)
                     allRelevantProducts.incrementAndGet();
             });
 
@@ -135,15 +132,15 @@ public class ClassificationAccuracyValidator {
         return classificationAccuracyMap;
     }
 
-    private double calculatePrecision(int relevantItemsSelected, int allItemsSelected) {
+    public static double calculatePrecision(int relevantItemsSelected, int allItemsSelected) {
         return (double) relevantItemsSelected / allItemsSelected;
     }
 
-    private double calculateRecall(int relevantItemsSelected, int allRelevantItems) {
+    public static double calculateRecall(int relevantItemsSelected, int allRelevantItems) {
         return (double) relevantItemsSelected / allRelevantItems;
     }
 
-    private double calculateFMeasure(double precision, double recall) {
+    public static double calculateFMeasure(double precision, double recall) {
         return 2 * precision * recall / (precision + recall);
     }
 

@@ -25,8 +25,8 @@ public class PredictiveAccuracyValidator {
     public static final String RMSE = "rmse";
     public static final String MAE = "mae";
 
-    private static final int NUM_OF_SIMILAR_USERS = 10;
-    private static final int MIN_SIMILAR_USERS_RATINGS = 4;
+    /*private static final int NUM_OF_SIMILAR_USERS = 10;
+    private static final int MIN_SIMILAR_USERS_RATINGS = 4;*/
 
     @Autowired
     private UserSimilarityProcessor userSimilarityProcessor;
@@ -41,13 +41,9 @@ public class PredictiveAccuracyValidator {
     /**
      * Performs k-fold cross validation.
      *
-     * @param lowestRating
-     * @param numOfSimilarUsers
-     * @param minSimUsersRatings
-     * @param randomUsers
      * @return Map with cross validation results: key - type of result, value - the numerical result.
      */
-    public Map<String, Double> validate(String lowestRating, String numOfSimilarUsers, String minSimUsersRatings, String randomUsers) {
+    public Map<String, Double> validate(/*String lowestRating, String numOfSimilarUsers, String minSimUsersRatings, String randomUsers*/) {
         Map<String, Double> predictiveAccuracyMap = new HashMap<>();
 
         List<String> userIds = GDBM.getAllUsers();
@@ -59,7 +55,7 @@ public class PredictiveAccuracyValidator {
         /*final long startTime = System.currentTimeMillis();*/
 
         userIds.forEach(userId -> {
-            List<SimilarUser> similarUserList = null;
+/*            List<SimilarUser> similarUserList = null;
 
             if(!Boolean.parseBoolean(randomUsers))
                 similarUserList = userSimilarityProcessor.findSimilarUsers(userId, StringUtils.isNotBlank(numOfSimilarUsers)
@@ -74,7 +70,6 @@ public class PredictiveAccuracyValidator {
             similarUserList.forEach((x) -> {
                 List<Product> highestRatedUserProducts =
                         productRecommender.getUserHighestRatedProducts(x.getUserId(), StringUtils.isNotBlank(lowestRating) ? Integer.parseInt(lowestRating) : 1);
-                /*highestRatedUserProducts.forEach(prod -> logger.info("> prod: " + prod.getNameEn() + " | rating: " + prod.getRating()));*/
 
                 similarUserProductsMap.put(x.getUserId(), highestRatedUserProducts);
                 similarUserSimilarityMap.put(x.getUserId(), x.getSimilaritySum());
@@ -91,7 +86,11 @@ public class PredictiveAccuracyValidator {
                         StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
             else
                 products = productRecommender.getRecommendedProductsForUserRandom(similarUserProductsMap, -1,
-                        StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
+                        StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);*/
+
+            Map<Integer, String> realRatings = GDBM.getUserProductRatings(userId);
+            Map<Product, Double> products = productRecommender.getRecommendedProductsForUser(userId);
+            recommendationValidator = new RecommendationValidator();
 
             products.forEach((prod, r) -> {
                 String realRating = null;

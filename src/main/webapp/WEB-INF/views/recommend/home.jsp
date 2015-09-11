@@ -44,6 +44,10 @@
                 <button id="submit_random">Random</button>
                 <br>
                 <button id="submit_all_classification">Classification all</button>
+                <br><br>Predictive<br>
+                <a href="#" id="pred_all_comb" class="btn btn-primary">All combinations</a>
+                <br><br>NEW<br>
+                <a href="#" id="users_all" class="btn btn-primary">Users all</a>
             </div>
 
         </div>
@@ -92,6 +96,13 @@
             data: "lowest_rating=" + $("#lowest_rating").val()
             + "&num_of_similar_users=" + $("#num_of_similar_users").val()
             + "&min_sim_users_ratings=" + $("#min_sim_users_ratings").val()
+        });
+    });
+
+    $("#users_all").click(function() {
+        $.ajax({
+            type: 'POST',
+            url : '<c:url value="/recommend/users/all" />'
         });
     });
 </script>
