@@ -24,6 +24,8 @@ public abstract class GraphConstants {
         HAS_CATEGORY,           /* Product -> ProductCategory */
         RATES,                  /* User -> Product */
 
+        COMMON_FRIEND,          /* User -> User */
+
         // DEPRECATED
         FAVORITES,              /* User -> Favorite */
         HAS_EDUCATION_LEVEL,    /* User -> EducationLevel */
@@ -51,6 +53,8 @@ public abstract class GraphConstants {
         put(LIKES, 1.0);
         put(KNOWS, 20.0);
         put(IS_OF_GENDER, 10.0);
+
+        put(COMMON_FRIEND, 1.0);
     }};
 
 //    public static final String NAME = "name";

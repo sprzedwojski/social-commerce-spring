@@ -612,13 +612,13 @@ public class GraphDBManager {
                     "return n.UID as %s, type(r1) as %s", userKey, filterRelationshipKeys[0],
 					filterRelationshipKeys[1], userIdKey, relTypeKey);
 
-            String queryWithKnows = String.format("match (m:User)-[r1]-(k)-[r2]-(n:User) " +
+            /*String queryWithKnows = String.format("match (m:User)-[r1]-(k)-[r2]-(n:User) " +
                             "where m={%s} and not(type(r1)={%s}) and type(r1)=type(r2) " +
                             "return n.UID as %s, type(r1) as %s", userKey,
-                    filterRelationshipKeys[1], userIdKey, relTypeKey);
+                    filterRelationshipKeys[1], userIdKey, relTypeKey);*/
 
-            /*Result result = graphDb.execute(query, params);*/
-            Result result = graphDb.execute(queryWithKnows, params);
+            Result result = graphDb.execute(query, params);
+            /*Result result = graphDb.execute(queryWithKnows, params);*/
 
             result.forEachRemaining(
                     (row) -> {
@@ -641,7 +641,101 @@ public class GraphDBManager {
             tx.success();
             return commonInterestsMap;
         }
+    }
 
+    // Finds all friends of the common user; also finds if they have common friends
+    public Map<String, Map<String, AtomicInteger>> getOtherUsersFriendship(Node user) {
+        // Checks friendship (count musi być większe od 0)
+//        MATCH (m:User)-[r]-(n:User)
+//        WHERE m.name="Madzia Sobczyńska" and type(r)="KNOWS"
+//        RETURN n.UID as userId, type(r) as relType
+
+        try(Transaction tx = graphDb.beginTx()) {
+            Map<String, Map<String, AtomicInteger>> commonInterestsMap = new HashMap<>();
+
+            String userKey = "user";
+            String userIdKey = "userId";
+            String relTypeKey = "relType";
+            String[] filterRelationshipKeys = {"filt_rel1"};
+
+            Map<String, Object> params = new HashMap<>();
+            params.put( userKey, user );
+            params.put( filterRelationshipKeys[0], "KNOWS" );
+
+            String query = String.format("MATCH (m:User)-[r]-(n:User) " +
+                            "WHERE m={%s} and type(r)={%s} " +
+                            "RETURN n.UID as %s, type(r) as %s", userKey, filterRelationshipKeys[0], userIdKey, relTypeKey);
+            Result result = graphDb.execute(query, params);
+
+            result.forEachRemaining(
+                    (row) -> {
+                        String userId = (String)row.get(userIdKey);
+                        String relType = (String)row.get(relTypeKey);
+                        if(commonInterestsMap.containsKey(userId)) {
+                            if(commonInterestsMap.get(userId).containsKey(relType)) {
+                                commonInterestsMap.get(userId).get(relType).incrementAndGet();
+                            } else {
+                                commonInterestsMap.get(userId).put(relType, new AtomicInteger(1));
+                            }
+                        } else {
+                            commonInterestsMap.put(userId, new HashMap<String, AtomicInteger>() {{
+                                put(relType, new AtomicInteger(1));
+                            }});
+                        }
+                    }
+            );
+
+            tx.success();
+            return commonInterestsMap;
+        }
+    }
+
+
+    public Map<String, Map<String, AtomicInteger>> getOtherUsersCommonFriends(Node user) {
+        // Common friends
+//        MATCH (m:User)-[r1]-(k)-[r2]-(n:User)
+//        WHERE m.name="Szymon Przedwojski" and type(r1)="KNOWS"
+//        RETURN n.UID as userId, "COMMON_FRIEND" as relType
+
+        try(Transaction tx = graphDb.beginTx()) {
+            Map<String, Map<String, AtomicInteger>> commonInterestsMap = new HashMap<>();
+
+            String userKey = "user";
+            String userIdKey = "userId";
+            String relTypeKey = "relType";
+            String[] filterRelationshipKeys = {"filt_rel1"};
+
+            Map<String, Object> params = new HashMap<>();
+            params.put( userKey, user );
+            params.put( filterRelationshipKeys[0], "KNOWS" );
+
+            String query = String.format("MATCH (m:User)-[r1]-(k)-[r2]-(n:User) " +
+                    "WHERE m={%s} and type(r1)={%s} " +
+                    "RETURN n.UID as %s, \"COMMON_FRIEND\" as %s", userKey, filterRelationshipKeys[0], userIdKey, relTypeKey);
+            Result result = graphDb.execute(query, params);
+
+            result.forEachRemaining(
+                    (row) -> {
+                        String userId = (String)row.get(userIdKey);
+                        String relType = (String)row.get(relTypeKey);
+                        /*String relType = "COMMON_FRIEND";*/
+                        if(commonInterestsMap.containsKey(userId)) {
+                            if(commonInterestsMap.get(userId).containsKey(relType)) {
+                                commonInterestsMap.get(userId).get(relType).incrementAndGet();
+                            } else {
+                                commonInterestsMap.get(userId).put(relType, new AtomicInteger(1));
+                            }
+                        } else {
+                            commonInterestsMap.put(userId, new HashMap<String, AtomicInteger>() {{
+                                put(relType, new AtomicInteger(1));
+                            }});
+                        }
+                    }
+            );
+
+            tx.success();
+            return commonInterestsMap;
+        }
     }
 
 	public Product parseProduct(Node pNode) {
