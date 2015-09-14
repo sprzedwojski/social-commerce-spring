@@ -9,6 +9,7 @@ import com.sp.socialcommerce.prop.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.register.Register;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -215,6 +216,21 @@ public class GraphDBManager {
 				ids.add(id);
 			}
 			return ids;
+		}
+	}
+
+	public List<Integer> getProductRatings(Node node) {
+		try (Transaction tx = graphDb.beginTx()) {
+			List<Integer> ratings = new ArrayList<Integer>();
+			Iterable<Relationship> nodeRelationships = node.getRelationships(GraphConstants.RelTypes.RATES);
+			Iterator<Relationship> it = nodeRelationships.iterator();
+			while(it.hasNext()) {
+				Relationship relationship = it.next();
+				if(relationship.hasProperty(GraphConstants.Rates.RATING_VALUE)) {
+					ratings.add(Integer.parseInt((String)relationship.getProperty(GraphConstants.Rates.RATING_VALUE)));
+				}
+			}
+			return ratings;
 		}
 	}
 

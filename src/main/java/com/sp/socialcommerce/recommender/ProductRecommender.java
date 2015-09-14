@@ -49,6 +49,34 @@ public class ProductRecommender {
         return getRecommendedProductsForUser(similarUserProductsMap, similarUserSimilarityMap, -1, minNumberOfSimilarUserRatings);
     }
 
+    public Map<Product, Double> getTopRatedProducts(int howMany) {
+        Map<Product, Double> ratedProducts = new HashMap<>();
+
+        List<Product> products = GDBM.getAllProducts();
+        products.forEach(prod -> {
+            List<Integer> ratings = GDBM.getProductRatings(GDBM.getNode(new Product(), GraphConstants.Product.PRODUCT_ID, Integer.toString(prod.getId())));
+            OptionalDouble avg = ratings.stream().mapToInt(Integer::intValue).average();
+            ratedProducts.put(prod, avg.getAsDouble());
+        });
+
+        Map<Product, Double> sortedRatedProducts = sortProductsDescendingWithRating(ratedProducts);
+
+        if(howMany != ALL_PRODUCTS_FLAG) {
+            Map<Product, Double> filteredSortedProductsAverageRatingMap = new LinkedHashMap<>();
+            int counter = 0;
+            for (Map.Entry<Product, Double> entry : sortedRatedProducts.entrySet()) {
+                if (counter <= howMany) {
+                    counter++;
+                    filteredSortedProductsAverageRatingMap.put(entry.getKey(), entry.getValue());
+                } else break;
+            }
+
+            return filteredSortedProductsAverageRatingMap;
+        }
+
+        return sortedRatedProducts;
+    }
+
     public Map<Product, Double> getRecommendedProductsForUser(Map<String, List<Product>> similarUserProductsMap, Map<String, Double> similarUserSimilarityMap,
                                                               int howMany, int minNumberOfSimilarUserRatings) {
 

@@ -35,17 +35,23 @@
 
             <div style="margin: auto; font-family: monospace">
                 <br>User Id ................ <input id="custom_uid" type="text"/>
-                <br>Lowest rating .......... <input id="lowest_rating" type="text"/>
-                <br>Num of similar users ... <input id="num_of_similar_users" type="text"/>
-                <br>Min sim users ratings .. <input id="min_sim_users_ratings" type="text"/>
-                <br>
+                <br><hr>
+                <br>Predictive? ............ <input id="predictive" type="text"/>
+                <br>Top products? .......... <input id="top" type="text"/>
+                <br>K min................... <input id="k_min" type="text"/>
+                <br>K max................... <input id="k_max" type="text"/>
+                <br>Min sim users rat min .. <input id="min_sim_users_ratings_min" type="text"/>
+                <br>Min sim users rat max .. <input id="min_sim_users_ratings_max" type="text"/>
+                <br>Lowest rating .......... <input id="lowest_rating" type="text"/> (pred: 1)
+                <br>Num of products ........ <input id="num_of_products" type="text"/> (pred: -1)
+<%--                <br>
                 <button id="submit_custom_uid">Submit</button>
                 <button id="submit_all">All</button>
                 <button id="submit_random">Random</button>
                 <br>
                 <button id="submit_all_classification">Classification all</button>
                 <br><br>Predictive<br>
-                <a href="#" id="pred_all_comb" class="btn btn-primary">All combinations</a>
+                <a href="#" id="pred_all_comb" class="btn btn-primary">All combinations</a>--%>
                 <br><br>NEW<br>
                 <a href="#" id="users_all" class="btn btn-primary">Users all</a>
             </div>
@@ -102,7 +108,15 @@
     $("#users_all").click(function() {
         $.ajax({
             type: 'POST',
-            url : '<c:url value="/recommend/users/all" />'
+            url : '<c:url value="/recommend/users/all" />',
+            data: "lowest_rating=" + $("#lowest_rating").val()
+            + "&k_min=" + $("#k_min").val()
+            + "&k_max=" + $("#k_max").val()
+            + "&min_sim_users_ratings_min=" + $("#min_sim_users_ratings_min").val()
+            + "&min_sim_users_ratings_max=" + $("#min_sim_users_ratings_max").val()
+            + "&predictive=" + $("#predictive").val()
+            + "&num_of_products=" + $("#num_of_products").val()
+            + "&top=" + $("#top").val()
         });
     });
 </script>
