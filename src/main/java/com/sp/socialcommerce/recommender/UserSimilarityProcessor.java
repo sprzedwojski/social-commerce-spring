@@ -35,7 +35,7 @@ public class UserSimilarityProcessor {
 
         processCommonInterestsMap(GDBM.getOtherUsersWithRelationship(GDBM.getUserNode(userId)), similarUsersMap);
         processCommonInterestsMap(GDBM.getOtherUsersFriendship(GDBM.getUserNode(userId)), similarUsersMap);
-        processCommonInterestsMap(GDBM.getOtherUsersCommonFriends(GDBM.getUserNode(userId)), similarUsersMap);
+        /*processCommonInterestsMap(GDBM.getOtherUsersCommonFriends(GDBM.getUserNode(userId)), similarUsersMap);*/
         similarUsersMap = sortUsersDescendingWithSimilarity(similarUsersMap);
 
         int counter = 0;

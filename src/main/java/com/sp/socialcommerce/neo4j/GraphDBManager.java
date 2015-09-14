@@ -607,18 +607,18 @@ public class GraphDBManager {
             params.put( filterRelationshipKeys[0], "KNOWS" );
             params.put( filterRelationshipKeys[1], "RATES" );
 
-            String query = String.format("match (m:User)-[r1]-(k)-[r2]-(n:User) " +
+            /*String query = String.format("match (m:User)-[r1]-(k)-[r2]-(n:User) " +
                     "where m={%s} and not(type(r1)={%s}) and not(type(r1)={%s}) and type(r1)=type(r2) " +
                     "return n.UID as %s, type(r1) as %s", userKey, filterRelationshipKeys[0],
-					filterRelationshipKeys[1], userIdKey, relTypeKey);
+					filterRelationshipKeys[1], userIdKey, relTypeKey);*/
 
-            /*String queryWithKnows = String.format("match (m:User)-[r1]-(k)-[r2]-(n:User) " +
+            String queryWithKnows = String.format("match (m:User)-[r1]-(k)-[r2]-(n:User) " +
                             "where m={%s} and not(type(r1)={%s}) and type(r1)=type(r2) " +
                             "return n.UID as %s, type(r1) as %s", userKey,
-                    filterRelationshipKeys[1], userIdKey, relTypeKey);*/
+                    filterRelationshipKeys[1], userIdKey, relTypeKey);
 
-            Result result = graphDb.execute(query, params);
-            /*Result result = graphDb.execute(queryWithKnows, params);*/
+            /*Result result = graphDb.execute(query, params);*/
+            Result result = graphDb.execute(queryWithKnows, params);
 
             result.forEachRemaining(
                     (row) -> {
@@ -662,9 +662,14 @@ public class GraphDBManager {
             params.put( userKey, user );
             params.put( filterRelationshipKeys[0], "KNOWS" );
 
-            String query = String.format("MATCH (m:User)-[r]-(n:User) " +
+            /*String query = String.format("MATCH (m:User)-[r]-(n:User) " +
                             "WHERE m={%s} and type(r)={%s} " +
-                            "RETURN n.UID as %s, type(r) as %s", userKey, filterRelationshipKeys[0], userIdKey, relTypeKey);
+                            "RETURN n.UID as %s, type(r) as %s", userKey, filterRelationshipKeys[0], userIdKey, relTypeKey);*/
+
+			String query = String.format("MATCH (m:User)-[r]-(n:User) " +
+					"WHERE m={%s} and type(r)={%s} " +
+					"RETURN n.UID as %s, \"ARE_FRIENDS\" as %s", userKey, filterRelationshipKeys[0], userIdKey, relTypeKey);
+
             Result result = graphDb.execute(query, params);
 
             result.forEachRemaining(
@@ -691,7 +696,7 @@ public class GraphDBManager {
     }
 
 
-    public Map<String, Map<String, AtomicInteger>> getOtherUsersCommonFriends(Node user) {
+/*    public Map<String, Map<String, AtomicInteger>> getOtherUsersCommonFriends(Node user) {
         // Common friends
 //        MATCH (m:User)-[r1]-(k)-[r2]-(n:User)
 //        WHERE m.name="Szymon Przedwojski" and type(r1)="KNOWS"
@@ -718,7 +723,7 @@ public class GraphDBManager {
                     (row) -> {
                         String userId = (String)row.get(userIdKey);
                         String relType = (String)row.get(relTypeKey);
-                        /*String relType = "COMMON_FRIEND";*/
+                        *//*String relType = "COMMON_FRIEND";*//*
                         if(commonInterestsMap.containsKey(userId)) {
                             if(commonInterestsMap.get(userId).containsKey(relType)) {
                                 commonInterestsMap.get(userId).get(relType).incrementAndGet();
@@ -736,7 +741,7 @@ public class GraphDBManager {
             tx.success();
             return commonInterestsMap;
         }
-    }
+    }*/
 
 	public Product parseProduct(Node pNode) {
 		try(Transaction tx = graphDb.beginTx()) {

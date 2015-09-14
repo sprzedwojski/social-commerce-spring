@@ -196,11 +196,12 @@ public class RecommenderController {
     @RequestMapping(method = RequestMethod.POST, value = "/users/all")
     public String testAllConfigurations() {
 
-        String lowestRating = "4";
+        String lowestRating = "1";
         List<Map<String, Double>> avgAccuracyMapsList = new ArrayList<>();
 
         for(int i=1; i<=10; i++) {
-            for(int j=1; j<=10; j++) {
+            /*for(int j=1; j<=10; j++) {*/
+            for(int j=1; j<=1; j++) {
                 if (j > i)
                     break;
 
@@ -212,20 +213,14 @@ public class RecommenderController {
 
                 users.forEach(userId -> accuracyMapsList.add(testUser(userId, lowestRating, K, minSimUsersRatings)));
 
-                double totalCorrectness = 0.0, totalRMSE = 0.0, totalMAE = 0.0, totalRecall = 0.0, totalPrecision = 0.0, totalFMeasure = 0.0;
+                double /*totalCorrectness = 0.0,*/ totalRMSE = 0.0, totalMAE = 0.0, totalRecall = 0.0, totalPrecision = 0.0, totalFMeasure = 0.0;
                 int size = accuracyMapsList.size();
                 for(Map<String, Double> accuracyMap : accuracyMapsList) {
-/*                    totalCorrectness += accuracyMap.get("correctness");
-                    totalRMSE += accuracyMap.get("rmse");
-                    totalMAE += accuracyMap.get("mae");
-                    totalRecall += accuracyMap.get("recall");
-                    totalPrecision += accuracyMap.get("precision");
-                    totalFMeasure += accuracyMap.get("fmeasure");*/
 
-                    double res = accuracyMap.get("correctness") / size;
-                    totalCorrectness += Double.isNaN(res) ? 0.0 : res;
+                    /*double res = accuracyMap.get("correctness") / size;
+                    totalCorrectness += Double.isNaN(res) ? 0.0 : res;*/
 
-                    res = accuracyMap.get("rmse") / size;
+                    double res = accuracyMap.get("rmse") / size;
                     totalRMSE += Double.isNaN(res) ? 0.0 : res;
 
                     res = accuracyMap.get("mae") / size;
@@ -243,16 +238,7 @@ public class RecommenderController {
 
                 Map<String, Double> avgAccuracyMap = new HashMap<>();
 
-/*                avgAccuracyMap.put("correctness", totalCorrectness / size);
-                avgAccuracyMap.put("rmse", totalRMSE / size);
-                avgAccuracyMap.put("mae", totalMAE / size);
-                avgAccuracyMap.put("recall", totalRecall / size);
-                avgAccuracyMap.put("precision", totalPrecision / size);
-                avgAccuracyMap.put("fmeasure", totalFMeasure / size);
-                avgAccuracyMap.put("k", Double.parseDouble(K));
-                avgAccuracyMap.put("minSimUsersRatings", Double.parseDouble(minSimUsersRatings));*/
-
-                avgAccuracyMap.put("correctness", totalCorrectness);
+                /*avgAccuracyMap.put("correctness", totalCorrectness);*/
                 avgAccuracyMap.put("rmse", totalRMSE);
                 avgAccuracyMap.put("mae", totalMAE);
                 avgAccuracyMap.put("recall", totalRecall);
@@ -266,11 +252,11 @@ public class RecommenderController {
         }
 
         try {
-            FileWriter writer = new FileWriter("/home/szymon/MASTER/results/result.csv");
+            FileWriter writer = new FileWriter("/home/szymon/result.csv");
 
             writer.append("k");writer.append(';');
             writer.append("minSimUsersRatings");writer.append(';');
-            writer.append("correctness");writer.append(';');
+            /*writer.append("correctness");writer.append(';');*/
             writer.append("rmse");writer.append(';');
             writer.append("mae");writer.append(';');
             writer.append("recall");writer.append(';');
@@ -281,7 +267,7 @@ public class RecommenderController {
             for(Map<String,Double> accuracyMap : avgAccuracyMapsList) {
                 writer.append(Double.toString(accuracyMap.get("k")));writer.append(';');
                 writer.append(Double.toString(accuracyMap.get("minSimUsersRatings")));writer.append(';');
-                writer.append(Double.toString(accuracyMap.get("correctness")));writer.append(';');
+                /*writer.append(Double.toString(accuracyMap.get("correctness")));writer.append(';');*/
                 writer.append(Double.toString(accuracyMap.get("rmse")));writer.append(';');
                 writer.append(Double.toString(accuracyMap.get("mae")));writer.append(';');
                 writer.append(Double.toString(accuracyMap.get("recall")));writer.append(';');

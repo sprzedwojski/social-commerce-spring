@@ -24,7 +24,8 @@ public abstract class GraphConstants {
         HAS_CATEGORY,           /* Product -> ProductCategory */
         RATES,                  /* User -> Product */
 
-        COMMON_FRIEND,          /* User -> User */
+        /*COMMON_FRIEND,*/          /* User -> User */
+        ARE_FRIENDS,            /* User -> User */
 
         // DEPRECATED
         FAVORITES,              /* User -> Favorite */
@@ -51,10 +52,11 @@ public abstract class GraphConstants {
         put(FOLLOWS_RELIGION, 5.0);
         put(HAS_POLITICAL_VIEW, 5.0);
         put(LIKES, 1.0);
-        put(KNOWS, 20.0);
+        put(KNOWS, 1.0); // Two users have a common friend
         put(IS_OF_GENDER, 10.0);
 
-        put(COMMON_FRIEND, 1.0);
+        /*put(COMMON_FRIEND, 1.0);*/
+        put(ARE_FRIENDS, 20.0); // Two users know each other
     }};
 
 //    public static final String NAME = "name";

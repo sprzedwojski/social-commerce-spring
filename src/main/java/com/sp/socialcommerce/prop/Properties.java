@@ -7,7 +7,8 @@ public class Properties {
 
 
     /* WORK DEV */
-    public static final String DB_PATH = "/home/szymon/programs/neo4j/2015-09-07-neo4j-prod-bkp_spring_filtered/";
+    /*public static final String DB_PATH = "/home/szymon/programs/neo4j/2015-09-07-neo4j-prod-bkp_spring_filtered/";*/
+    public static final String DB_PATH = "/home/szymon/programs/neo4j/2015-09-07-neo4j-prod-bkp/";
 
     /* HOME */
     /*public static final String DB_PATH = "/home/szymon/programs/neo4j/neo4j-test/";*/
