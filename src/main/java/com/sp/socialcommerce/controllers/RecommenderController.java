@@ -1,30 +1,29 @@
 package com.sp.socialcommerce.controllers;
 
 import com.sp.socialcommerce.labels.Product;
-import com.sp.socialcommerce.neo4j.GraphConstants;
 import com.sp.socialcommerce.neo4j.GraphDBManager;
 import com.sp.socialcommerce.recommender.*;
 import org.apache.commons.lang.StringUtils;
-import org.neo4j.graphdb.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author <a href="mailto:szymon.przedwojski@amg.net.pl">Szymon Przedwojski</a>
  */
 @Controller
-@RequestMapping(value = "/recommend")
+/*@RequestMapping(value = "/recommend")*/
 public class RecommenderController {
 
     private static final Logger logger = LoggerFactory.getLogger(RecommenderController.class);
@@ -48,20 +47,12 @@ public class RecommenderController {
     protected GraphDBManager GDBM;
 
 
-    @RequestMapping(method = RequestMethod.GET)
+    /*@RequestMapping(method = RequestMethod.GET)*/
     public String recommenderPage() {
         return "recommend/home";
     }
 
-/*    @RequestMapping(method = RequestMethod.POST, value = "/predictive/all_combinations")
-    public String predictiveAllCombinations() {
-
-
-
-        return "recommend/similar";
-    }*/
-
-    @RequestMapping(method = RequestMethod.POST, value = "/all_classification")
+    /*@RequestMapping(method = RequestMethod.POST, value = "/all_classification")*/
     public String testAllClassification(@RequestParam(value = "lowest_rating") String lowestRating,
                           @RequestParam(value = "num_of_similar_users") String numOfSimilarUsers,
                           @RequestParam(value = "min_sim_users_ratings") String minSimUsersRatings,
@@ -84,7 +75,7 @@ public class RecommenderController {
         return "recommend/similar";
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/all")
+    /*@RequestMapping(method = RequestMethod.POST, value = "/all")*/
     public String testAll(@RequestParam(value = "lowest_rating") String lowestRating,
                           @RequestParam(value = "num_of_similar_users") String numOfSimilarUsers,
                           @RequestParam(value = "min_sim_users_ratings") String minSimUsersRatings,
@@ -105,95 +96,12 @@ public class RecommenderController {
         }
         logger.info("Avg RMSE: " + avgRmse + " | Avg MAE: " + avgMae);
 
-        /*List<String> userIds = GDBM.getAllUsers();
-
-        List<Double> correctnessList = new ArrayList<>();
-        List<Double> rmseList = new ArrayList<>();
-        List<Double> maeList = new ArrayList<>();
-
-        final long startTime = System.currentTimeMillis();
-
-        userIds.forEach(userId -> {
-            List<SimilarUser> similarUserList = null;
-
-            if(!Boolean.parseBoolean(randomUsers))
-                similarUserList = userSimilarityProcessor.findSimilarUsers(userId, StringUtils.isNotBlank(numOfSimilarUsers)
-                        ? Integer.parseInt(numOfSimilarUsers) : NUM_OF_SIMILAR_USERS);
-            else
-                similarUserList = userSimilarityProcessor.findRandomUsers(userId, StringUtils.isNotBlank(numOfSimilarUsers)
-                        ? Integer.parseInt(numOfSimilarUsers) : NUM_OF_SIMILAR_USERS);
-
-            Map<String, List<Product>> similarUserProductsMap = new HashMap<>();
-            Map<String, Double> similarUserSimilarityMap = new HashMap<>();
-
-            similarUserList.forEach((x) -> {
-                List<Product> highestRatedUserProducts =
-                        productRecommender.getUserHighestRatedProducts(x.getUserId(), StringUtils.isNotBlank(lowestRating) ? Integer.parseInt(lowestRating) : 1);
-                *//*highestRatedUserProducts.forEach(prod -> logger.info("> prod: " + prod.getNameEn() + " | rating: " + prod.getRating()));*//*
-
-                similarUserProductsMap.put(x.getUserId(), highestRatedUserProducts);
-                similarUserSimilarityMap.put(x.getUserId(), x.getSimilaritySum());
-            });
-
-            Map<Integer, String> realRatings = GDBM.getUserProductRatings(userId);
-
-            recommendationValidator = new RecommendationValidator();
-
-            Map<Product, Double> products = null;
-
-            if(!Boolean.parseBoolean(randomUsers))
-                products = productRecommender.getRecommendedProductsForUser(similarUserProductsMap, similarUserSimilarityMap, -1,
-                        StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
-            else
-                products = productRecommender.getRecommendedProductsForUserRandom(similarUserProductsMap, -1,
-                        StringUtils.isNotBlank(minSimUsersRatings) ? Integer.parseInt(minSimUsersRatings) : MIN_SIMILAR_USERS_RATINGS);
-
-            products.forEach((prod, r) -> {
-                String realRating = null;
-                *//*Double individualCorrectness = null;*//*
-                if(realRatings.containsKey(prod.getId())) {
-                    realRating = realRatings.get(prod.getId());
-                    *//*individualCorrectness = *//*recommendationValidator.addRatings(Double.parseDouble(realRating), r);
-                }
-            });
-            double correctness = recommendationValidator.getRecommendationCorrectness();
-            double rmse = recommendationValidator.getRMSE();
-            double mae = recommendationValidator.getMAE();
-
-            if(!Double.isNaN(correctness) && !Double.isNaN(rmse) && !Double.isNaN(mae)) {
-                correctnessList.add(correctness);
-                rmseList.add(rmse);
-                maeList.add(mae);
-            }
-
-            logger.info("Correctness: " + correctness + " | RSME: " + rmse + " | MAE: " + mae);
-        });
-
-        double avgCorrectness = RecommendationValidator.calculateListAverage(correctnessList);
-        double avgRmse = RecommendationValidator.calculateListAverage(rmseList);
-        double avgMae = RecommendationValidator.calculateListAverage(maeList);
-
-        logger.info("Avg correctness: " + avgCorrectness + " | Avg RMSE: " + avgRmse + " | Avg MAE: " + avgMae);
-
-        final long endTime = System.currentTimeMillis();
-        System.out.println("Total execution time: " + (endTime - startTime) + " ms");*/
-
         return "recommend/similar";
     }
 
-//    @RequestMapping(method = RequestMethod.POST)
-//    public String testSingleUser(@RequestParam(value = "user_id") String userId,
-//                                  @RequestParam(value = "lowest_rating") String lowestRating,
-//                                  @RequestParam(value = "num_of_similar_users") String numOfSimilarUsers,
-//                                  @RequestParam(value = "min_sim_users_ratings") String minSimUsersRatings) {
-//
-//        testUser(userId, lowestRating, numOfSimilarUsers, minSimUsersRatings, -1);
-//
-//
-//        return "recommend/similar";
-//    }
+    private List<Integer> numberOfRecommendedProducts;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/users/all")
+    /*@RequestMapping(method = RequestMethod.POST, value = "/users/all")*/
     public String testAllConfigurations(@RequestParam(value = "predictive") String predictive,
                                         @RequestParam(value = "num_of_products") int numOfProducts,
                                         @RequestParam(value = "min_sim_users_ratings_min") int minUsersRatingsMin,
@@ -224,6 +132,8 @@ public class RecommenderController {
 
         /*String lowestRating = "1";*/
         List<Map<String, Double>> avgAccuracyMapsList = new ArrayList<>();
+
+        numberOfRecommendedProducts = new ArrayList<>();
 
         for(int i=k_min; i<=k_max; i++) {
             for(int j=minUsersRatingsMin; j<=minUsersRatingsMax; j++) {
@@ -279,6 +189,9 @@ public class RecommenderController {
                 }
                 avgAccuracyMap.put("k", Double.parseDouble(K));
                 avgAccuracyMap.put("minSimUsersRatings", Double.parseDouble(minSimUsersRatings));
+                avgAccuracyMap.put("productsAvg", numberOfRecommendedProducts.stream().mapToInt(Integer::intValue).average().getAsDouble());
+
+                numberOfRecommendedProducts.clear();
 
                 avgAccuracyMapsList.add(avgAccuracyMap);
             }
@@ -287,9 +200,9 @@ public class RecommenderController {
         String filename = "";
         String topString = isTop ? "_TOP" : "";
         if(isPredictive) {
-            filename = "/home/szymon/result_pred" + topString + filenameData.toString() + "_" + System.currentTimeMillis() + ".csv";
+            filename = "/home/szymon/MASTER/results/2015-09-15/result_pred" + topString + filenameData.toString() + "_" + System.currentTimeMillis() + ".csv";
         } else {
-            filename = "/home/szymon/result_clas" + topString + filenameData.toString() + "_" + System.currentTimeMillis() + ".csv";
+            filename = "/home/szymon/MASTER/results/2015-09-15/result_clas" + topString + filenameData.toString() + "_" + System.currentTimeMillis() + ".csv";
         }
 
         try {
@@ -308,7 +221,9 @@ public class RecommenderController {
                 writer.append("precision");
                 writer.append(';');
                 writer.append("fmeasure");
+                writer.append(';');
             }
+            writer.append("productsAvg");
             writer.append('\n');
 
             for(Map<String,Double> accuracyMap : avgAccuracyMapsList) {
@@ -327,7 +242,9 @@ public class RecommenderController {
                     writer.append(Double.toString(accuracyMap.get("precision")));
                     writer.append(';');
                     writer.append(Double.toString(accuracyMap.get("fmeasure")));
+                    writer.append(';');
                 }
+                writer.append(Double.toString(accuracyMap.get("productsAvg")));
                 writer.append('\n');
             }
 
@@ -375,6 +292,8 @@ public class RecommenderController {
         } else {
             products = productRecommender.getTopRatedProducts(numOfProducts);
         }
+
+        numberOfRecommendedProducts.add(products.size());
 
         Map<Integer, String> realRatings = GDBM.getUserProductRatings(userId);
 

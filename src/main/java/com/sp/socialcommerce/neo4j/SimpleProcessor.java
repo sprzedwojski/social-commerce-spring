@@ -44,25 +44,4 @@ public class SimpleProcessor implements IUserResponseProcessor {
             }
         }
     }
-
-/*    @Override
-    public void run(GSResponse response, GraphDBManager dbManager, Node user) {*/
-
-/*        String name = response.getString(responseKey, null);
-		logger.info(responseKey + ": " + name);
-
-		if(name != null) {
-			Node node = dbManager.getNode(label, nameProperty, name);
-			if (node == null) {
-				String[][] nodeProperties = { {nameProperty, name} };
-				node = dbManager.createNode(label, nodeProperties);
-            }
-
-            if (!dbManager.hasNodeRelationshipType(user, relationshipType)) {
-                dbManager.createRelationship(user, node, relationshipType);
-            } else {
-				logger.info(relationshipType + " relationship already exists.");
-			}
-		}*/
-//    }
 }

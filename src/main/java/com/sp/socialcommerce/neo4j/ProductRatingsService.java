@@ -2,6 +2,7 @@ package com.sp.socialcommerce.neo4j;
 
 import com.sp.socialcommerce.labels.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
@@ -16,17 +17,12 @@ import java.util.Map;
 @Service
 public class ProductRatingsService {
 
+    @Qualifier("graphDBManager")
     @Autowired
     private GraphDBManager GDBM;
 
-//    private Map<String, List<Product>> productsByCategories = null;
-
     public List<Product> getProducts() {
         return GDBM.getAllProducts();
-    }
-
-    public List<Product> getProducts(String uid) {
-        return GDBM.getAllProducts(uid);
     }
 
     public Map<String, List<Product>> getProductsByCategories(String uid) {
@@ -34,12 +30,9 @@ public class ProductRatingsService {
     }
 
     public Map<String, List<Product>> getProductsByCategories(String uid, String[] categories) {
-//        if(productsByCategories == null) {
         Map<String, List<Product>> productsByCategories;
         productsByCategories = GDBM.getAllProductsByCategories(uid);
         filterCategories(productsByCategories, categories);
-//        System.out.println("filtered categories: " + productsByCategories.toString());
-//        }
     	return productsByCategories;
     }
 

@@ -10,12 +10,6 @@ import java.util.Map;
 
 public class PagesProcessor implements IUserResponseProcessor {
 
-
-/*    @Override
-    public void run(GSResponse response, GraphDBManager dbManager, Node user) {
-
-    }*/
-
     @Override
     public void run(Map<String, Object> responseMap, GraphDBManager dbManager, Node user) {
 

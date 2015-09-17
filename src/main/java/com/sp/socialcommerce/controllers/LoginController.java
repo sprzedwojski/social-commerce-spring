@@ -14,6 +14,7 @@ import org.neo4j.graphdb.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
 
 /**
  * Handles requests for the application home page.
@@ -35,6 +35,7 @@ public class LoginController {
 
     @Autowired
     private FacebookService facebookService;
+    @Qualifier("graphDBManager")
     @Autowired
     private GraphDBManager GDBM;
 
@@ -66,10 +67,10 @@ public class LoginController {
 
 		logger.info("The client access token is {}.", accessToken);
 
-        System.setProperty("http.proxyHost", "w3cache.amg.net.pl");
+/*        System.setProperty("http.proxyHost", "w3cache.amg.net.pl");
         System.setProperty("http.proxyPort", "8080");
         System.setProperty("https.proxyHost", "w3cache.amg.net.pl");
-        System.setProperty("https.proxyPort", "8080");
+        System.setProperty("https.proxyPort", "8080");*/
 
         com.restfb.types.User fbUser = null;
         String prolongedToken = null;
@@ -92,7 +93,6 @@ public class LoginController {
             logger.info("prolongedToken: " + prolongedTokenObject.toString());
 
             if(prolongedTokenObject != null && prolongedTokenObject.has("access_token")) {
-                /*responseMap.put(MAP_PROLONGED_TOKEN, prolongedTokenObject.get("access_token"));*/
                 prolongedToken = (String) prolongedTokenObject.get("access_token");
             }
 
@@ -146,6 +146,7 @@ public class LoginController {
         }
 
         // TODO Set error status.
+        model.addAttribute("fbAppId", Properties.FB_APP_ID);
         return "login";
 	}
 	

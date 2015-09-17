@@ -56,7 +56,7 @@ public class ProductRecommender {
         products.forEach(prod -> {
             List<Integer> ratings = GDBM.getProductRatings(GDBM.getNode(new Product(), GraphConstants.Product.PRODUCT_ID, Integer.toString(prod.getId())));
             OptionalDouble avg = ratings.stream().mapToInt(Integer::intValue).average();
-            ratedProducts.put(prod, avg.getAsDouble());
+            ratedProducts.put(prod, /*round(*/avg.getAsDouble()/*)*/);
         });
 
         Map<Product, Double> sortedRatedProducts = sortProductsDescendingWithRating(ratedProducts);
@@ -115,10 +115,9 @@ public class ProductRecommender {
                     numeratorSum += rating * similarity;
                     denominatorSum += similarity;
                 }
-                /*double average = ratingsSum / ratingsList.size();*/
                 double weightedAverage = numeratorSum / denominatorSum;
 
-                productsSuggestedRatingMap.put(helperProductIdMap.get(productId), /*average*/ round(weightedAverage));
+                productsSuggestedRatingMap.put(helperProductIdMap.get(productId), /*round(*/weightedAverage/*)*/);
             }
         });
 

@@ -64,11 +64,6 @@ public class SurveyController {
         }
     }
 
-//    @RequestMapping(method = RequestMethod.POST)
-//    public void nextCategory(HttpServletRequest request) {
-//
-//    }
-
     @RequestMapping
     public String surveyPage(ModelMap modelMap, HttpServletRequest request, @RequestParam(value = "current_category", required = false) String currentCategory) {
 
@@ -88,8 +83,6 @@ public class SurveyController {
 
         } else if(RequestMethod.POST.toString().equals(request.getMethod())) {
             logger.info("surveyPage POST");
-
-            // TODO
         }
 
         String[] categories = (String[]) request.getSession().getAttribute("categories");

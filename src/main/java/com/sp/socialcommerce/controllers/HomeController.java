@@ -3,9 +3,7 @@ package com.sp.socialcommerce.controllers;
 import com.sp.socialcommerce.facebook.FacebookService;
 import com.sp.socialcommerce.labels.Product;
 import com.sp.socialcommerce.recommender.ProductRecommender;
-import com.sp.socialcommerce.recommender.SimilarUser;
 import com.sp.socialcommerce.recommender.UserSimilarityProcessor;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,10 +27,6 @@ public class HomeController {
     UserSimilarityProcessor userSimilarityProcessor;
     @Autowired
     FacebookService facebookService;
-
-/*    private final int K = 3;
-    private final int MIN_SIMILAR_USERS_RATINGS = 2;
-    private final int LOWEST_RATING = 4;*/
 
     @RequestMapping(method = RequestMethod.GET)
     public String home(HttpServletRequest request) {
@@ -60,8 +53,8 @@ public class HomeController {
         }
 
         productRecommender.setLowestRating(4);
-        productRecommender.setK(6);
-        productRecommender.setMinNumberOfSimilarUserRatings(5);
+        productRecommender.setK(7);
+        productRecommender.setMinNumberOfSimilarUserRatings(4);
 
         Map<Product, Double> productsMap = productRecommender.getRecommendedProductsForUser(userId/*, K, MIN_SIMILAR_USERS_RATINGS, LOWEST_RATING*/);
         modelMap.addAttribute("productMap", productsMap);

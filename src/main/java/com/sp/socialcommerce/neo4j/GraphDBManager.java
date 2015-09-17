@@ -4,12 +4,10 @@ import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
 import com.sp.socialcommerce.facebook.FacebookService;
 import com.sp.socialcommerce.labels.*;
-import com.sp.socialcommerce.labels.User;
 import com.sp.socialcommerce.prop.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.register.Register;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -33,39 +31,6 @@ public class GraphDBManager {
 	Label pageLabel = new Page();
 	Label pageCategoryLabel = new PageCategory();
 	Label productLabel = new Product();
-	Label favoriteLabel = new Favorite();
-	Label favoriteCategoryLabel = new FavoriteCategory();
-	/*Label educationLevelLabel = new EducationLevel();*/
-
-	/*IObjectProcessor educationProcessor, workProcessor;
-
-	{
-		educationProcessor = new ObjectProcessorImpl("school",
-				new String[]{"startYear"},
-				new HashMap<String, RelationshipType>() {{
-					put("schoolType", GraphConstants.RelTypes.IS_OF_TYPE);
-				}},
-				new Label() {
-					@Override
-					public String name() {
-						return "School";
-					}
-				},
-				GraphConstants.RelTypes.ATTENDED
-		);
-		workProcessor = new ObjectProcessorImpl("companyID",
-				new String[]{"company", "title", "startDate"},
-				new HashMap<String, RelationshipType>() {{
-				}},
-				new Label() {
-					@Override
-					public String name() {
-						return "Work";
-					}
-				},
-				GraphConstants.RelTypes.WORKED_IN
-		);
-	}*/
 
 	IUserResponseProcessor[] processors = {
 		new SimpleProcessor(/*GraphConstants.City.CITY_KEY,*/ FacebookService.MAP_USER_LOCATION,
@@ -78,21 +43,10 @@ public class GraphDBManager {
 				return "Gender";
 			}
 		}, GraphConstants.RelTypes.IS_OF_GENDER),
-		/*new SimpleProcessor("relationshipStatus", "name", new Label() {
-				@Override
-				public String name() {
-					return "RelationshipStatus";
-				}
-			}, GraphConstants.RelTypes.HAS_RELATIONSHIP_STATUS),*/
-		new SimpleProcessor(/*GraphConstants.Religion.RELIGION_KEY,*/ FacebookService.MAP_USER_RELIGION,
+		new SimpleProcessor(FacebookService.MAP_USER_RELIGION,
 				GraphConstants.Religion.RELIGION_NAME, religionLabel, GraphConstants.RelTypes.FOLLOWS_RELIGION),
-		new SimpleProcessor(/*GraphConstants.PoliticalView.POLITICAL_VIEW_KEY,*/ FacebookService.MAP_USER_POLITICAL,
+		new SimpleProcessor(FacebookService.MAP_USER_POLITICAL,
 				GraphConstants.PoliticalView.POLITICAL_VIEW_NAME, politicalViewLabel, GraphConstants.RelTypes.HAS_POLITICAL_VIEW),
-		/*new SimpleProcessor(GraphConstants.EducationLevel.EDUCATION_LEVEL_KEY, GraphConstants.EducationLevel.EDUCATION_LEVEL_NAME, educationLevelLabel, GraphConstants.RelTypes.HAS_EDUCATION_LEVEL),
-		new ArrayProcessor(GraphConstants.Education.EDUCATION_KEY, educationProcessor),
-		new ArrayProcessor(GraphConstants.Work.WORK_KEY, workProcessor),
-		new FavoritesProcessor(),
-		new PagesProcessor()*/
 	};
 
 	GraphDatabaseService graphDb;

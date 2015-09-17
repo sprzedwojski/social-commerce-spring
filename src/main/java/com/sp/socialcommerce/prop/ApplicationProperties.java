@@ -12,7 +12,6 @@ import org.springframework.core.env.Environment;
  */
 @Configuration
 @PropertySource("classpath:properties/${envTarget:localhost}.properties")
-//@PropertySource("classpath:properties/application.properties")
 public class ApplicationProperties {
 
     @Autowired
@@ -21,9 +20,4 @@ public class ApplicationProperties {
     public String getProperty(String propName) {
         return env.getProperty(propName);
     }
-
-//    @Bean
-//    public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
-//        return new PropertySourcesPlaceholderConfigurer();
-//    }
 }
