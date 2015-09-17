@@ -120,7 +120,7 @@
 <div class="jumbotron text-center">
     <h1 class="big">Recommender Store</h1>
 
-    <p>Login, rate and help make science!</p>
+    <p>Login and get recommendations!</p>
 </div>
 
 <div class="container">
